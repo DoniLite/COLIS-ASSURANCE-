@@ -59,6 +59,9 @@ const router = createBrowserRouter([
         element: <Choose />
       },
       {
+        path: 'recupération'
+      },
+      {
         path: 'home',
         element: <Start />
       },
@@ -152,7 +155,8 @@ function Root() {
 
   return (
     <>
-      {state == 'loading' && (<><center style={{marginTop: '3rem'}}><Loader/></center></>)}
+      {state === 'loading' && (<><center style={{marginTop: '3rem'}}><Loader/></center></>)}
+      {state === 'submitting' && (<><center style={{ marginTop: '3rem' }}><Loader /></center></>)}
       <MotionBox initial={{opacity: 0, y: 40,}} animate={{opacity: 1, y: 0,}} >
         <Outlet />
       </MotionBox>
@@ -168,9 +172,8 @@ function ErrorPage () {
   console.log(error)
   return(
     <>
-      <center color='blue' style={{marginTop: '2rem'}}>
+      <center style={{ marginTop: '2rem', color: 'blue' }}>
         <p>Oups... Une erreur s'est produite</p>
-        {/* {error} */}
         <motion.small>Veuillez recharger la page</motion.small>
       </center>
     </>
@@ -181,7 +184,7 @@ export function App() {
   
   return(
     <>
-      <RouterProvider fallbackElement={<HashLoader color={"#1d1d1d"} />} router={router} />
+      <RouterProvider fallbackElement={<Loader />} router={router} />
     </>
   )
 }

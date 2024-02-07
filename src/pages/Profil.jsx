@@ -23,7 +23,7 @@ export function Profil() {
                 <img src={`${serverPath}assets/user/${user.userIcon}`} alt="" className="user-balance" />
                 <div style={{marginLeft: '1rem'}}>
                     {user.firstname && (<p>{user.firstname} {user.lastname}</p>)}
-                    <p style={{marginTop: '10px'}}>Balance : {balance} FCFA</p>
+                    <p style={{marginTop: '10px'}}>Balance :{balance}  FCFA</p>
                     <p>23.10.2023</p>
                 </div>
             </div>
@@ -83,7 +83,7 @@ export function Balance() {
                             <div className="soustraire" onClick={() => setIncrement(icrement > 0 ? (icrement - 1) : icrement = 0)}>
                                 <i className="fa-solid fa-window-minimize"></i>
                             </div>
-                            <p>X{icrement}</p>
+                            <input style={{ border: 'none', background: 'transparent', width: '30px', }} type="text" value={icrement} name="price" id="price" onChange={(e) => setIncrement(e.target.value)} />
                             <div className="ajouter" onClick={() => setIncrement(icrement + 1)}>
                                 <i className="fa-solid fa-plus"></i>
                             </div>
@@ -111,8 +111,6 @@ export function InformationsAccount() {
                     <h4 style={{ marginBottom: '1rem' }}> <span style={{ color: '#027bff', position: 'relative', top: '0.5rem', right: '1rem' }}><i className="fa-solid fa-user fa-2x"></i></span>{user.firstname} {user.lastname}</h4>
                     <h4 style={{ marginBottom: '1rem' }}> <span style={{ color: '#027bff', position: 'relative', top: '0.5rem', right: '1rem' }}><i className="fa-solid fa-phone fa-2x"></i></span>{user.phoneNumber}</h4>
                     <h4 style={{ marginBottom: '1rem' }}> <span style={{ color: '#027bff', position: 'relative', top: '0.5rem', right: '1rem' }}><i className="fa-solid fa-location-dot fa-2x"></i></span>{user.location}</h4>
-                    <h4 style={{ marginBottom: '1rem' }} className="passWord"> <span style={{ color: '#027bff', position: 'relative', top: '0.5rem', right: '1rem' }}><i className="fa-solid fa-key fa-2x"></i></span>.  .  .  .  .  .</h4>
-                    <h4 style={{ marginBottom: '1rem' }}> <span style={{ color: '#027bff', position: 'relative', top: '0.5rem', right: '1rem' }}><i className="fa-solid fa-address-card fa-2x"></i></span>{user.passport}</h4>
                 </div>
                 
                 <NavLink to={'/profil-updating/change'}>

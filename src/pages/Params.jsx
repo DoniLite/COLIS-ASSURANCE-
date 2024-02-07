@@ -25,10 +25,11 @@ export function Params() {
     return(
         <>
             <div className="first-param-cont">
+                <div></div>
                 <NavLink style={{ color: '#ffffff' }} to={'/'}>
-                    <i className="fa-solid fa-circle-left fa-2x"></i>
+                    <i className="fa-solid fa-circle-right fa-2x"></i>
                 </NavLink>
-                <i className="fa-solid fa-rotate fa-2x"></i>
+                
             </div>
 
             <center style={{margin: '2rem 0'}}>

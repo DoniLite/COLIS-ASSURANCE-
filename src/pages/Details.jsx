@@ -10,51 +10,6 @@ import axios from 'axios'
 import { toast } from 'react-toastify'
 import fs from 'node:fs'
 
-const infoExpéditeur = [
-    {
-        title: 'Nom',
-        info: 'TRAORE Gounghin',
-    },
-    {
-        title: 'N°CNI',
-        info: 'B12349000'
-    }, 
-    {
-        title: 'Numéro',
-        info: '+226 74678999'
-    },
-    {
-        title: 'Valeur du colis',
-        info: '18 000'
-    },
-    {
-        title: 'Description',
-        info: 'Colis de madame TRAORE Gounghin, envoyé par M. OUEDRAOGO de Karparla 18h30. Valeur du colis 18 000. Sac de tisane'
-    }
-]
-
-const infoReceveur = [
-    {
-        title: 'Nom',
-        info: 'OUEDRAOGO Josué',
-    },
-    {
-        title: 'N°CNI',
-        info: 'B12098900',
-    },
-    {
-        title: 'Numéro',
-        info: '+226 74678999'
-    },
-    {
-        title: 'Valeur du colis',
-        info: '18 000'
-    },
-    {
-        title: 'Lieu de livraison',
-        info: 'KARPARLA'
-    }
-]
 
 export function Details() {
 

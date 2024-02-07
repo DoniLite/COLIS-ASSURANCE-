@@ -167,9 +167,7 @@ export function Connexion() {
     const [toogleInput, setInput] = useState(true)
     const inputClass = toogleInput ? 'password' : 'text'
     
-    useEffect(() => {
-        
-    }, [])
+
     /**
      * 
      * @param {SubmitEvent} e 
@@ -177,14 +175,13 @@ export function Connexion() {
     function connectUser(e) {
         e.preventDefault()
         const form = new FormData(e.currentTarget)
-        const username = form.get('email')
+        const email = form.get('email')
         const password = form.get('password')
         const userForm = {
             type: type,
             email,
             password,
         }
-        console.log(type)
 
         fetchJSON(`${serverPath}connexion`, {
             method: 'POST',
@@ -193,7 +190,6 @@ export function Connexion() {
         }).then(data => {
             if(data.err === false || data.user === null || data.user === false) {
                 setError(error = true)
-                return
             }
             else{
                 setError(error = false)
@@ -242,7 +238,9 @@ export function Connexion() {
                     </div>
                 </center>
                 <div style={{ margin: '1rem' }}>
-                    <a href="#">Mot de passe oublié?</a>
+                    <NavLink to={'/recupération'}>
+                        Mot de passe oublié?
+                    </NavLink>
                 </div>
 
                 <center>
