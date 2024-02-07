@@ -25,6 +25,7 @@ import {motion} from 'framer-motion'
 import { SpeedInsights } from "@vercel/speed-insights/react"
 import { Loader } from './main'
 import { ToastContainer } from 'react-toastify'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 
 

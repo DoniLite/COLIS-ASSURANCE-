@@ -6,12 +6,13 @@ import { fetchJSON } from "../functions/API"
 import { useSelector, useDispatch } from 'react-redux'
 import { addDataToState, putConnected, setUserType, ToogleUpdate } from '../app/userSlice'
 import { useData } from "../hooks/useData"
-import { serverPath } from "../main"
+import { Loader, serverPath } from "../main"
 import { HashLoader } from "react-spinners";
 import axios from 'axios'
 import { toast } from 'react-toastify';
 import { Modal } from 'flowbite-react';
 import 'react-toastify/dist/ReactToastify.min.css';
+import { useCustomNavigation } from "../hooks/useCustomNavigation"
 
 export const id1 = '65a6c6c185261f43dd5c6e77'
 
@@ -157,23 +158,34 @@ export function PhoneVerification() {
 
 export function Connexion() {
 
-
     let [error, setError] = useState(false)
     const [canNavigate, setNavigate] = useState(false)
+    const [isValid, setValid] = useState(true)
     const {type} = useData()
     const navigate = useNavigate()
     const dispatch = useDispatch()
-    const navigation = useNavigation()
+    const { state, navigateTo } = useCustomNavigation()
     const [toogleInput, setInput] = useState(true)
     const inputClass = toogleInput ? 'password' : 'text'
     
+    const color = isValid ? '#027bff' : 'red'
 
+    const inputStyle = {
+        width: '90%',
+        padding: '1rem',
+        border: `solid 1px ${color}`,
+        background: 'transparent',
+        borderRadius: '10px',
+    }
+
+    console.log(state)
     /**
      * 
      * @param {SubmitEvent} e 
      */
     function connectUser(e) {
         e.preventDefault()
+        navigateTo('submitting')
         const form = new FormData(e.currentTarget)
         const email = form.get('email')
         const password = form.get('password')
@@ -183,23 +195,29 @@ export function Connexion() {
             password,
         }
 
-        fetchJSON(`${serverPath}connexion`, {
+        console.log(state)
+
+        setTimeout(() => fetchJSON(`${serverPath}connexion`, {
             method: 'POST',
             json: userForm,
             credentials: 'include',
         }).then(data => {
-            if(data.err === false || data.user === null || data.user === false) {
-                setError(error = true)
+            if (data.err === false || data.user === null || data.user === false) {
+                setError(error => error = true)
+                setValid(false)
+                navigateTo('idle')
             }
-            else{
+            else {
                 setError(error = false)
                 dispatch(putConnected())
                 dispatch(addDataToState(data))
+                setValid(true)
+                navigateTo('idle')
                 // console.log(redirect('/'))
                 // return 
                 setNavigate(true)
             }
-        })
+        }), 3000)
     }
 
     if(canNavigate) {
@@ -208,6 +226,7 @@ export function Connexion() {
 
     return (
         <div className="connexion">
+            { state === 'submitting'  && <Loader />}
             <div className="flex-div">
                 <div></div>
                 <img src={colis} alt="" className="app-logo" />
@@ -221,7 +240,7 @@ export function Connexion() {
                 <label htmlFor="email">Adresse email</label>
                 <center>
                     <div className="input">
-                        <input type="text" name="email" id="email" />
+                        <input type="text" name="email" id="email" style={inputStyle} onChange={() => {setValid(true); setError(false);}}/>
                         <div className="i">
                             <i className="fa-solid fa-envelope"></i>
                         </div>
@@ -231,7 +250,7 @@ export function Connexion() {
                 <label htmlFor="passWord">Mot de passe</label>
                 <center>
                     <div className="input">
-                        <input type={inputClass} name="password" id="password" onChange={() => setInput(false)} />
+                        <input type={inputClass} name="password" id="password" style={inputStyle} onChange={() => { setInput(false); setValid(true); setError(false); }} />
                         <div className="i" onClick={() => setInput(v => !v)}>
                             <i className='fa-solid fa-key'></i>
                         </div>

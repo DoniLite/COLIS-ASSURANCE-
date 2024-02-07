@@ -6,6 +6,7 @@ import { Provider } from 'react-redux'
 import persistedStore from './app/store'
 import { PersistGate } from 'redux-persist/integration/react'
 import { HashLoader } from "react-spinners";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 
 const { store, persistor } = persistedStore();
