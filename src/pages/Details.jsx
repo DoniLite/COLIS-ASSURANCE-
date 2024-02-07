@@ -212,7 +212,7 @@ export function NewColis() {
             <form action="" onSubmit={createColis} enctype="multipart/form-data">
                 <center>
                     <div className="input">
-                        <input type="text" name="senderName" id="senderName" placeholder="Nom" disabled/>
+                        <input type="text" name="senderName" id="senderName" placeholder="Nom" />
                         <div className="i">
                             <i className="fa-solid fa-user-tag"></i>
                         </div>

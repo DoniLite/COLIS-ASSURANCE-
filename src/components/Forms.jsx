@@ -13,8 +13,15 @@ import { toast } from 'react-toastify';
 import { Modal } from 'flowbite-react';
 import 'react-toastify/dist/ReactToastify.min.css';
 import { useCustomNavigation } from "../hooks/useCustomNavigation"
+import { notify } from "../hooks/useNofication"
 
-export const id1 = '65a6c6c185261f43dd5c6e77'
+export const inputStyle = {
+    width: '90%',
+    padding: '1rem',
+    border: `solid 1px `,
+    background: 'transparent',
+    borderRadius: '10px',
+}
 
 export function Clavier() {
     return(
@@ -46,6 +53,14 @@ export function Authentification() {
     const [canNavigate, setNavigate] = useState(false)
     let [isError, putError] = useState(false)
     const {user, type} = useData()
+    const [isValid, setValid] = useState(true)
+
+    const color = isValid ? '#027bff' : 'red'
+
+    const thisInputStyle = {
+        ...inputStyle,
+        border: inputStyle.border + color
+    }
 
     /**
      * 
@@ -110,6 +125,14 @@ export function Authentification() {
 export function PhoneVerification() {
     const navigate = useNavigate()
     let errorMessage
+    const [isValid, setValid] = useState(true)
+
+    const color = isValid ? '#027bff' : 'red'
+
+    const thisInputStyle = {
+        ...inputStyle,
+        border: inputStyle.border + color
+    }
     const user = useSelector((state) => state.userState.data.user)
 
     async function SubmitPhone(e) {
@@ -160,25 +183,21 @@ export function Connexion() {
 
     let [error, setError] = useState(false)
     const [canNavigate, setNavigate] = useState(false)
-    const [isValid, setValid] = useState(true)
     const {type} = useData()
     const navigate = useNavigate()
     const dispatch = useDispatch()
     const { state, navigateTo } = useCustomNavigation()
     const [toogleInput, setInput] = useState(true)
     const inputClass = toogleInput ? 'password' : 'text'
+    const [isValid, setValid] = useState(true)
     
     const color = isValid ? '#027bff' : 'red'
 
-    const inputStyle = {
-        width: '90%',
-        padding: '1rem',
-        border: `solid 1px ${color}`,
-        background: 'transparent',
-        borderRadius: '10px',
+    const thisInputStyle = {
+        ...inputStyle,
+        border: inputStyle.border + color
     }
 
-    console.log(state)
     /**
      * 
      * @param {SubmitEvent} e 
@@ -197,7 +216,7 @@ export function Connexion() {
 
         console.log(state)
 
-        setTimeout(() => fetchJSON(`${serverPath}connexion`, {
+        fetchJSON(`${serverPath}connexion`, {
             method: 'POST',
             json: userForm,
             credentials: 'include',
@@ -217,7 +236,7 @@ export function Connexion() {
                 // return 
                 setNavigate(true)
             }
-        }), 3000)
+        })
     }
 
     if(canNavigate) {
@@ -240,7 +259,7 @@ export function Connexion() {
                 <label htmlFor="email">Adresse email</label>
                 <center>
                     <div className="input">
-                        <input type="text" name="email" id="email" style={inputStyle} onChange={() => {setValid(true); setError(false);}}/>
+                        <input type="text" name="email" id="email" style={thisInputStyle} onChange={() => {setValid(true); setError(false);}}/>
                         <div className="i">
                             <i className="fa-solid fa-envelope"></i>
                         </div>
@@ -250,7 +269,7 @@ export function Connexion() {
                 <label htmlFor="passWord">Mot de passe</label>
                 <center>
                     <div className="input">
-                        <input type={inputClass} name="password" id="password" style={inputStyle} onChange={() => { setInput(false); setValid(true); setError(false); }} />
+                        <input type={inputClass} name="password" id="password" style={thisInputStyle} onChange={() => { setInput(false); setValid(true); setError(false); }} />
                         <div className="i" onClick={() => setInput(v => !v)}>
                             <i className='fa-solid fa-key'></i>
                         </div>
@@ -298,6 +317,14 @@ export function Inscription() {
     const iconClass = canToogleClass ? 'fa-solid fa-eye' :'fa-solid fa-key'
     const [toogleInput, setInput] = useState(true)
     const inputClass = toogleInput ? 'password' :'text'
+    const [isValid, setValid] = useState(true)
+
+    const color = isValid ? '#027bff' : 'red'
+
+    const thisInputStyle = {
+        ...inputStyle,
+        border: inputStyle.border + color
+    }
 
 
     navigator.geolocation.getCurrentPosition(
@@ -440,6 +467,14 @@ export function CreateUser() {
     const [canNavigate, setNavigate] = useState(false)
     const [toogleInput, setInput] = useState(true)
     const inputClass = toogleInput ? 'password' : 'text'
+    const [isValid, setValid] = useState(true)
+
+    const color = isValid ? '#027bff' : 'red'
+
+    const thisInputStyle = {
+        ...inputStyle,
+        border: inputStyle.border + color
+    }
 
     /**
      * 
@@ -548,12 +583,6 @@ export function CreateUser() {
 
 export function CompleteProfil() {
 
-    const notify = {
-        success: () => toast.success('Votre profil a été mis à jour!'),
-        failed: () => toast.error('Une erreur est survenue'),
-        warning: () => toast.warning('')
-    }
-
     const {type, user} = useData()
 
     const params = useParams()
@@ -563,6 +592,14 @@ export function CompleteProfil() {
     const [nav, setNav] = useState(false)
     const [toogleInput, setInput] = useState(true)
     const inputClass = toogleInput ? 'password' : 'text'
+    const [isValid, setValid] = useState(true)
+
+    const color = isValid ? '#027bff' : 'red'
+
+    const thisInputStyle = {
+        ...inputStyle,
+        border: inputStyle.border + color
+    }
     console.log(reason)
 
     function fileUpload(e) {
@@ -613,6 +650,10 @@ export function CompleteProfil() {
         const userId = user._id
         let dataFetch
 
+        if(avatar===null) {
+
+        }
+
         if (reason ==='update') {
             dataFetch = {
                 firstname,
@@ -641,17 +682,31 @@ export function CompleteProfil() {
         }
 
         
-        const request = await axios.post(`${serverPath}updateUser`,{
+        axios.post(`${serverPath}updateUser`,{
             ...dataFetch
         },
         {
             headers: {
                 'Content-Type': 'multipart/form-data'
             }
-        })
-        console.log(request.data)
-        dispatch(addDataToState(request.data))
-        setNav(true)
+        }).then(
+            ({ data }) => {
+                if(data.statut) {
+                    setValid(false)
+                    notify.warning(`veuillez réssayez 😅`)
+                    notify.warning('Un champ de formulaire est mal rempli')
+                }else {
+                    notify.success('Bravo 💫💯')
+                    dispatch(addDataToState(data))
+                    setNav(true)
+                }
+                
+            }
+        ).catch(
+            notify.failed('Une erreur s\'est produite')
+        )
+        
+        
         // fetchJSON(`${serverPath}updateUser`, {
         //     method: 'POST',
         //     json: dataFetch,
@@ -667,9 +722,7 @@ export function CompleteProfil() {
         //         }
         //         // navigate('/')
         //     }
-        // )
-
-        
+        // ) 
     }
     
     if (nav) {
@@ -695,7 +748,7 @@ export function CompleteProfil() {
                 </center>
                 <center>
                     <div className="input">
-                        <input type="text" name="firstname" id="firstname" placeholder="Prénom" required/>
+                        <input type="text" name="firstname" id="firstname"  placeholder="Prénom" style={thisInputStyle} required/>
                         <div className="i">
                             <i className="fa-solid fa-user-tag"></i>
                         </div>
@@ -704,7 +757,7 @@ export function CompleteProfil() {
 
                 <center>
                     <div className="input">
-                        <input type="text" name="lastname" id="lastname" placeholder="Nom" required/>
+                        <input type="text" name="lastname" id="lastname" onChange={() => setValid(true)} placeholder="Nom" style={thisInputStyle} required/>
                         <div className="i">
                             <i className="fa-solid fa-user-tag"></i>
                         </div>
@@ -714,7 +767,7 @@ export function CompleteProfil() {
                 {reason == 'change' && (<>
                     <center>
                         <div className="input">
-                            <input type={inputClass} name="pastpassword" id="pastpassword" onChange={() => setInput(false)} placeholder="Ancien mot de passe" required/>
+                            <input type={inputClass} name="pastpassword" id="pastpassword" style={thisInputStyle} onChange={() => setInput(false)} placeholder="Ancien mot de passe" required/>
                             <div className="i" onClick={() => setInput(v => !v)}>
                                 <i className="fa-solid fa-key"></i>
                             </div>
@@ -722,7 +775,7 @@ export function CompleteProfil() {
                     </center>
                     <center>
                         <div className="input">
-                            <input type={inputClass} name="password" id="password" onChange={() => setInput(false)} placeholder="Mot de passe" required/>
+                            <input type={inputClass} name="password" id="password" style={thisInputStyle} onChange={() => {setInput(false); setValid(true);}}  placeholder="Mot de passe" required/>
                             <div className="i" onClick={() => setInput(v => !v)}>
                                 <i className='fa-solid fa-key'></i>
                             </div>
@@ -735,7 +788,7 @@ export function CompleteProfil() {
                     <>
                         <center>
                             <div className="input">
-                                <input type="text" name="country" id="country" placeholder="Pays" required/>
+                                <input type="text" name="country" id="country" style={thisInputStyle} placeholder="Pays" required/>
                                 <div className="i">
                                     <i className="fa-solid fa-phone"></i>
                                 </div>
@@ -743,7 +796,7 @@ export function CompleteProfil() {
                         </center>
                         <center>
                             <div className="input">
-                                <input type="text" name="town" id="town" placeholder="Ville" required/>
+                                <input type="text" name="town" id="town" style={thisInputStyle} placeholder="Ville" onChange={setValid(true)} required/>
                                 <div className="i">
                                     <i className="fa-solid fa-phone"></i>
                                 </div>
@@ -763,10 +816,15 @@ export function CompleteProfil() {
 
 export function ColiActionConfirmation ({coliId}) {
 
-    const notify = {
-        success: () => toast.success('Colis ajouté avec succès'),
-        failed: () => toast.error('Une erreur est survenue'),
-        warning: () => toast.warning('Votre solde est insufisant')
+    
+
+    const [isValid, setValid] = useState(true)
+
+    const color = isValid ? '#027bff' : 'red'
+
+    const thisInputStyle = {
+        ...inputStyle,
+        border: inputStyle.border + color
     }
 
     const [canAlert, setAlert] = useState(false)
@@ -789,11 +847,18 @@ export function ColiActionConfirmation ({coliId}) {
         fetchJSON(`${serverPath}addColis?code=${coliOtp}&id=${coliId}`).then(
             data => {
                 if(data.statut){
+                    notify.success('Course confirmée!')
                     closeBox()
                     window.location.reload()
                 } else {
                     setAlert(true)
+                    setValid(false)
+                    notify.warning('Données invalides!')
                 }
+            }
+        ).catch(
+            err => {
+                notify.failed('Une erreur est survenue')
             }
         )
     } 
@@ -816,7 +881,7 @@ export function ColiActionConfirmation ({coliId}) {
             <form action="" onSubmit={ConfirmColi}>
                 <center>
                     <div className="input">
-                        <input type="text" name="coliOtp" id="coliOtp" placeholder="Code de confirmation" />
+                        <input type="text" name="coliOtp" id="coliOtp" style={thisInputStyle} placeholder="Code de confirmation" onChange={() => {setAlert(false); setValid(true)}} />
                         <div className="i">
                             <i className="fa-solid fa-key"></i>
                         </div>

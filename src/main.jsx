@@ -25,7 +25,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
 export function Loader() {
   return(
     <>
-      <HashLoader color={"#1d1d1d"} />
+      <center style={{position: 'absolute', top: '50px', left: '40%'}}>
+        <HashLoader color={"#1d1d1d"} />
+      </center>
     </>
   )
 }
