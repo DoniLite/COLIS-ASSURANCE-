@@ -498,6 +498,7 @@ export function CreateUser() {
         const email = formData.get('email')
         const refKey = user._id
 
+
         const fetcData = {
             username,
             password,
@@ -505,27 +506,35 @@ export function CreateUser() {
             refKey,
         }
 
-        fetchJSON(`${serverPath}addAccount/`, {
-            method: 'POST',
-            json: fetcData,
-        }).then(
-            data => {
-                console.log(data)
-                // reloading of this page
-                // window.location.reload()
-                dispatch(ToogleUpdate(true))
-                setNavigate(true)
-                closeBox()
-            }
-        ).catch(
-            err => {
-                console.log(err)
-            }
-        )
-    }
-
-    if (canNavigate) {
-        navigate('/compte-entreprise')
+        if (username.length === 0  || password.length === 0 || email.length === 0) {
+            setValid(false)
+            notify.warning('Vos champs sont vides 😮‍💨')
+            setTimeout(() => notify.warning('Veuillez réessayer 🧐'), 1000)
+        }else{
+            fetchJSON(`${serverPath}addAccount/`, {
+                method: 'POST',
+                json: fetcData,
+            }).then(
+                data => {
+                    console.log(data)
+                    if (data.statut) {
+                        setValid(false)
+                        notify.warning(data.statut)
+                        setTimeout(() => notify.warning('Veuillez réessayer 🧐'), 1000)
+                    } else {
+                        dispatch(ToogleUpdate(true))
+                        notify.success('Opération éffectuée 💯💫')
+                        setTimeout(() => notify.success('vous pouvez fermer cette fenêtre'), 1000)
+                    }
+                    // reloading of this page
+                    // window.location.reload()
+                }
+            ).catch(
+                err => {
+                    notify.failed('Une erreur s\'est produite 😟')
+                }
+            )
+        }
     }
 
     return(
@@ -543,7 +552,7 @@ export function CreateUser() {
             <form action="" onSubmit={addAccount}>
                 <center>
                     <div className="input">
-                        <input type="text" name="username" id="username" placeholder="Nom d'utilisateur" />
+                        <input type="text" name="username" id="username" style={thisInputStyle} placeholder="Nom d'utilisateur" />
                         <div className="i">
                             <i className="fa-solid fa-user-tag"></i>
                         </div>
@@ -552,7 +561,7 @@ export function CreateUser() {
                 
                 <center>
                     <div className="input">
-                        <input type="email" name="email" id="email" placeholder="Adresse email" />
+                        <input type="email" name="email" id="email" style={thisInputStyle} placeholder="Adresse email" />
                         <div className="i">
                             <i className="fa-solid fa-envelope"></i>
                         </div>
@@ -561,7 +570,7 @@ export function CreateUser() {
 
                 <center>
                     <div className="input">
-                        <input type={inputClass} name="password" id="password" onChange={() => setInput(false)} placeholder="Mot de passe" />
+                        <input type={inputClass} name="password" id="password" onChange={() => {setInput(false); setValid(true)}} style={thisInputStyle} placeholder="Mot de passe" />
                         <div className="i" onClick={() => setInput(v => !v)}>
                             <i className='fa-solid fa-key'></i>
                         </div>
@@ -640,12 +649,14 @@ export function CompleteProfil() {
         const firstname = formData.get('firstname')
         const lastname = formData.get('lastname')
         const password = formData.get('password')
-        const passport = formData.get('passport')
         const pastpassword = formData.get('pastpassword')
         const phoneNumber = formData.get('phoneNumber')
         const country = formData.get('country')
         const town = formData.get('town')
         const avatar = formData.get('avatar')
+        /**
+         * @type {string}
+         */
         const userType = type
         /**
          * @type {string}
@@ -662,7 +673,6 @@ export function CompleteProfil() {
             dataFetch = {
                 firstname,
                 lastname,
-                passport,
                 userType,
                 userId,
                 isForUpdate: true,
@@ -677,7 +687,6 @@ export function CompleteProfil() {
                 lastname,
                 pastpassword,
                 password,
-                passport,
                 phoneNumber,
                 userType,
                 userId,
@@ -698,8 +707,8 @@ export function CompleteProfil() {
             ({ data }) => {
                 if(data.statut === false) {
                     setValid(false)
-                    notify.warning(`veuillez réssayez 😅`)
                     notify.warning('Un champ de formulaire est mal rempli')
+                    setTimeout(() => notify.warning('Veuillez réessayer 🧐'), 1000)
                 }else {
                     setTimeout(() => {
                         notify.success('Bravo 💫💯')
@@ -707,13 +716,10 @@ export function CompleteProfil() {
                     }, 1000)
                     setNav(true)
                 }
-                
             }
         ).catch(
             err => notify.failed('Une erreur s\'est produite')
         )
-        
-        
         // fetchJSON(`${serverPath}updateUser`, {
         //     method: 'POST',
         //     json: dataFetch,
