@@ -647,11 +647,15 @@ export function CompleteProfil() {
         const town = formData.get('town')
         const avatar = formData.get('avatar')
         const userType = type
+        /**
+         * @type {string}
+         */
         const userId = user._id
         let dataFetch
+        let isAvatarPresent = true
 
         if(avatar===null) {
-
+            isAvatarPresent = false
         }
 
         if (reason ==='update') {
@@ -665,6 +669,7 @@ export function CompleteProfil() {
                 country,
                 town,
                 avatar,
+                isAvatarPresent
             }
         } else {
             dataFetch = {
@@ -691,19 +696,21 @@ export function CompleteProfil() {
             }
         }).then(
             ({ data }) => {
-                if(data.statut) {
+                if(data.statut === false) {
                     setValid(false)
                     notify.warning(`veuillez réssayez 😅`)
                     notify.warning('Un champ de formulaire est mal rempli')
                 }else {
-                    notify.success('Bravo 💫💯')
-                    dispatch(addDataToState(data))
+                    setTimeout(() => {
+                        notify.success('Bravo 💫💯')
+                        dispatch(addDataToState(data))
+                    }, 1000)
                     setNav(true)
                 }
                 
             }
         ).catch(
-            notify.failed('Une erreur s\'est produite')
+            err => notify.failed('Une erreur s\'est produite')
         )
         
         
@@ -847,18 +854,18 @@ export function ColiActionConfirmation ({coliId}) {
         fetchJSON(`${serverPath}addColis?code=${coliOtp}&id=${coliId}`).then(
             data => {
                 if(data.statut){
-                    notify.success('Course confirmée!')
+                    notify.success('Course confirmée!🤙🏾')
                     closeBox()
                     window.location.reload()
                 } else {
                     setAlert(true)
                     setValid(false)
-                    notify.warning('Données invalides!')
+                    notify.warning('Données invalides!🙄')
                 }
             }
         ).catch(
             err => {
-                notify.failed('Une erreur est survenue')
+                notify.failed('Une erreur est survenue 🤕')
             }
         )
     } 
