@@ -9,6 +9,8 @@ import { useState } from "react";
 import axios from 'axios'
 import { toast } from 'react-toastify'
 import fs from 'node:fs'
+import { useCustomNavigation } from "../hooks/useCustomNavigation";
+import { inputStyle } from "../components/Forms";
 
 
 export function Details() {
@@ -99,11 +101,20 @@ export function NewColis() {
         failed: () => toast.error('Une erreur est survenue'),
         warning: () => toast.warning('Votre solde est insufisant')
     }
+
     const {user} = useData()
     const navigate = useNavigate()
     const dispatch = useDispatch()
     const [canNavigate, setNavigate] = useState(false)
     const [inputColor, setColor] = useState(false)
+    const {state, navigateTo} = useCustomNavigation()
+    const [isValid, setValid] = useState(true)
+    const color = isValid ? '#027bff' : 'red'
+
+    const thisInputStyle = {
+        ...inputStyle,
+        border: inputStyle.border + color
+    }
     
     console.log(inputColor)
     function fileUpload(e) {
@@ -117,6 +128,7 @@ export function NewColis() {
      */
     async function createColis(e) {
         e.preventDefault()
+        navigateTo('submitting')
         if (user.balance[0].balance > 50) {
             const formData = new FormData(e.currentTarget)
             const price = formData.get('price')
@@ -152,6 +164,7 @@ export function NewColis() {
                 }
             }).then(
                 ({ data }) => {
+                    navigateTo("idle")
                     console.log(data)
                     dispatch(ToogleUpdate(true))
                     notify.success()
@@ -161,6 +174,8 @@ export function NewColis() {
                 err => {
                     console.log(err)
                     notify.failed()
+                    navigateTo('idle')
+                    setValid(false)
                 }
             )
         } else {
@@ -196,6 +211,7 @@ export function NewColis() {
 
     return(
         <div className="new-colis">
+            {state === 'submitting' && <Loader />}
             <div className="flex">
                 <div>
                     <h3>Ajouter une course</h3>
@@ -212,7 +228,7 @@ export function NewColis() {
             <form action="" onSubmit={createColis} enctype="multipart/form-data">
                 <center>
                     <div className="input">
-                        <input type="text" name="senderName" id="senderName" placeholder="Nom" />
+                        <input type="text" name="senderName" id="senderName" placeholder="Nom" style={thisInputStyle} onChange={() => setValid(true)} />
                         <div className="i">
                             <i className="fa-solid fa-user-tag"></i>
                         </div>
@@ -221,7 +237,7 @@ export function NewColis() {
 
                 <center>
                     <div className="input">
-                        <input type="tel" name="senderNumber" id="senderNumber" placeholder="Numéro de télephone" />
+                        <input type="tel" name="senderNumber" id="senderNumber" placeholder="Numéro de télephone" style={thisInputStyle} />
                         <div className="i">
                             <i className="fa-solid fa-phone"></i>
                         </div>
@@ -230,7 +246,7 @@ export function NewColis() {
 
                 <center>
                     <div className="input">
-                        <input type="text" name="price" id="price" placeholder="Valeur du colis" />
+                        <input type="text" name="price" id="price" placeholder="Valeur du colis" style={thisInputStyle} />
                         <div className="i">
                             <i className="fa-solid fa-money-bill-1"></i>
                         </div>
@@ -239,7 +255,7 @@ export function NewColis() {
 
                 <center>
                     <div className="input">
-                        <input type="text" name="description" id="description" placeholder="Description du colis" />
+                        <input type="text" name="description" id="description" placeholder="Description du colis" style={thisInputStyle} />
                         <div className="i">
                             <i className="fa-solid fa-font"></i>
                         </div>
@@ -262,7 +278,7 @@ export function NewColis() {
 
                 <center>
                     <div className="input">
-                        <input type="receverName" name="receverName" id="" placeholder="Nom" />
+                        <input type="receverName" name="receverName" id="" placeholder="Nom" style={thisInputStyle} />
                         <div className="i">
                             <i className="fa-solid fa-user-tag"></i>
                         </div>
@@ -271,7 +287,7 @@ export function NewColis() {
 
                 <center>
                     <div className="input">
-                        <input type="tel" name="receverNumber" id="receverNumber" placeholder="Numéro de télephone" />
+                        <input type="tel" name="receverNumber" id="receverNumber" placeholder="Numéro de télephone" style={thisInputStyle} />
                         <div className="i">
                             <i className="fa-solid fa-phone"></i>
                         </div>
@@ -280,7 +296,7 @@ export function NewColis() {
 
                 <center>
                     <div className="input">
-                        <input type="text" name="lieu" id="lieu" placeholder="Lieu de livraison" />
+                        <input type="text" name="lieu" id="lieu" placeholder="Lieu de livraison" style={thisInputStyle} onChange={() => setValid(true)} />
                         <div className="i">
                             <i class="fa-solid fa-location-dot"></i>
                         </div>

@@ -1,10 +1,20 @@
 import { ColisContainer } from "../components/Colis";
 import user from "../assets/img/Ghost.jpeg"
 import { NavLink, useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useReducer, useState } from "react";
 import { fetchJSON } from "../functions/API";
 import { useData } from "../hooks/useData";
 import { serverPath } from "../main";
+import { notify } from "../hooks/useNofication";
+
+/**
+ * 
+ * @param {string} action 
+ * @param {any[]} payload 
+ */
+function reducer(action, payload) {
+
+}
 
 const coliList = [
     {
@@ -61,12 +71,17 @@ export function Historique() {
 
     const params = useParams()
     const {user} = useData()
-    const [colis, addColis] = useState({})
+    const [colis, addColis] = useState(null)
+    const [state, dispatch] = useReducer(reducer, colis)
     useEffect(() => {
         fetchJSON(`${serverPath}allColis?refKey=${params.id}`).then(
             data => {
                 console.log(data)
-                addColis(data)
+                if(data.statut && data.statut === false) {
+                    notify.warning('Une erreur s\'est produite 🤕')
+                } else {
+                    addColis(data.allColis)
+                }
             }
         )
     }, [])
@@ -111,7 +126,7 @@ export function Historique() {
             </div>
 
             <p style={{marginTop: '350px', padding: '1rem'}}>En cours</p>
-            {/* <ColisContainer coliList={coliList} /> */}
+            <ColisContainer coliList={colis} />
         </>
     )
 }

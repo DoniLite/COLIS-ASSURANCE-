@@ -11,6 +11,7 @@ export async function fetchJSON(url, options = {
     if(options.json) {
         options.body = JSON.stringify(options.json)
         headers['Content-type'] = 'application/json'
+        options.method = 'POST'
     }
 
     const r = await fetch(url, {...options, headers})

@@ -48,12 +48,13 @@ export function Authentification() {
 
     const params = useParams()
     const navigate = useNavigate()
-    let [error, setError] = useState()
+    let [error, setError] = useState(undefined)
     const dispatch = useDispatch()
     const [canNavigate, setNavigate] = useState(false)
     let [isError, putError] = useState(false)
     const {user, type} = useData()
     const [isValid, setValid] = useState(true)
+    const { state, navigateTo } = useCustomNavigation()
 
     const color = isValid ? '#027bff' : 'red'
 
@@ -68,6 +69,7 @@ export function Authentification() {
      */
     async function otpVerification(e) {
         e.preventDefault()
+        navigateTo('submitting')
         const formData = new FormData(e.currentTarget)
         const otpCode = formData.get('code')
         const userId = user._id
@@ -86,10 +88,16 @@ export function Authentification() {
         console.log(codeResullt)
         if(codeResullt.data.statut) {
             dispatch(addDataToState(codeResullt.data))
+            dispatch(putConnected())
             setNavigate(true)
+            navigateTo('idle')
+            notify.success('Bienvenue sur Colis-Assurance!🥳')
         }else {
-            setError(error='code invalide')
-            putError(error = true)
+            setError('code invalide')
+            putError(true)
+            setValid(false)
+            navigateTo('idle')
+            notify.warning('Votre code n\'est pas valide')
         }
     }
 
@@ -99,6 +107,7 @@ export function Authentification() {
 
     return(
         <div className="code-confirmation">
+            {state === 'submitting' && <Loader />}
             <div className="flex-div">
                 <div></div>
                 <img src={colis} alt="" className="app-logo" />
@@ -110,7 +119,7 @@ export function Authentification() {
 
             <form action="" onSubmit={otpVerification}>
                 <center style={{marginTop: '4rem', marginBottom: '2rem'}}>
-                    <input type="text" name="code" id="code" />
+                    <input type="text" name="code" id="code" style={thisInputStyle} onChange={() => setValid(true)} />
                     <small style={{ display: 'block', margin: '1rem 0' }}>Je n'ai pas reçu le code. <a href="">Renvoyer</a></small>
                 </center>
 
@@ -126,6 +135,7 @@ export function PhoneVerification() {
     const navigate = useNavigate()
     let errorMessage
     const [isValid, setValid] = useState(true)
+    const { state, navigateTo } = useCustomNavigation()
 
     const color = isValid ? '#027bff' : 'red'
 
@@ -137,6 +147,7 @@ export function PhoneVerification() {
 
     async function SubmitPhone(e) {
         e.preventDefault()
+        navigateTo('submitting')
         const formData = new FormData(e.currentTarget)
         const phoneNumber = formData.get('number')
         const formattedPhoneNumber = encodeURIComponent(phoneNumber);
@@ -144,10 +155,13 @@ export function PhoneVerification() {
         fetchJSON(`${serverPath}phoneVerification/?number=${formattedPhoneNumber}&id=${formattedId}`).then(
             data => {
                 console.log(data)
+                navigateTo('idle')
                 if(data.statut) {
                     navigate(`/authentification/${phoneNumber}`)
                 } else {
                     errorMessage = 'Veuillez réssayer...'
+                    setValid(false)
+                    notify.warning('Veuillez vérifier les données entrées dans le formulaire')
                 }
             }
         )
@@ -155,6 +169,8 @@ export function PhoneVerification() {
 
     return(
         <div className="verif">
+
+            {state === 'submitting' && <Loader />}
             <div className="flex-div">
                 <div></div>
                 <img src={colis} alt="" className="app-logo" />
@@ -168,7 +184,7 @@ export function PhoneVerification() {
                 <small>Saisissez le numéro sans identifiant ex:00112233</small>
                 <label htmlFor="number">Numéro</label>
                 <center>
-                    <input type="tel" name="number" id="number" />
+                    <input type="tel" name="number" id="number" style={thisInputStyle} onChange={() => setValid(true)} />
                 </center>
 
                 <center style={{marginTop: '2rem'}}>
@@ -236,7 +252,12 @@ export function Connexion() {
                 // return 
                 setNavigate(true)
             }
-        })
+        }).catch(
+            err => {
+                navigateTo('idle')
+                console.log(err)
+            }
+        )
     }
 
     if(canNavigate) {
@@ -318,6 +339,7 @@ export function Inscription() {
     const [toogleInput, setInput] = useState(true)
     const inputClass = toogleInput ? 'password' :'text'
     const [isValid, setValid] = useState(true)
+    const { state, navigateTo } = useCustomNavigation()
 
     const color = isValid ? '#027bff' : 'red'
 
@@ -350,6 +372,7 @@ export function Inscription() {
      */
     function createUser(e) {
         e.preventDefault()
+        navigateTo('submitting')
         const formData = new FormData(e.currentTarget)
         const username = formData.get('username')
         const email = formData.get('email')
@@ -365,25 +388,30 @@ export function Inscription() {
             json: userFetch
         }).then(
             data => {
+                navigateTo('idle')
                 if(data.statut){
                     if(data.statut == false){
-                        setError(error=true)
-                        setErrorData(errorData='Erreur serveur... Veuillez réssayer')
-                    } else if (data.statut =='Données invalides') {
-                        setError(error=true)
-                        setErrorData(errorData = data.statut)
+                        setError(true)
+                        setErrorData('Erreur serveur... Veuillez réssayer')
+                        notify.warning('Une erreur s\'est produite 🙁')
+                        setValid(false)
+                    } else if (data.statut == 'Données invalides') {
+                        setError(true)
+                        setErrorData(data.statut)
+                        setValid(false)
+                        notify.warning('Veuillez réssayer 😷')
                     }
                 } else{
                     console.log(data)
-                    dispatch(addDataToState(data))
                     dispatch(setUserType('principal'))
-                    dispatch(putConnected())
+                    notify.success('Opération effectuée!')
+                    setTimeout(() => notify.success('Poursuivons avec la vérification 🤠'))
                     setNavigate(true)
                     // navigate('/phoneVerification')
                     console.log(user)
                 }
             }
-        ).catch(error => console.log(error))
+        ).catch(error => { console.log(error); navigateTo('idle'); notify.failed('Une erreur s\'est produite 🤕')})
     }
 
     if (canNavigate) {
@@ -392,6 +420,7 @@ export function Inscription() {
 
     return(
         <div className="inscription">
+            {state === 'submitting' && <Loader />}
             <div className="flex-div">
                 <div></div>
                 <img src={colis} alt="" className="app-logo" />
@@ -405,7 +434,7 @@ export function Inscription() {
                 <label htmlFor="userName">Nom d'utilisateur</label>
                 <center>
                     <div className="input">
-                        <input type="text" name="username" id="username"/>
+                        <input type="text" name="username" id="username" style={thisInputStyle}/>
                         <div className="i">
                             <i className="fa-solid fa-user-tag"></i>
                         </div>
@@ -415,7 +444,7 @@ export function Inscription() {
                 <label htmlFor="email">Adresse email</label>
                 <center>
                     <div className="input">
-                        <input type="email" name="email" id="email"/>
+                        <input type="email" name="email" id="email" style={thisInputStyle}/>
                         <div className="i">
                             <i className="fa-solid fa-envelope"></i>
                         </div>
@@ -425,7 +454,7 @@ export function Inscription() {
                 <label htmlFor="passWord">Mot de passe</label>
                 <center>
                     <div className="input">
-                        <input type={inputClass} name="password" id="password" onChange={() => setInput(false)} />
+                        <input type={inputClass} name="password" id="password" onChange={() => {setInput(false); setValid(true); setError(false);}} style={thisInputStyle} />
                         <div className="i" onClick={() => setInput(v => !v)}>
                             <i className='fa-solid fa-key'></i>
                         </div>
@@ -433,7 +462,7 @@ export function Inscription() {
                 </center>
 
                 <div className="check">
-                    <input type="checkbox" name="isAgree" id="isAgree" checked={checked} onChange={() => setChecked(!checked)}/>
+                    <input type="checkbox" name="isAgree" id="isAgree" value={checked} onChange={() => setChecked(v => !v)}/>
                     <small style={{position: 'relative', bottom: '1rem'}}>J'accepte les termes de confidentialité et les conditions d'utilisation</small>
                 </div>
                 
@@ -468,6 +497,7 @@ export function CreateUser() {
     const [toogleInput, setInput] = useState(true)
     const inputClass = toogleInput ? 'password' : 'text'
     const [isValid, setValid] = useState(true)
+    const {state, navigateTo} = useCustomNavigation()
 
     const color = isValid ? '#027bff' : 'red'
 
@@ -492,6 +522,7 @@ export function CreateUser() {
      */
     async function addAccount(e) {
         e.preventDefault()
+        navigateTo('submitting')
         const formData = new FormData(e.currentTarget)
         const username = formData.get('username')
         const password = formData.get('password')
@@ -516,6 +547,7 @@ export function CreateUser() {
                 json: fetcData,
             }).then(
                 data => {
+                    navigateTo('idle')
                     console.log(data)
                     if (data.statut) {
                         setValid(false)
@@ -531,7 +563,8 @@ export function CreateUser() {
                 }
             ).catch(
                 err => {
-                    notify.failed('Une erreur s\'est produite 😟')
+                    navigateTo('idle')
+                    notify.failed('Une erreur s\'est produite 🤕')
                 }
             )
         }
@@ -539,6 +572,7 @@ export function CreateUser() {
 
     return(
         <div className="create-user-box">
+            {state === 'submitting' && <Loader />}
             <div className="flex">
                 <div>
                     <h2 style={{color: 'blue'}}>Sous compte</h2>
@@ -593,7 +627,7 @@ export function CreateUser() {
 export function CompleteProfil() {
 
     const {type, user} = useData()
-
+    const {state, navigateTo} = useCustomNavigation()
     const params = useParams()
     const reason = params.reason
     const navigate = useNavigate()
@@ -645,6 +679,7 @@ export function CompleteProfil() {
      */
     async function updateUserInfo(e) {
         e.preventDefault()
+        navigateTo('submitting')
         const formData = new FormData(e.currentTarget)
         const firstname = formData.get('firstname')
         const lastname = formData.get('lastname')
@@ -705,6 +740,7 @@ export function CompleteProfil() {
             }
         }).then(
             ({ data }) => {
+                navigateTo('idle')
                 if(data.statut === false) {
                     setValid(false)
                     notify.warning('Un champ de formulaire est mal rempli')
@@ -718,7 +754,7 @@ export function CompleteProfil() {
                 }
             }
         ).catch(
-            err => notify.failed('Une erreur s\'est produite')
+            err => {notify.failed('Une erreur s\'est produite'); navigateTo('idle');}
         )
         // fetchJSON(`${serverPath}updateUser`, {
         //     method: 'POST',
@@ -744,6 +780,8 @@ export function CompleteProfil() {
 
     return(
         <div className="complet-profil">
+
+            {state === 'submitting' && <Loader />}
             
             <div>
                 <NavLink style={{ color: '#027bff', padding: '1rem' }} to={'/paramètre'}>
@@ -832,6 +870,7 @@ export function ColiActionConfirmation ({coliId}) {
     
 
     const [isValid, setValid] = useState(true)
+    const {state, navigateTo} = useCustomNavigation()
 
     const color = isValid ? '#027bff' : 'red'
 
@@ -854,11 +893,13 @@ export function ColiActionConfirmation ({coliId}) {
 
     async function ConfirmColi(e) {
         e.preventDefault()
+        navigateTo('submitting')
         const formData = new FormData(e.currentTarget)
         const coliOtp = formData.get('coliOtp')
 
         fetchJSON(`${serverPath}addColis?code=${coliOtp}&id=${coliId}`).then(
             data => {
+                navigateTo('idle')
                 if(data.statut){
                     notify.success('Course confirmée!🤙🏾')
                     closeBox()
@@ -872,12 +913,14 @@ export function ColiActionConfirmation ({coliId}) {
         ).catch(
             err => {
                 notify.failed('Une erreur est survenue 🤕')
+                navigateTo('idle')
             }
         )
     } 
 
     return (
         <div className="create-user-box">
+            {state === 'submitting' && <Loader />}
             <div className="flex">
                 <div>
                     <h3 style={{ color: 'blue' }}>Confirmez votre course</h3>

@@ -103,7 +103,7 @@ export function Home() {
                 data => {
                     // console.log(data)
                     // dispatch(updateColis(data))
-                    setColis(data)
+                    setColis(data.allColis)
                 }
             ).catch(
                 error => {

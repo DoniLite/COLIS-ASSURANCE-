@@ -11,12 +11,7 @@ import { ColiActionConfirmation } from "./Forms"
 
 
 export function ColisContainer({ coliList }) {
-    const {colis, user} = useData()
-    const [isEmpty, setEmpty] = useState(true)
     
-    
-
-
     if (coliList === null) {
         return(
             <>
@@ -26,10 +21,9 @@ export function ColisContainer({ coliList }) {
             </>
         )
     } else {
-        const allColis = coliList.allColis
         return (
             <>
-                {allColis.map((coli, index) => <Coli key={index} data={coli} />)}
+                {coliList.map((coli, index) => <Coli key={index} data={coli} />)}
             </>
         )
     }
@@ -39,10 +33,7 @@ export function ColisContainer({ coliList }) {
 function Coli({data}) {
 
     const statut = data.state
-
     
-
-
     function dataColor(statut){
         let c = undefined
         if(statut=='en cours') {
@@ -302,7 +293,7 @@ export function SousCompte({user}) {
             </div>
             <div className="redirect-user">
                 <div>
-                    <NavLink style={{ color: '#ffffff' }} to={`/`}>
+                    <NavLink style={{ color: '#ffffff' }} to={`/details-souscomptes/${user._id}`}>
                         <i className="fa-solid fa-arrow-right"></i>
                     </NavLink>
                 </div>

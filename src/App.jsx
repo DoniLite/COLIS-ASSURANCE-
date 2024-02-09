@@ -26,6 +26,7 @@ import { SpeedInsights } from "@vercel/speed-insights/react"
 import { Loader } from './main'
 import { ToastContainer } from 'react-toastify'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { SousComptesDetails } from './pages/DetailsSousComptes'
 
 
 
@@ -61,6 +62,10 @@ const router = createBrowserRouter([
       },
       {
         path: 'recupération'
+      },
+      {
+        path: 'details-souscomptes/:id',
+        element: <SousComptesDetails />
       },
       {
         path: 'home',
