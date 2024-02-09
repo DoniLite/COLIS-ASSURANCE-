@@ -8,9 +8,8 @@ import { serverPath } from "../main";
 import { notify } from "../hooks/useNofication";
 
 /**
- * 
- * @param {string} action 
- * @param {any[]} payload 
+ * @param {string} action - L'action à exécuter.
+ * @param {Object[]} payload - Le tableau d'objets à utiliser comme charge utile.
  */
 function reducer(action, payload) {
 
@@ -66,6 +65,7 @@ const coliList = [
         state: 'en cours'
     }
 ]
+
 
 export function Historique() {
 
