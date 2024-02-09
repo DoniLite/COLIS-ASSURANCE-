@@ -8,7 +8,6 @@ import { serverPath } from "../main";
 import { useState } from "react";
 import axios from 'axios'
 import { toast } from 'react-toastify'
-import fs from 'node:fs'
 import { useCustomNavigation } from "../hooks/useCustomNavigation";
 import { inputStyle } from "../components/Forms";
 
@@ -16,7 +15,7 @@ import { inputStyle } from "../components/Forms";
 export function Details() {
 
     const {user} = useData()
-    const balance = user.balance[0].balance
+    const balance = user.balance
     
     return(
         <div style={{ backgroundColor: '#027bff'}}>
@@ -53,46 +52,46 @@ export function Details() {
 }
 
 
-export function AddedColis() {
-    return(
-        <>
-            <div style={{ marginTop: '2rem' }} className="trait"></div>
-            <h3>Profil expéditeur</h3>
-            <Info det={infoExpéditeur} />
-            <div className="flex">
-                <div>
-                    <div className="finger-div">
-                        <i className="fa-solid fa-fingerprint fa-2x"></i>
-                    </div>
-                    <p>Empreinte Admin</p>
-                </div>
-                <div>
-                    <i className="fa-solid fa-file-image fa-4x"></i>
-                    <p style={{ marginTop: '1rem' }}>Image du colis</p>
-                </div>
-            </div>
+// export function AddedColis() {
+//     return(
+//         <>
+//             <div style={{ marginTop: '2rem' }} className="trait"></div>
+//             <h3>Profil expéditeur</h3>
+//             <Info det={infoExpéditeur} />
+//             <div className="flex">
+//                 <div>
+//                     <div className="finger-div">
+//                         <i className="fa-solid fa-fingerprint fa-2x"></i>
+//                     </div>
+//                     <p>Empreinte Admin</p>
+//                 </div>
+//                 <div>
+//                     <i className="fa-solid fa-file-image fa-4x"></i>
+//                     <p style={{ marginTop: '1rem' }}>Image du colis</p>
+//                 </div>
+//             </div>
 
-            <div style={{ marginTop: '2rem' }} className="trait"></div>
-            <h3>Profile recepteur</h3>
-            <Info det={infoReceveur} />
-            <div className="flex">
-                <div>
-                    <div style={{ color: '#d44115', border: 'solid 1px #d44115' }} className="finger-div">
-                        <i className="fa-solid fa-fingerprint fa-2x"></i>
-                    </div>
-                    <p>Empreinte Admin</p>
-                </div>
-                <div>
-                    <form action="" onSubmit={() => { }}>
-                        <button type="submit">Enregistrer</button>
-                    </form>
-                    <p style={{ marginTop: '1rem' }}>Colis accepté</p>
-                    <p>Statut: En cours</p>
-                </div>
-            </div>
-        </>
-    )
-}
+//             <div style={{ marginTop: '2rem' }} className="trait"></div>
+//             <h3>Profile recepteur</h3>
+//             <Info det={infoReceveur} />
+//             <div className="flex">
+//                 <div>
+//                     <div style={{ color: '#d44115', border: 'solid 1px #d44115' }} className="finger-div">
+//                         <i className="fa-solid fa-fingerprint fa-2x"></i>
+//                     </div>
+//                     <p>Empreinte Admin</p>
+//                 </div>
+//                 <div>
+//                     <form action="" onSubmit={() => { }}>
+//                         <button type="submit">Enregistrer</button>
+//                     </form>
+//                     <p style={{ marginTop: '1rem' }}>Colis accepté</p>
+//                     <p>Statut: En cours</p>
+//                 </div>
+//             </div>
+//         </>
+//     )
+// }
 
 export function NewColis() {
 
@@ -129,7 +128,7 @@ export function NewColis() {
     async function createColis(e) {
         e.preventDefault()
         navigateTo('submitting')
-        if (user.balance[0].balance > 50) {
+        if (user.balance > 50) {
             const formData = new FormData(e.currentTarget)
             const price = formData.get('price')
             const senderName = formData.get('senderName')
@@ -223,7 +222,7 @@ export function NewColis() {
             <div style={{ marginTop: '2rem' }} className="trait"></div>
             <h3>Profil expéditeur</h3>
 
-            {user.balance[0].balance < 50 && <p style={{color: 'red'}}>Vous ne pouvez pas ajouter de colis pour l'instant</p>}
+            {user.balance < 50 && <p style={{color: 'red'}}>Vous ne pouvez pas ajouter de colis pour l'instant</p>}
 
             <form action="" onSubmit={createColis} enctype="multipart/form-data">
                 <center>

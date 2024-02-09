@@ -50,12 +50,11 @@ export function Balance() {
     const {user} = useData()
     let [icrement, setIncrement] = useState(1)
     let value = 5000*icrement
-    const balance = user.balance[0].balance
 
     const navigate = useNavigate()
 
     /**
-     * CallBack de l'évènement submit du formulaire permettant de rediriger l'utilisateur vers la page de paiement
+     * - CallBack de l'évènement submit du formulaire permettant de rediriger l'utilisateur vers la page de paiement
      * @param {SubmitEvent} e 
      */
     function submitForm(e) {
@@ -68,7 +67,7 @@ export function Balance() {
             <div className="pack">
                 <div>
                     <p style={{ marginBottom: '0.5rem' }}>Balance actuelle</p>
-                    <h2>{balance}</h2>
+                    <h2>{user.balance}</h2>
                 </div>
             </div>
         
@@ -138,8 +137,12 @@ export function InformationsAccount() {
 }
 
 
-{
-    element: <div className="finger-div">
-        <i className="fa-solid fa-fingerprint fa-2x"></i>
-    </div>
+const obj = {
+    element: () => {
+        return (
+            <div className="finger-div">
+                <i className="fa-solid fa-fingerprint fa-2x"></i>
+            </div>
+        )
+    }
 }

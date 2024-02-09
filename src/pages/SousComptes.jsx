@@ -8,6 +8,15 @@ import { serverPath } from "../main";
 import { useData } from "../hooks/useData";
 import { addDataToState, putConnected, setUserType, ToogleUpdate } from '../app/userSlice'
 
+// /**
+//  * 
+//  * @param {Object[]} state - L'état du reducer.
+//  * @param {{type: string, payload: Object[]}} action - L'objet de réduction permettant de recueillir l'action.
+//  */
+// function reducer(state, action) {
+
+// }
+
 export function SousComptePage() {
 
     const {user, updateData, type} = useData()
@@ -55,7 +64,7 @@ export function SousComptePage() {
                     <div className="icon-searh">
                         <i className="fa-solid fa-magnifying-glass"></i>
                     </div>
-                    <input type="search" name="searchBar" id="searchBar" placeholder="Recherchez un sous compte" />
+                    <input type="search" name="searchBar" id="searchBar" onChange={(e) => updateAccount(sousComptes.filter(account => account.firstname === e.target.value || account.lastname === e.target.value || account.username === e.target.value))} placeholder="Recherchez un sous compte" />
                 </div>
             </div>
             <div className="page-content-side">
@@ -88,7 +97,7 @@ export function SousComptePage() {
 function AllUsers({users}) {
     if(users === null) {
         return (
-            <> <p>Aucun utilisateurs pour l'instant...</p> </>
+            <> <p>Aucun utilisateurs 🥱...</p> </>
         )
     } else {
         const sousComptes = users.allUsers

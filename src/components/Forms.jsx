@@ -411,7 +411,7 @@ export function Inscription() {
                     console.log(user)
                 }
             }
-        ).catch(error => { console.log(error); navigateTo('idle'); notify.failed('Une erreur s\'est produite 🤕')})
+        ).catch(error => { console.log(error); navigateTo('idle'); notify.failed('Une erreur s\'est produite 🤕');})
     }
 
     if (canNavigate) {

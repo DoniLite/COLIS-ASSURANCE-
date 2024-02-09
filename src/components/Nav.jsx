@@ -24,8 +24,6 @@ export function FixedNavbar() {
 
     const { user, type } = useData()
     console.log(user)
-    const balance = user.balance.length
-
     const squareList = [
         {
             title: user.accounts == undefined? 0: user.accounts,
@@ -38,7 +36,7 @@ export function FixedNavbar() {
             color: '#09f109'
         },
         {
-            title: balance,
+            title: user.balance,
             desc: 'Cartes',
             color: '#00147e'
         }

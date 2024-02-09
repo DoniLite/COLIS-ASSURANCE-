@@ -8,11 +8,17 @@ import { serverPath } from "../main";
 import { notify } from "../hooks/useNofication";
 
 /**
- * @param {string} action - L'action à exécuter.
- * @param {Object[]} payload - Le tableau d'objets à utiliser comme charge utile.
+ * @param {Object[]} state - L'état du reducer.
+ * @param {{type: 'en cours'|'terminé'|'annulé', payload: Object[]}} action - L'objet de réduction permettant de recueillir l'action.
  */
-function reducer(action, payload) {
-
+function reducer(state, action) {
+    if(action.type === 'en cours') {
+        return state.filter(item => item.state === 'en cours')
+    } else if(action.type === 'terminé') {
+        return state.filter(item => item.state === 'terminé')
+    } else if (action.type === 'annulé') {
+        return state.filter(item => item.state === 'annulé')
+    }
 }
 
 const coliList = [
@@ -126,7 +132,7 @@ export function Historique() {
             </div>
 
             <p style={{marginTop: '350px', padding: '1rem'}}>En cours</p>
-            <ColisContainer coliList={colis} />
+            <ColisContainer coliList={state} />
         </>
     )
 }
