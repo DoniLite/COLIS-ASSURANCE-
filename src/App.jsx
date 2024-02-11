@@ -15,7 +15,7 @@ import { SousComptePage } from './pages/SousComptes'
 import { AdminConnexion } from './pages/AdminConnexion'
 import { TableauDeBord } from './pages/TableauDeBord'
 import { AccountsManagement } from './pages/AdminComptes'
-import { AdminDetails } from './pages/AdminDetails'
+import { AdminDetails, AdminSousComptes, FlowBox } from './pages/AdminDetails'
 import { forwardRef, useEffect } from 'react'
 import { fetchJSON } from './functions/API'
 import { useData } from './hooks/useData'
@@ -147,7 +147,19 @@ const router = createBrowserRouter([
       },
       {
         path: 'colis-assurance/page/admin/accounts-details',
-        element: <AdminDetails />
+        element: <AdminDetails />,
+        children: [
+          {
+            path: '',
+            element: <AdminSousComptes />,
+            children: [
+              {
+                path: '',
+                element: <FlowBox />
+              }
+            ]
+          }
+        ]
       }
     ]
   }
@@ -161,8 +173,6 @@ function Root() {
 
   return (
     <>
-      {state === 'loading' && (<><center style={{marginTop: '3rem'}}><Loader/></center></>)}
-      {state === 'submitting' && (<><center style={{ marginTop: '3rem' }}><Loader /></center></>)}
       <MotionBox initial={{opacity: 0, y: 40,}} animate={{opacity: 1, y: 0,}} >
         <Outlet />
       </MotionBox>
@@ -190,7 +200,7 @@ export function App() {
   
   return(
     <>
-      <RouterProvider fallbackElement={<Loader />} router={router} />
+      <RouterProvider router={router} />
     </>
   )
 }

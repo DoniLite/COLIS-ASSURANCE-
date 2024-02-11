@@ -206,6 +206,48 @@ export function TableauDeBord() {
                                     </div>
                                 </div>
                             </div>
+
+                            <div style={{ marginBottom: '0.5rem' }} className="recent-user-element">
+                                <div>
+                                    <center>
+                                        <img src={user} alt="" className="user-balance" />
+                                    </center>
+                                    <div style={{ marginTop: '0.5rem' }}>
+                                        <center>
+                                            <h4 style={{ color: '#33379b' }}>Martial BANI</h4>
+                                            <small>Ouagadougou</small>
+                                        </center>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style={{ marginBottom: '0.5rem' }} className="recent-user-element">
+                                <div>
+                                    <center>
+                                        <img src={user} alt="" className="user-balance" />
+                                    </center>
+                                    <div style={{ marginTop: '0.5rem' }}>
+                                        <center>
+                                            <h4 style={{ color: '#33379b' }}>Martial BANI</h4>
+                                            <small>Ouagadougou</small>
+                                        </center>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style={{ marginBottom: '0.5rem' }} className="recent-user-element">
+                                <div>
+                                    <center>
+                                        <img src={user} alt="" className="user-balance" />
+                                    </center>
+                                    <div style={{ marginTop: '0.5rem' }}>
+                                        <center>
+                                            <h4 style={{ color: '#33379b' }}>Martial BANI</h4>
+                                            <small>Ouagadougou</small>
+                                        </center>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

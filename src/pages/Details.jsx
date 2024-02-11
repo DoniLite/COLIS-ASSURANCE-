@@ -52,46 +52,46 @@ export function Details() {
 }
 
 
-// export function AddedColis() {
-//     return(
-//         <>
-//             <div style={{ marginTop: '2rem' }} className="trait"></div>
-//             <h3>Profil expéditeur</h3>
-//             <Info det={infoExpéditeur} />
-//             <div className="flex">
-//                 <div>
-//                     <div className="finger-div">
-//                         <i className="fa-solid fa-fingerprint fa-2x"></i>
-//                     </div>
-//                     <p>Empreinte Admin</p>
-//                 </div>
-//                 <div>
-//                     <i className="fa-solid fa-file-image fa-4x"></i>
-//                     <p style={{ marginTop: '1rem' }}>Image du colis</p>
-//                 </div>
-//             </div>
+export function AddedColis() {
+    return(
+        <>
+            <div style={{ marginTop: '2rem' }} className="trait"></div>
+            <h3>Profil expéditeur</h3>
+            <Info det={infoExpéditeur} />
+            <div className="flex">
+                <div>
+                    <div className="finger-div">
+                        <i className="fa-solid fa-fingerprint fa-2x"></i>
+                    </div>
+                    <p>Empreinte Admin</p>
+                </div>
+                <div>
+                    <i className="fa-solid fa-file-image fa-4x"></i>
+                    <p style={{ marginTop: '1rem' }}>Image du colis</p>
+                </div>
+            </div>
 
-//             <div style={{ marginTop: '2rem' }} className="trait"></div>
-//             <h3>Profile recepteur</h3>
-//             <Info det={infoReceveur} />
-//             <div className="flex">
-//                 <div>
-//                     <div style={{ color: '#d44115', border: 'solid 1px #d44115' }} className="finger-div">
-//                         <i className="fa-solid fa-fingerprint fa-2x"></i>
-//                     </div>
-//                     <p>Empreinte Admin</p>
-//                 </div>
-//                 <div>
-//                     <form action="" onSubmit={() => { }}>
-//                         <button type="submit">Enregistrer</button>
-//                     </form>
-//                     <p style={{ marginTop: '1rem' }}>Colis accepté</p>
-//                     <p>Statut: En cours</p>
-//                 </div>
-//             </div>
-//         </>
-//     )
-// }
+            <div style={{ marginTop: '2rem' }} className="trait"></div>
+            <h3>Profile recepteur</h3>
+            <Info det={infoReceveur} />
+            <div className="flex">
+                <div>
+                    <div style={{ color: '#d44115', border: 'solid 1px #d44115' }} className="finger-div">
+                        <i className="fa-solid fa-fingerprint fa-2x"></i>
+                    </div>
+                    <p>Empreinte Admin</p>
+                </div>
+                <div>
+                    <form action="" onSubmit={() => { }}>
+                        <button type="submit">Enregistrer</button>
+                    </form>
+                    <p style={{ marginTop: '1rem' }}>Colis accepté</p>
+                    <p>Statut: En cours</p>
+                </div>
+            </div>
+        </>
+    )
+}
 
 export function NewColis() {
 

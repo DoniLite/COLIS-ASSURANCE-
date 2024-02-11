@@ -48,7 +48,7 @@ export function AccountsManagement() {
                         <dir className="first-admin-comptes-child-searchbar">
                             <div className="search-bar">
                                 <div className="icon-searh">
-                                    <i className="fa-solid fa-magnifying-glass fa-2x"></i>
+                                    <i className="fa-solid fa-magnifying-glass"></i>
                                 </div>
                                 <input type="search" name="searchBar" id="searchBar" placeholder="Recherchez un compte" />
                             </div>

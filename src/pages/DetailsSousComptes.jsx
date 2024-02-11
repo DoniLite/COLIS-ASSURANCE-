@@ -20,7 +20,9 @@ export function SousComptesDetails() {
                     setUser({
                         ...data.userData
                     })
-                    setColis(data.allColis)
+                    setColis([
+                        ...data.allColis
+                    ])
                 }
             }
         ).catch(

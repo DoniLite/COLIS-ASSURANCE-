@@ -7,6 +7,8 @@ export const authentificateSlice = createSlice({
         data: {},
         type: undefined,
         updateData: false,
+        balance: 0,
+        adminAccess: false,
     },
     reducers: {
         putConnected: (state) => {
