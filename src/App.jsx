@@ -15,7 +15,7 @@ import { SousComptePage } from './pages/SousComptes'
 import { AdminConnexion } from './pages/AdminConnexion'
 import { TableauDeBord } from './pages/TableauDeBord'
 import { AccountsManagement } from './pages/AdminComptes'
-import { AdminDetails, AdminSousComptes, FlowBox } from './pages/AdminDetails'
+import { AdminActions, AdminComptesStory, AdminDetails, AdminSousComptes, FlowBox } from './pages/AdminDetails'
 import { forwardRef, useEffect } from 'react'
 import { fetchJSON } from './functions/API'
 import { useData } from './hooks/useData'
@@ -146,7 +146,7 @@ const router = createBrowserRouter([
         element: <AccountsManagement />
       },
       {
-        path: 'colis-assurance/page/admin/accounts-details',
+        path: 'colis-assurance/page/admin/accounts-details/:id',
         element: <AdminDetails />,
         children: [
           {
@@ -156,8 +156,20 @@ const router = createBrowserRouter([
               {
                 path: '',
                 element: <FlowBox />
+              },
+              {
+                path: 'story',
+                element: <AdminComptesStory />
               }
             ]
+          },
+          {
+            path: 'userStory',
+            element: <AdminComptesStory />
+          },
+          {
+            path: 'actions',
+            element: <AdminActions />,
           }
         ]
       }

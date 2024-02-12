@@ -2,10 +2,45 @@ import { NavLink, Outlet } from "react-router-dom";
 import logo from '../assets/img/LOGO.png'
 import user from "../assets/img/Ghost.jpeg"
 import { sliceColi } from "../functions/sliceColi";
+import { serverPath } from "../main";
+import { useEffect, useState } from "react";
+import { fetchJSON } from "../functions/API";
+import { notify } from "../hooks/useNofication";
 
 
 
 export function TableauDeBord() {
+
+    const [allUsers, setUser] = useState([])
+    const [allSousComptes, setSousCompte] = useState([])
+    const [recharges, setRecharges] = useState([])
+
+    useEffect(() => {
+        fetchJSON(`${serverPath}allUserAdmin`).then(
+            data => {
+                setUser([
+                    ...data.allUsers
+                ])
+                setSousCompte([
+                    ...data.allSousComptes
+                ])
+            }
+        ).catch(
+            err => notify.failed('une erreur s\'est produite')
+        )
+
+        fetchJSON(`${serverPath}recharges`).then(
+            data => {
+                setRecharges([
+                    ...data.recharges
+                ])
+                console.log(recharges)
+            }
+        ).catch(
+            err => notify.failed('une erreur s\'est produite')
+        )
+    }, [])
+
     return(
         <TableContainer>
 
@@ -24,7 +59,7 @@ export function TableauDeBord() {
                             <div className="stat-colum">
                                 <h3>Utilisateurs</h3>
                                 <div className="flex">
-                                    <h2 style={{color: 'black'}}>8F</h2>
+                                    <h2 style={{color: 'black'}}>{allUsers.length}</h2>
                                     <i style={{ color: '#06d315' }} className="fa-solid fa-chevron-up"></i>
                                 </div>
                             </div>
@@ -38,7 +73,7 @@ export function TableauDeBord() {
                             <div className="stat-colum">
                                 <h3>Sous comptes</h3>
                                 <div className="flex">
-                                    <h2 style={{ color: 'black' }}>8F</h2>
+                                    <h2 style={{ color: 'black' }}>{allSousComptes.length}</h2>
                                     <i style={{ color: '#06d315' }} className="fa-solid fa-chevron-up"></i>
                                 </div>
                             </div>
@@ -52,8 +87,8 @@ export function TableauDeBord() {
                             <div className="stat-colum">
                                 <h3>Courses</h3>
                                 <div className="flex">
-                                    <h2 style={{ color: 'black' }}>8F</h2>
-                                    <i style={{ color: '#f24709' }} class="fa-solid fa-chevron-down"></i>
+                                    <h2 style={{ color: 'black' }}>0</h2>
+                                    <i style={{ color: '#f24709' }} className="fa-solid fa-chevron-down"></i>
                                 </div>
                             </div>
                         </div>
@@ -66,8 +101,8 @@ export function TableauDeBord() {
                             <div className="stat-colum">
                                 <h3>Balance</h3>
                                 <div className="flex">
-                                    <h2 style={{ color: 'black' }}>8F</h2>
-                                    <i style={{ color: '#f24709' }} class="fa-solid fa-chevron-down"></i>
+                                    <h2 style={{ color: 'black' }}>0</h2>
+                                    <i style={{ color: '#f24709' }} className="fa-solid fa-chevron-down"></i>
                                 </div>
                             </div>
                         </div>
@@ -76,7 +111,7 @@ export function TableauDeBord() {
 
                 <div className="table-admin-side">
                     <div className="table-data">
-                        <h3 style={{ marginBottom: '1rem', color: '#33379b' }}>Recharge récentes</h3>
+                        <h3 style={{ marginBottom: '1rem', color: '#33379b' }}>Recharges récentes</h3>
                         <div className="table-data-head">
                             <h4 style={{ color: '#33379b' }}>ID</h4>
                             <h4>Nom</h4>
@@ -86,50 +121,7 @@ export function TableauDeBord() {
                             <h4>Statut</h4>
                             <h4>Action</h4>
                         </div>
-                        <div className="table-data-content">
-                            <h4>{user._id}</h4>
-                            <h4>{user.client}</h4>
-                            <h4>{user.amount}</h4>
-                            <h4>{user.mode}</h4>
-                            <h4>{user.agent}</h4>
-                            <h4>{user.statut}</h4>
-                            <NavLink>
-                                <h4 style={{ cursor: 'pointer' }}><i className="fa-solid fa-circle-arrow-right fa-2x"></i></h4>
-                            </NavLink>
-                        </div>
-                        <div className="table-data-content">
-                            <h4>.</h4>
-                            <h4>KABORE Jean</h4>
-                            <h4>100 000 FCFA</h4>
-                            <h4>Appel</h4>
-                            <h4>Léandre TOULOUM</h4>
-                            <h4>Validé</h4>
-                            <NavLink>
-                                <h4 style={{ cursor: 'pointer' }}><i className="fa-solid fa-circle-arrow-right fa-2x"></i></h4>
-                            </NavLink>
-                        </div>
-                        <div className="table-data-content">
-                            <h4>.</h4>
-                            <h4>KABORE Jean</h4>
-                            <h4>100 000 FCFA</h4>
-                            <h4>Appel</h4>
-                            <h4>Léandre TOULOUM</h4>
-                            <h4>Validé</h4>
-                            <NavLink>
-                                <h4><i className="fa-solid fa-circle-arrow-right fa-2x"></i></h4>
-                            </NavLink>
-                        </div>
-                        <div className="table-data-content">
-                            <h4>.</h4>
-                            <h4>KABORE Jean</h4>
-                            <h4>100 000 FCFA</h4>
-                            <h4>Appel</h4>
-                            <h4>Léandre TOULOUM</h4>
-                            <h4>Validé</h4>
-                            <NavLink>
-                                <h4><i className="fa-solid fa-circle-arrow-right fa-2x"></i></h4>
-                            </NavLink>
-                        </div>
+                        {recharges.map(recharge => <TableDataContent user={recharge} key={recharge._id}/>)}
                     </div>
 
                     <div className="recent-accounts">
@@ -137,117 +129,7 @@ export function TableauDeBord() {
                         <p>Récents</p>
 
                         <div className="recent-users-grid">
-                            <div style={{ marginBottom: '0.5rem' }} className="recent-user-element">
-                                <div>
-                                    <center>
-                                        <img src={user.userIcon} alt="" className="user-balance" />
-                                    </center>
-                                    <div style={{ marginTop: '0.5rem' }}>
-                                        <center>
-                                            <h4 style={{ color: '#33379b' }}>{user.firstname ?? sliceColi(user._id)} {user.lastname??'Undefined'}</h4>
-                                            <small>{user.locaation??'###'}</small>
-                                        </center>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div style={{ marginBottom: '0.5rem' }} className="recent-user-element">
-                                <div>
-                                    <center>
-                                        <img src={user} alt="" className="user-balance" />
-                                    </center>
-                                    <div style={{ marginTop: '0.5rem' }}>
-                                        <center>
-                                            <h4 style={{ color: '#33379b' }}>Martial BANI</h4>
-                                            <small>Ouagadougou</small>
-                                        </center>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div style={{ marginBottom: '0.5rem' }} className="recent-user-element">
-                                <div>
-                                    <center>
-                                        <img src={user} alt="" className="user-balance" />
-                                    </center>
-                                    <div style={{ marginTop: '0.5rem' }}>
-                                        <center>
-                                            <h4 style={{ color: '#33379b' }}>Martial BANI</h4>
-                                            <small>Ouagadougou</small>
-                                        </center>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div style={{ marginBottom: '0.5rem' }} className="recent-user-element">
-                                <div>
-                                    <center>
-                                        <img src={user} alt="" className="user-balance" />
-                                    </center>
-                                    <div style={{ marginTop: '0.5rem' }}>
-                                        <center>
-                                            <h4 style={{ color: '#33379b' }}>Martial BANI</h4>
-                                            <small>Ouagadougou</small>
-                                        </center>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div style={{ marginBottom: '0.5rem' }} className="recent-user-element">
-                                <div>
-                                    <center>
-                                        <img src={user} alt="" className="user-balance" />
-                                    </center>
-                                    <div style={{ marginTop: '0.5rem' }}>
-                                        <center>
-                                            <h4 style={{ color: '#33379b' }}>Martial BANI</h4>
-                                            <small>Ouagadougou</small>
-                                        </center>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div style={{ marginBottom: '0.5rem' }} className="recent-user-element">
-                                <div>
-                                    <center>
-                                        <img src={user} alt="" className="user-balance" />
-                                    </center>
-                                    <div style={{ marginTop: '0.5rem' }}>
-                                        <center>
-                                            <h4 style={{ color: '#33379b' }}>Martial BANI</h4>
-                                            <small>Ouagadougou</small>
-                                        </center>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div style={{ marginBottom: '0.5rem' }} className="recent-user-element">
-                                <div>
-                                    <center>
-                                        <img src={user} alt="" className="user-balance" />
-                                    </center>
-                                    <div style={{ marginTop: '0.5rem' }}>
-                                        <center>
-                                            <h4 style={{ color: '#33379b' }}>Martial BANI</h4>
-                                            <small>Ouagadougou</small>
-                                        </center>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div style={{ marginBottom: '0.5rem' }} className="recent-user-element">
-                                <div>
-                                    <center>
-                                        <img src={user} alt="" className="user-balance" />
-                                    </center>
-                                    <div style={{ marginTop: '0.5rem' }}>
-                                        <center>
-                                            <h4 style={{ color: '#33379b' }}>Martial BANI</h4>
-                                            <small>Ouagadougou</small>
-                                        </center>
-                                    </div>
-                                </div>
-                            </div>
+                            {allUsers.map(user => <RecentUserElement user={user} key={user._id}/>)}
                         </div>
                     </div>
                 </div>
@@ -323,6 +205,41 @@ export function TableHeader({page, position}) {
                 </div>
                 <div className="user-admin-icon">
                     <i className="fa-solid fa-circle-user fa-3x"></i>
+                </div>
+            </div>
+        </div>
+    )
+}
+
+function TableDataContent({user}) {
+    return(
+        <div className="table-data-content">
+            <h4>{sliceColi(user._id)}</h4>
+            <h4>{user.client}</h4>
+            <h4>{user.amount}</h4>
+            <h4>{user.mode}</h4>
+            <h4>{user.agent}</h4>
+            <h4>{user.statut}</h4>
+            <NavLink to={`/colis-assurance/page/admin/accounts-details/${user._id}`}>
+                <h4 style={{ cursor: 'pointer' }}><i className="fa-solid fa-circle-arrow-right fa-2x"></i></h4>
+            </NavLink>
+        </div>
+    )
+}
+
+
+function RecentUserElement({user}) {
+    return(
+        <div style={{ marginBottom: '0.5rem' }} className="recent-user-element">
+            <div>
+                <center>
+                    <img src={`${serverPath}assets/user/${user.userIcon}`} alt="" className="user-balance" />
+                </center>
+                <div style={{ marginTop: '0.5rem' }}>
+                    <center>
+                        <h4 style={{ color: '#33379b' }}>{user.firstname ?? sliceColi(user._id)} {user.lastname ?? 'Undefined'}</h4>
+                        <small>{user.locaation ?? '###'}</small>
+                    </center>
                 </div>
             </div>
         </div>

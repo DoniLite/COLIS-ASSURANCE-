@@ -1,10 +1,20 @@
-import { Outlet, NavLink } from "react-router-dom";
+import { Outlet, NavLink, useParams } from "react-router-dom";
 import { DashBordNav, TableContainer, TableHeader } from "./TableauDeBord";
 import userPNG from "../assets/img/Ghost.jpeg"
 import { ColisContainer } from "../components/Colis";
+import { useEffect, useState } from "react";
+import { fetchJSON } from "../functions/API";
+import { serverPath } from "../main";
 
 
 export function AdminDetails() {
+
+    const params = useParams()
+    const [use, setuser] = useState({})
+
+    useEffect(() => {
+        fetchJSON(`${serverPath}`)
+    }, [])
 
     const user = {
         _id: '65c0d424522ad8102f0e41f5',
@@ -73,13 +83,13 @@ export function AdminDetails() {
                 <div className="second-admin-details-comptes">
                     <div className="second-admin-details-comptes-nav">
                         <ul>
-                            <NavLink>
+                            <NavLink to={`/colis-assurance/page/admin/accounts-details/${user._id}`}>
                                 <li><i className="fa-solid fa-user-tag"></i> Sous-comptes</li>
                             </NavLink>
-                            <NavLink>
+                            <NavLink to={`/colis-assurance/page/admin/accounts-details/${user._id}/userStory`}>
                                 <li><i className="fa-solid fa-rotate"></i> Historique</li>
                             </NavLink>
-                            <NavLink>
+                            <NavLink to={`/colis-assurance/page/admin/accounts-details/${user._id}/actions`}>
                                 <li><i className="fa-solid fa-rotate"></i> Actions</li>
                             </NavLink>
                         </ul>
@@ -208,10 +218,10 @@ export function AdminSousComptes() {
 
                 <div className="second-admin-details-comptes-nav">
                     <ul>
-                        <NavLink>
+                        <NavLink to={`/colis-assurance/page/admin/accounts-details/${user._id}`}>
                             <li>Profil</li>
                         </NavLink>
-                        <NavLink>
+                        <NavLink to={`/colis-assurance/page/admin/accounts-details/${user._id}/story`}>
                             <li>Historique</li>
                         </NavLink>
                     </ul>
@@ -281,5 +291,12 @@ export function AdminComptesStory() {
         <>
             <ColisContainer coliList={''}/>
         </>
+    )
+}
+
+
+export function AdminActions() {
+    return(
+        <></>
     )
 }

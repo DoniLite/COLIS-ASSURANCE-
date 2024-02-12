@@ -3,28 +3,29 @@ import user from "../assets/img/Ghost.jpeg"
 import { useEffect, useMemo, useState } from "react";
 import { fetchJSON } from "../functions/API";
 import { serverPath } from "../main";
+import { NavLink } from 'react-router-dom'
 
 
 export function AccountsManagement() {
 
-    const [allUsers, setUser] = useState(null)
-    const [canFetch, setFetch] = useState(true)
+    const [allUsers, setUser] = useState([])
+    // const [canFetch, setFetch] = useState(true)
     
 
     useEffect(() => {
-        if(canFetch) {
-            fetchJSON(`${serverPath}allUserAdmin`).then(
-                data => {
-                    setUser(data)
-                    setFetch(false)
-                }
-            ).catch(
-                err => {
-                    console.log(err)
-                }
-            )
-        }
-    }, [canFetch])
+        fetchJSON(`${serverPath}allUserAdmin`).then(
+            data => {
+                setUser([
+                    ...data.allUsers
+                ])
+                setFetch(false)
+            }
+        ).catch(
+            err => {
+                console.log(err)
+            }
+        )
+    }, [])
 
     console.log(allUsers)
     
@@ -56,215 +57,7 @@ export function AccountsManagement() {
                     </div>
 
                     <div className="second-admin-comptes-label-child">
-                        <div className="card-admin-comptes-label">
-                            <div className="row">
-                                <div className="grid">
-                                    <img src={user} alt="" className="user-balance" />
-                                    <p><b>Léandre Dabiré</b> <br />
-                                        <small>Ouagadougou </small>
-                                    </p>
-                                </div>
-
-                                <div className="grid-button">
-                                    <button>Recharges</button>
-                                    <button>Profil</button>
-                                </div>
-                            </div>
-                            <div className="row">
-                                <small>Balance: 50 000 FCFA</small> <small>Courses: 52</small> <small>Sous-comptes: 3</small>
-                            </div>
-                        </div>
-
-                        <div className="card-admin-comptes-label">
-                            <div className="row">
-                                <div className="grid">
-                                    <img src="" alt="" />
-                                    <p><b>Léandre Dabiré</b> <br />
-                                        <small>Ouagadougou </small>
-                                    </p>
-                                </div>
-
-                                <div className="grid">
-                                    <button>Recharges</button>
-                                    <button>Profil</button>
-                                </div>
-                            </div>
-                            <div className="row">
-                                <small>Balance: 50 000 FCFA</small> <small>Courses: 52</small> <small>Sous-comptes: 3</small>
-                            </div>
-                        </div>
-
-                        <div className="card-admin-comptes-label">
-                            <div className="row">
-                                <div className="grid">
-                                    <img src="" alt="" />
-                                    <p><b>Léandre Dabiré</b> <br />
-                                        <small>Ouagadougou </small>
-                                    </p>
-                                </div>
-
-                                <div className="grid">
-                                    <button>Recharges</button>
-                                    <button>Profil</button>
-                                </div>
-                            </div>
-                            <div className="row">
-                                <small>Balance: 50 000 FCFA</small> <small>Courses: 52</small> <small>Sous-comptes: 3</small>
-                            </div>
-                        </div>
-
-                        <div className="card-admin-comptes-label">
-                            <div className="row">
-                                <div className="grid">
-                                    <img src="" alt="" />
-                                    <p><b>Léandre Dabiré</b> <br />
-                                        <small>Ouagadougou </small>
-                                    </p>
-                                </div>
-
-                                <div className="grid">
-                                    <button>Recharges</button>
-                                    <button>Profil</button>
-                                </div>
-                            </div>
-                            <div className="row">
-                                <small>Balance: 50 000 FCFA</small> <small>Courses: 52</small> <small>Sous-comptes: 3</small>
-                            </div>
-                        </div>
-
-                        <div className="card-admin-comptes-label">
-                            <div className="row">
-                                <div className="grid">
-                                    <img src="" alt="" />
-                                    <p><b>Léandre Dabiré</b> <br />
-                                        <small>Ouagadougou </small>
-                                    </p>
-                                </div>
-
-                                <div className="grid">
-                                    <button>Recharges</button>
-                                    <button>Profil</button>
-                                </div>
-                            </div>
-                            <div className="row">
-                                <small>Balance: 50 000 FCFA</small> <small>Courses: 52</small> <small>Sous-comptes: 3</small>
-                            </div>
-                        </div>
-
-                        <div className="card-admin-comptes-label">
-                            <div className="row">
-                                <div className="grid">
-                                    <img src="" alt="" />
-                                    <p><b>Léandre Dabiré</b> <br />
-                                        <small>Ouagadougou </small>
-                                    </p>
-                                </div>
-
-                                <div className="grid">
-                                    <button>Recharges</button>
-                                    <button>Profil</button>
-                                </div>
-                            </div>
-                            <div className="row">
-                                <small>Balance: 50 000 FCFA</small> <small>Courses: 52</small> <small>Sous-comptes: 3</small>
-                            </div>
-                        </div>
-
-                        <div className="card-admin-comptes-label">
-                            <div className="row">
-                                <div className="grid">
-                                    <img src="" alt="" />
-                                    <p><b>Léandre Dabiré</b> <br />
-                                        <small>Ouagadougou </small>
-                                    </p>
-                                </div>
-
-                                <div className="grid">
-                                    <button>Recharges</button>
-                                    <button>Profil</button>
-                                </div>
-                            </div>
-                            <div className="row">
-                                <small>Balance: 50 000 FCFA</small> <small>Courses: 52</small> <small>Sous-comptes: 3</small>
-                            </div>
-                        </div>
-
-                        <div className="card-admin-comptes-label">
-                            <div className="row">
-                                <div className="grid">
-                                    <img src="" alt="" />
-                                    <p><b>Léandre Dabiré</b> <br />
-                                        <small>Ouagadougou </small>
-                                    </p>
-                                </div>
-
-                                <div className="grid">
-                                    <button>Recharges</button>
-                                    <button>Profil</button>
-                                </div>
-                            </div>
-                            <div className="row">
-                                <small>Balance: 50 000 FCFA</small> <small>Courses: 52</small> <small>Sous-comptes: 3</small>
-                            </div>
-                        </div>
-
-                        <div className="card-admin-comptes-label">
-                            <div className="row">
-                                <div className="grid">
-                                    <img src="" alt="" />
-                                    <p><b>Léandre Dabiré</b> <br />
-                                        <small>Ouagadougou </small>
-                                    </p>
-                                </div>
-
-                                <div className="grid">
-                                    <button>Recharges</button>
-                                    <button>Profil</button>
-                                </div>
-                            </div>
-                            <div className="row">
-                                <small>Balance: 50 000 FCFA</small> <small>Courses: 52</small> <small>Sous-comptes: 3</small>
-                            </div>
-                        </div>
-
-                        <div className="card-admin-comptes-label">
-                            <div className="row">
-                                <div className="grid">
-                                    <img src="" alt="" />
-                                    <p><b>Léandre Dabiré</b> <br />
-                                        <small>Ouagadougou </small>
-                                    </p>
-                                </div>
-
-                                <div className="grid">
-                                    <button>Recharges</button>
-                                    <button>Profil</button>
-                                </div>
-                            </div>
-                            <div className="row">
-                                <small>Balance: 50 000 FCFA</small> <small>Courses: 52</small> <small>Sous-comptes: 3</small>
-                            </div>
-                        </div>
-
-                        <div className="card-admin-comptes-label">
-                            <div className="row">
-                                <div className="grid">
-                                    <img src="" alt="" />
-                                    <p><b>Léandre Dabiré</b> <br />
-                                        <small>Ouagadougou </small>
-                                    </p>
-                                </div>
-
-                                <div className="grid">
-                                    <button>Recharges</button>
-                                    <button>Profil</button>
-                                </div>
-                            </div>
-                            <div className="row">
-                                <small>Balance: 50 000 FCFA</small> <small>Courses: 52</small> <small>Sous-comptes: 3</small>
-                            </div>
-                        </div>
-
+                        {allUsers.map(user => <ComptesCard user={user}/>)}
                     </div>
                 </div>
             </div>
@@ -278,44 +71,24 @@ function ComptesCard({user}) {
         <div className="card-admin-comptes-label">
             <div className="row">
                 <div className="grid">
-                    <img src={user} alt="" className="user-balance" />
+                    <img src={`${serverPath}assets/user/${user.userIcon}`} alt="" className="user-balance" />
                     <p><b>{user.firstname ?? 'Unknown'} {user.lastname??''}</b> <br />
                         <small>{user.location??'###'}</small>
                     </p>
                 </div>
 
                 <div className="grid-button">
-                    <button>Recharges</button>
-                    <button>Profil</button>
+                    <NavLink>
+                        <button>Recharges</button>
+                    </NavLink>
+                    <NavLink to={`/colis-assurance/page/admin/accounts-details/${user._id}`}>
+                        <button>Profil</button>
+                    </NavLink>
                 </div>
             </div>
             <div className="row">
-                <small>Balance: {user.balance[0].balance}</small> <small>Courses: {user.livraisons}</small> <small>Sous-comptes: {user.accounts}</small>
+                <small>Balance: {user.balance}</small> <small>Courses: {user.livraisons}</small> <small>Sous-comptes: {user.accounts}</small>
             </div>
         </div>
     )
 }
-
-
-// function compteLabel ({user}) {
-//     return(
-//         <div className="card-admin-comptes-label">
-//             <div className="row">
-//                 <div className="grid">
-//                     <img src={user.userIcon} alt="" />
-//                     <p><b>{user.firstname} {user.lastname}</b> <br />
-//                         <small>{user.location} </small>
-//                     </p>
-//                 </div>
-
-//                 <div className="grid">
-//                     <button>Recharges</button>
-//                     <button>Profil</button>
-//                 </div>
-//             </div>
-//             <div className="row">
-//                 <small>Balance: {user.balance[0].balance}</small> <small>Courses: 52</small> <small>Sous-comptes: 3</small>
-//             </div>
-//         </div>
-//     )
-// }
