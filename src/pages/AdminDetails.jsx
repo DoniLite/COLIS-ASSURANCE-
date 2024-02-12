@@ -5,6 +5,9 @@ import { ColisContainer } from "../components/Colis";
 import { useEffect, useState } from "react";
 import { fetchJSON } from "../functions/API";
 import { serverPath } from "../main";
+import { notify } from "../hooks/useNofication";
+import { inputStyle } from "../components/Forms";
+import { useCustomNavigation } from "../hooks/useCustomNavigation";
 
 
 export function AdminDetails() {
@@ -87,10 +90,10 @@ export function AdminDetails() {
                                 <li><i className="fa-solid fa-user-tag"></i> Sous-comptes</li>
                             </NavLink>
                             <NavLink to={`/colis-assurance/page/admin/accounts-details/${user._id}/userStory`}>
-                                <li><i className="fa-solid fa-rotate"></i> Historique</li>
+                                <li><i className="fa-solid fa-clipboard"></i> Historique</li>
                             </NavLink>
                             <NavLink to={`/colis-assurance/page/admin/accounts-details/${user._id}/actions`}>
-                                <li><i className="fa-solid fa-rotate"></i> Actions</li>
+                                <li><i className="fa-solid fa-gear"></i> Actions</li>
                             </NavLink>
                         </ul>
                         <div className="render-box-model">
@@ -227,10 +230,6 @@ export function AdminSousComptes() {
                     </ul>
                     <div className="render-box-model">
                         <Outlet />
-                        <div className="flex">
-                            <button style={{width: '40%', padding: '10px', background: 'green'}}>Modifier</button>
-                            <button style={{ width: '40%', padding: '10px', background: 'red' }}>Supprimer</button>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -261,42 +260,136 @@ export function FlowBox() {
     }
 
     return (
-        <div className="flow-box-cont2">
-            <div className="column">
-                <img style={{width: '3rem', height: '3rem', borderRadius: '50%', marginTop: '10px'}} src={userPNG} alt="" />
-                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginLeft: '10px', }}>
-                    <div>
-                        <h4 style={{ color: 'blue' }}>{user.firstname} {user.lastname}</h4>
-                        <p>{user.registerDate}</p>
+        <>
+            <div className="flow-box-cont2">
+                <div className="column">
+                    <img style={{ width: '3rem', height: '3rem', borderRadius: '50%', marginTop: '10px' }} src={userPNG} alt="" />
+                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginLeft: '10px', }}>
+                        <div>
+                            <h4 style={{ color: 'blue' }}>{user.firstname} {user.lastname}</h4>
+                            <p>{user.registerDate}</p>
+                        </div>
+                    </div>
+                </div>
+                <div className="column">
+                    <p><i className="fa-solid fa-envelope"></i> {user.email}</p>
+                    <p><i className="fa-solid fa-phone"></i> {user.phoneNumber}</p>
+                    <p><i className="fa-solid fa-location-dot"></i> {user.location} </p>
+                </div>
+                <div className="column">
+                    <div className="">
+                        <h3 style={{ color: '#0263ce' }}>{user.livraisons}</h3>
+                        <p>Courses</p>
                     </div>
                 </div>
             </div>
-            <div className="column">
-                <p><i className="fa-solid fa-envelope"></i> {user.email}</p>
-                <p><i className="fa-solid fa-phone"></i> {user.phoneNumber}</p>
-                <p><i className="fa-solid fa-location-dot"></i> {user.location} </p>
+            <div className="flex">
+                <button style={{ width: '40%', padding: '10px', background: 'orange' }}>Bloquer</button>
+                <button style={{ width: '40%', padding: '10px', background: 'red' }}>Supprimer</button>
             </div>
-            <div className="column">
-                <div className="">
-                    <h3 style={{ color: '#0263ce' }}>{user.livraisons}</h3>
-                    <p>Courses</p>
-                </div>
-            </div>
-        </div>
+        </>
     )
 }
 
 export function AdminComptesStory() {
+    const [colis, setColis] = useState([])
+    const params = useParams()
+    const type = 'principal'
+    console.log(params.id)
+
+    useEffect(() => {
+        fetchJSON(`${serverPath}allColis?refKey=${params.id}&type=${type}`).then(
+            data => {
+                setColis([
+                    ...data.allColis
+                ])
+                console.log(colis)
+            }
+        ).catch(
+            err => notify.failed('une erreur s\'est produite')
+        )
+    }, [])
+
     return(
         <>
-            <ColisContainer coliList={''}/>
+            <ColisContainer coliList={colis}/>
         </>
     )
 }
 
 
 export function AdminActions() {
+    const params = useParams()
+    const [isValid, setValid] = useState(true)
+    const {state, navigateTo} = useCustomNavigation()
+
+    const color = isValid ? '#027bff' : 'red'
+
+    const thisInputStyle = {
+        ...inputStyle,
+        border: inputStyle.border + color
+    }
+
+    /**
+     * 
+     * @param {SubmitEvent} e 
+     */
+    function rechargement(e) {
+        e.preventDefault()
+        const formData = new FormData(e.currentTarget)
+        const value = formData.get('value')
+
+        const fetchForm = {
+            value,
+            id: params.id
+        }
+
+        fetchJSON(`${serverPath}rechargement`, {
+            json: fetchForm
+        }).then(
+            data => {
+                if(data.statut === true) {
+                    window.location.reload()
+                } else {
+                    notify.failed("une erreur s'est produite veuillez réssayer")
+                }
+            }
+        )
+    }
+
     return(
-        <></>
+        <>
+            <div className="flex">
+                <div>
+                    <h3 style={{ color: 'blue' }}>Recharger le compte</h3>
+                    <p>###</p>
+                </div>
+                <div className="close-box"></div>
+            </div>
+
+            <form action="" style={{width: '50%', margin: '0 auto'}}>
+                <center>
+                    <div className="input">
+                        <input type="text" name="value" id="value" style={thisInputStyle}  placeholder="Montant de la recharge"  />
+                        <div className="i">
+                            <i className="fa-regular fa-credit-card"></i>
+                        </div>
+                    </div>
+                </center>
+
+                <center>
+                    <button type="submit" style={{border: 'none', width: '80%', padding: '10px', color: 'white', backgroundColor: 'blue', marginTop: '1rem', fontWeight: 'bold', borderRadius: '5px'}}>Confirmer</button>
+                </center>
+            </form>
+
+
+            <h3 style={{ color: 'blue', marginTop: '2rem' }}>Supprimer ou bloquer le compte</h3>
+            <div style={{ marginTop: '2rem', width: '50%', margin: '0 auto' }}>
+                <div className="flex">
+                    <button style={{ width: '40%', padding: '10px', background: 'orange' }}>Bloquer</button>
+                    <button style={{ width: '40%', padding: '10px', background: 'red' }}>Supprimer</button>
+                </div>
+            </div>
+        </>
     )
 }

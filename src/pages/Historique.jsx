@@ -76,11 +76,11 @@ const coliList = [
 export function Historique() {
 
     const params = useParams()
-    const {user} = useData()
+    const {user, type} = useData()
     const [colis, addColis] = useState(null)
     const [state, dispatch] = useReducer(reducer, colis)
     useEffect(() => {
-        fetchJSON(`${serverPath}allColis?refKey=${params.id}`).then(
+        fetchJSON(`${serverPath}allColis?refKey=${params.id}&type=${type}`).then(
             data => {
                 console.log(data)
                 if(data.statut && data.statut === false) {

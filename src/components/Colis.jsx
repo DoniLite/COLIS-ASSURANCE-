@@ -153,7 +153,7 @@ export function ColiStatut() {
     const [openModal, setOpenModal] = useState(false);
     const coli = coliData.coli
     const id = params.id
-    const {user} = useData()
+    const {user, type} = useData()
 
     const notify = {
         success: (message) => toast.success(message),
@@ -162,7 +162,7 @@ export function ColiStatut() {
     }
 
     useEffect(() => {
-        fetchJSON(`${serverPath}coliData?id=${id}`).then(
+        fetchJSON(`${serverPath}coliData?id=${id}&type=${type}`).then(
             data => {
                 addColi(data)
                 
@@ -179,8 +179,8 @@ export function ColiStatut() {
 
     async function dropColi(e) {
         e.preventDefault()
-        const data = await fetchJSON(`${serverPath}dropColi?id=${id}`)
-        if(data.statut) {
+        const data = await fetchJSON(`${serverPath}dropColi?id=${id}&type=${type}`)
+        if(data.statut===true) {
             notify.success('Votre coli a été annulé')
             setOpenModal(false)
         } else {

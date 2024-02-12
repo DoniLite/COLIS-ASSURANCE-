@@ -41,3 +41,28 @@
 
     } */
 }
+
+/* CSS */
+::-webkit-input-placeholder {
+    /* Chrome/Opera/Safari */
+    color: #ffffff;
+    /* Couleur du texte du placeholder */
+}
+
+::-moz-placeholder {
+    /* Firefox 19+ */
+    color: #ffffff;
+    /* Couleur du texte du placeholder */
+}
+
+:-ms-input-placeholder {
+    /* IE 10+ */
+    color: #ffffff;
+    /* Couleur du texte du placeholder */
+}
+
+:-moz-placeholder {
+    /* Firefox 18- */
+    color: #ffffff;
+    /* Couleur du texte du placeholder */
+}

@@ -1,5 +1,5 @@
 import { NavLink, Outlet } from "react-router-dom";
-import logo from '../assets/img/LOGO.png'
+import logo from '../assets/img/COLIS.png'
 import user from "../assets/img/Ghost.jpeg"
 import { sliceColi } from "../functions/sliceColi";
 import { serverPath } from "../main";
@@ -167,11 +167,11 @@ export function DashBordNav() {
                     </div>
                 </NavLink>
 
-                <NavLink to={'/colis-assurance/page/admin/accounts-details'}>
+                <NavLink to={'/colis-assurance/page/admin/allRecharges'}>
                     <div className="admin-nav-element">
                         <div style={{ display: 'flex', marginLeft: '1.5rem' }}>
-                            <i className="fa-solid fa-gear fa-2x"></i>
-                            <h3 style={{ marginLeft: '0.5rem', marginTop: '0.5rem' }}>Paramètre</h3>
+                            <i className="fa-regular fa-credit-card fa-2x"></i>
+                            <h3 style={{ marginLeft: '0.5rem', marginTop: '0.5rem' }}>Recharges</h3>
                         </div>
                     </div>
                 </NavLink>
@@ -243,5 +243,41 @@ function RecentUserElement({user}) {
                 </div>
             </div>
         </div>
+    )
+}
+
+
+export function AllRecharges() {
+    const [recharges, setRecharges] = useState([])
+
+    useEffect(() => {
+        fetchJSON(`${serverPath}recharges`).then(
+            data => {
+                setRecharges([
+                    ...data.recharges
+                ])
+            }
+        )
+    }, [])
+
+    return(
+        <TableContainer>
+            <DashBordNav />
+            <div className="table-content3">
+                <TableHeader page={'RECHARGES'} position={'fixed'} />
+                <div className="table-data">
+                    <div className="table-data-head">
+                        <h4 style={{ color: '#33379b' }}>ID</h4>
+                        <h4>Nom</h4>
+                        <h4>Montant</h4>
+                        <h4>Mode</h4>
+                        <h4>Agent de recharge</h4>
+                        <h4>Statut</h4>
+                        <h4>Action</h4>
+                    </div>
+                    {recharges.map(recharge => <TableDataContent user={recharge} key={recharge._id} />)}
+                </div>
+            </div>
+        </TableContainer>
     )
 }

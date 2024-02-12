@@ -64,7 +64,7 @@ export function SousComptePage() {
                     <div className="icon-searh">
                         <i className="fa-solid fa-magnifying-glass"></i>
                     </div>
-                    <input type="search" name="searchBar" id="searchBar" onChange={(e) => updateAccount(sousComptes.filter(account => account.firstname === e.target.value || account.lastname === e.target.value || account.username === e.target.value))} placeholder="Recherchez un sous compte" />
+                    <input type="search" name="searchBar" id="searchBar" onChange={(e) => updateAccount(sousComptes.filter(account => account.firstname.includes(e.target.value) || account.lastname.includes(e.target.value) || account.username.includes(e.target.value) ))} placeholder="Recherchez un sous compte" />
                 </div>
             </div>
             <div className="page-content-side">
@@ -85,8 +85,6 @@ export function SousComptePage() {
                     <SousCompte />
                 </div> */}
             </div>
-
-
             <CreateUser />
             
         </>

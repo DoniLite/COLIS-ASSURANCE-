@@ -13,7 +13,7 @@ import { Authentification, CompleteProfil, Connexion, Inscription, PhoneVerifica
 import { ColiStatut, ColisContainer } from './components/Colis'
 import { SousComptePage } from './pages/SousComptes'
 import { AdminConnexion } from './pages/AdminConnexion'
-import { TableauDeBord } from './pages/TableauDeBord'
+import { AllRecharges, TableauDeBord } from './pages/TableauDeBord'
 import { AccountsManagement } from './pages/AdminComptes'
 import { AdminActions, AdminComptesStory, AdminDetails, AdminSousComptes, FlowBox } from './pages/AdminDetails'
 import { forwardRef, useEffect } from 'react'
@@ -53,7 +53,7 @@ const router = createBrowserRouter([
         element: <Authentification />,
       },
       {
-        path: 'phoneVerification',
+        path: 'phoneVerification/:id',
         element: <PhoneVerification />,
       },
       {
@@ -142,6 +142,10 @@ const router = createBrowserRouter([
         element: <TableauDeBord />,
       },
       {
+        path: 'colis-assurance/page/admin/allRecharges',
+        element: <AllRecharges />,
+      },
+      {
         path: 'colis-assurance/page/admin/accounts',
         element: <AccountsManagement />
       },
@@ -154,7 +158,7 @@ const router = createBrowserRouter([
             element: <AdminSousComptes />,
             children: [
               {
-                path: '',
+                path: 'path/:id',
                 element: <FlowBox />
               },
               {

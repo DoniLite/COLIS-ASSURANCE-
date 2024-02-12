@@ -23,27 +23,6 @@ export const inputStyle = {
     borderRadius: '10px',
 }
 
-export function Clavier() {
-    return(
-        <div style={red} className="clavier">
-            <div className="clavier-item">1</div>
-            <div className="clavier-item">2</div>
-            <div className="clavier-item">3</div>
-            <div className="clavier-item">4</div>
-            <div className="clavier-item">5</div>
-            <div className="clavier-item">6</div>
-            <div className="clavier-item">7</div>
-            <div className="clavier-item">8</div>
-            <div className="clavier-item">9</div>
-            <div className="clavier-item"></div>
-            <div className="clavier-item">0</div>
-            <div className="clavier-item">
-                <i className="fa-solid fa-delete-left"></i>
-            </div>
-        </div>
-    )
-}
-
 export function Authentification() {
 
     const params = useParams()
@@ -136,6 +115,7 @@ export function PhoneVerification() {
     let errorMessage
     const [isValid, setValid] = useState(true)
     const { state, navigateTo } = useCustomNavigation()
+    const params = useParams()
 
     const color = isValid ? '#027bff' : 'red'
 
@@ -143,7 +123,6 @@ export function PhoneVerification() {
         ...inputStyle,
         border: inputStyle.border + color
     }
-    const user = useSelector((state) => state.userState.data.user)
 
     async function SubmitPhone(e) {
         e.preventDefault()
@@ -151,7 +130,7 @@ export function PhoneVerification() {
         const formData = new FormData(e.currentTarget)
         const phoneNumber = formData.get('number')
         const formattedPhoneNumber = encodeURIComponent(phoneNumber);
-        const formattedId = encodeURIComponent(user._id);
+        const formattedId = encodeURIComponent(params.id);
         fetchJSON(`${serverPath}phoneVerification/?number=${formattedPhoneNumber}&id=${formattedId}`).then(
             data => {
                 console.log(data)
@@ -340,6 +319,7 @@ export function Inscription() {
     const inputClass = toogleInput ? 'password' :'text'
     const [isValid, setValid] = useState(true)
     const { state, navigateTo } = useCustomNavigation()
+    const [userCreated, setUserCreated] = useState({})
 
     const color = isValid ? '#027bff' : 'red'
 
@@ -403,9 +383,12 @@ export function Inscription() {
                     }
                 } else{
                     console.log(data)
+                    setUserCreated({
+                        ...data.user
+                    })
                     dispatch(setUserType('principal'))
                     notify.success('Opération effectuée!')
-                    setTimeout(() => notify.success('Poursuivons avec la vérification 🤠'))
+                    setTimeout(() => notify.success('Poursuivons avec la vérification 🤠'), 1000)
                     setNavigate(true)
                     // navigate('/phoneVerification')
                     console.log(user)
@@ -415,7 +398,7 @@ export function Inscription() {
     }
 
     if (canNavigate) {
-        navigate('/phoneVerification')
+        navigate(`/phoneVerification/${userCreated._id}`)
     }
 
     return(
@@ -871,6 +854,7 @@ export function ColiActionConfirmation ({coliId}) {
 
     const [isValid, setValid] = useState(true)
     const {state, navigateTo} = useCustomNavigation()
+    const {type} = useData()
 
     const color = isValid ? '#027bff' : 'red'
 
@@ -897,7 +881,7 @@ export function ColiActionConfirmation ({coliId}) {
         const formData = new FormData(e.currentTarget)
         const coliOtp = formData.get('coliOtp')
 
-        fetchJSON(`${serverPath}addColis?code=${coliOtp}&id=${coliId}`).then(
+        fetchJSON(`${serverPath}addColis?code=${coliOtp}&id=${coliId}&type=${type}`).then(
             data => {
                 navigateTo('idle')
                 if(data.statut){
@@ -953,4 +937,3 @@ export function ColiActionConfirmation ({coliId}) {
         </div>
     )
 }
-
