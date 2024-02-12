@@ -116,6 +116,7 @@ export function PhoneVerification() {
     const [isValid, setValid] = useState(true)
     const { state, navigateTo } = useCustomNavigation()
     const params = useParams()
+    const {type} = useData()
 
     const color = isValid ? '#027bff' : 'red'
 
@@ -131,7 +132,7 @@ export function PhoneVerification() {
         const phoneNumber = formData.get('number')
         const formattedPhoneNumber = encodeURIComponent(phoneNumber);
         const formattedId = encodeURIComponent(params.id);
-        fetchJSON(`${serverPath}phoneVerification/?number=${formattedPhoneNumber}&id=${formattedId}`).then(
+        fetchJSON(`${serverPath}phoneVerification/?number=${formattedPhoneNumber}&id=${formattedId}&type=${type}`).then(
             data => {
                 console.log(data)
                 navigateTo('idle')
@@ -142,6 +143,11 @@ export function PhoneVerification() {
                     setValid(false)
                     notify.warning('Veuillez vérifier les données entrées dans le formulaire')
                 }
+            }
+        ).catch(
+            err => {
+                navigateTo('idle')
+                notify.failed('Une erreur s\'est produite 🤕')
             }
         )
     }

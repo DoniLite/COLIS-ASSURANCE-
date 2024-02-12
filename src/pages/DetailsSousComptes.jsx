@@ -7,7 +7,7 @@ import { notify } from "../hooks/useNofication"
 
 export function SousComptesDetails() {
     const [user, setUser] = useState({})
-    const [colis, setColis] = useState(null)
+    const [colis, setColis] = useState([])
     const params = useParams()
 
     useEffect(() => {
@@ -39,7 +39,7 @@ export function SousComptesDetails() {
                 <center style={{ marginTop: '2.5rem' }}>
                     <img src={`${serverPath}assets/user/${user.userIcon}`} alt="" className="user-balance" />
                     <p style={{ fontWeight: 'bold', marginBottom: '2rem' }}>{user.firstname} {user.lastname}</p>
-                    <h3 style={{ marginBottom: '2rem' }}>BALANCE {user.balance[0].balance}</h3>
+                    <h3 style={{ marginBottom: '2rem' }}>BALANCE {user.balance}</h3>
                 </center>
 
                 <div className="side-stat">
