@@ -59,7 +59,7 @@ export function FixedNavbar() {
                 </div>
                 <div>
                     <p>Balance</p>
-                    <p>{user.balance == undefined ? 0 : user.balance[0].balance} FCFA</p>
+                    <p>{user.balance == undefined ? 0 : user.balance} FCFA</p>
                 </div>
                 <div className="absolute-card">
                     <div>

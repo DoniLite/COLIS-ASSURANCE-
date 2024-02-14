@@ -26,6 +26,7 @@ export const inputStyle = {
 export function Authentification() {
 
     const params = useParams()
+    console.log(params.id)
     const navigate = useNavigate()
     let [error, setError] = useState(undefined)
     const dispatch = useDispatch()
@@ -51,33 +52,40 @@ export function Authentification() {
         navigateTo('submitting')
         const formData = new FormData(e.currentTarget)
         const otpCode = formData.get('code')
-        const userId = user._id
 
         const fetchData = {
             type,
-            userId,
+            userId: params.id,
             code: otpCode,
             number: params.number
         }
 
-        const codeResullt = await fetchJSON(`${serverPath}otp`, {
-            method: 'POST',
+        fetchJSON(`${serverPath}otp`, {
             json: fetchData
-        })
-        console.log(codeResullt)
-        if(codeResullt.data.statut) {
-            dispatch(addDataToState(codeResullt.data))
-            dispatch(putConnected())
-            setNavigate(true)
-            navigateTo('idle')
-            notify.success('Bienvenue sur Colis-Assurance!🥳')
-        }else {
-            setError('code invalide')
-            putError(true)
-            setValid(false)
-            navigateTo('idle')
-            notify.warning('Votre code n\'est pas valide')
-        }
+        }).then(
+            data => {
+                console.log(data)
+                if(data.statut===true) {
+                    dispatch(addDataToState(data))
+                    dispatch(putConnected())
+                    setNavigate(true)
+                    navigateTo('idle')
+                    notify.success('Bienvenue sur Colis-Assurance!🥳')
+                }else {
+                    setError('code invalide')
+                    putError(true)
+                    setValid(false)
+                    navigateTo('idle')
+                    notify.warning('Votre code n\'est pas valide')
+                }
+            }
+        ).catch(
+            err => {
+                navigateTo('idle')
+                notify.failed('Une erreur s\'est produite 🤕')
+            }
+        )
+        
     }
 
     if(canNavigate) {
@@ -137,7 +145,7 @@ export function PhoneVerification() {
                 console.log(data)
                 navigateTo('idle')
                 if(data.statut) {
-                    navigate(`/authentification/${phoneNumber}`)
+                    navigate(`/authentification/${params.id}/${phoneNumber}`)
                 } else {
                     errorMessage = 'Veuillez réssayer...'
                     setValid(false)
@@ -687,12 +695,6 @@ export function CompleteProfil() {
          */
         const userId = user._id
         let dataFetch
-        let isAvatarPresent = true
-
-        if(avatar===null) {
-            isAvatarPresent = false
-        }
-
         if (reason ==='update') {
             dataFetch = {
                 firstname,
@@ -763,22 +765,22 @@ export function CompleteProfil() {
         // ) 
     }
     
-    if (nav) {
-        navigate('/paramètre')
-    }
+    // if (nav) {
+    //     navigate('/paramètre')
+    // }
 
     return(
         <div className="complet-profil">
-
             {state === 'submitting' && <Loader />}
-            
             <div>
                 <NavLink style={{ color: '#027bff', padding: '1rem' }} to={'/paramètre'}>
                     <i className="fa-solid fa-circle-left fa-2x"></i>
                 </NavLink>
             </div>
+
             <h2 style={{ color: 'black', marginTop: '3rem' }}>Mise à jour</h2>
             <p style={{ fontWeight: 'bold', marginBottom: '4rem' }}>De vos informations</p>
+
             <form action="" onSubmit={updateUserInfo}>
                 <input type="file" name="avatar" id="avatar" style={{ display: 'none' }} onChange={handleFileChange} />
                 <center style={{ margin: '2rem 0' }}>
@@ -786,9 +788,10 @@ export function CompleteProfil() {
                     <p>Choisissez une photo</p>
                     <div className="trait" style={{ backgroundColor: '#027bff' }}></div>
                 </center>
+
                 <center>
                     <div className="input">
-                        <input type="text" name="firstname" id="firstname"  placeholder="Prénom" style={thisInputStyle} required/>
+                        <input type="text" name="firstname" id="firstname" placeholder="Prénom" style={thisInputStyle} required />
                         <div className="i">
                             <i className="fa-solid fa-user-tag"></i>
                         </div>
@@ -797,17 +800,17 @@ export function CompleteProfil() {
 
                 <center>
                     <div className="input">
-                        <input type="text" name="lastname" id="lastname" onChange={() => setValid(true)} placeholder="Nom" style={thisInputStyle} required/>
+                        <input type="text" name="lastname" id="lastname" onChange={() => setValid(true)} placeholder="Nom" style={thisInputStyle} required />
                         <div className="i">
                             <i className="fa-solid fa-user-tag"></i>
                         </div>
                     </div>
                 </center>
 
-                {reason == 'change' && (<>
+                {reason === 'change' && (<>
                     <center>
                         <div className="input">
-                            <input type={inputClass} name="pastpassword" id="pastpassword" style={thisInputStyle} onChange={() => setInput(false)} placeholder="Ancien mot de passe" required/>
+                            <input type={inputClass} name="pastpassword" id="pastpassword" style={thisInputStyle} onChange={() => setInput(false)} placeholder="Ancien mot de passe" required />
                             <div className="i" onClick={() => setInput(v => !v)}>
                                 <i className="fa-solid fa-key"></i>
                             </div>
@@ -815,20 +818,20 @@ export function CompleteProfil() {
                     </center>
                     <center>
                         <div className="input">
-                            <input type={inputClass} name="password" id="password" style={thisInputStyle} onChange={() => {setInput(false); setValid(true);}}  placeholder="Mot de passe" required/>
+                            <input type={inputClass} name="password" id="password" style={thisInputStyle} onChange={() => { setInput(false); setValid(true); }} placeholder="Mot de passe" required />
                             <div className="i" onClick={() => setInput(v => !v)}>
                                 <i className='fa-solid fa-key'></i>
                             </div>
                         </div>
                     </center>
-                    
+
                 </>)}
 
-                {user.location === undefined || user.location === '' && (
+                {user.location === '' && (
                     <>
                         <center>
                             <div className="input">
-                                <input type="text" name="country" id="country" style={thisInputStyle} placeholder="Pays" required/>
+                                <input type="text" name="country" id="country" style={thisInputStyle} placeholder="Pays" required />
                                 <div className="i">
                                     <i className="fa-solid fa-phone"></i>
                                 </div>
@@ -836,7 +839,7 @@ export function CompleteProfil() {
                         </center>
                         <center>
                             <div className="input">
-                                <input type="text" name="town" id="town" style={thisInputStyle} placeholder="Ville" onChange={setValid(true)} required/>
+                                <input type="text" name="town" id="town" style={thisInputStyle} placeholder="Ville" onChange={setValid(true)} required />
                                 <div className="i">
                                     <i className="fa-solid fa-phone"></i>
                                 </div>
@@ -848,8 +851,21 @@ export function CompleteProfil() {
                 <center>
                     <button type="submit">Enregistrer</button>
                 </center>
-
             </form>
+
+            {/* 
+            
+            
+            
+            
+                
+                
+
+               
+
+                
+
+            </form> */}
         </div>
     )
 }

@@ -7,7 +7,7 @@ import { serverPath } from "../main";
 
 export function Profil() {
     const {user} = useData()
-    const balance = user.balance[0].balance
+    const balance = user.balance
     console.log(balance)
     return(
         <>

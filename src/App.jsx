@@ -49,7 +49,7 @@ const router = createBrowserRouter([
         element: <Inscription />
       },
       {
-        path: 'authentification/:number',
+        path: 'authentification/:id/:number',
         element: <Authentification />,
       },
       {
@@ -232,3 +232,35 @@ const Box = forwardRef(({ children }, ref) =>{
 const MotionBox = motion(Box)
 
 export default App
+
+
+// const mongoose = require('mongoose');
+
+// // Schéma pour l'utilisateur principal
+// const UtilisateurPrincipalSchema = new mongoose.Schema({
+//     nom: String,
+//     // Référence vers les sous-comptes
+//     sousComptes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'SousCompte' }]
+// });
+
+// // Schéma pour les sous-comptes
+// const SousCompteSchema = new mongoose.Schema({
+//     nom: String,
+//     // Référence vers l'utilisateur principal
+//     utilisateurPrincipal: { type: mongoose.Schema.Types.ObjectId, ref: 'UtilisateurPrincipal' }
+// });
+
+// // Modèles
+// const UtilisateurPrincipal = mongoose.model('UtilisateurPrincipal', UtilisateurPrincipalSchema);
+// const SousCompte = mongoose.model('SousCompte', SousCompteSchema);
+
+// // Utilisation de populate pour charger les sous-comptes d'un utilisateur principal
+// UtilisateurPrincipal.findById(utilisateurPrincipalId)
+//     .populate('sousComptes')
+//     .exec((err, utilisateurPrincipal) => {
+//         if (err) {
+//             console.error(err);
+//             return;
+//         }
+//         console.log(utilisateurPrincipal.sousComptes); // Les sous-comptes sont chargés ici
+//     });

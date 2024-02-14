@@ -3,14 +3,70 @@ import colis from "../assets/img/COLIS.png"
 import { setUserType } from "../app/userSlice"
 import { useSelector, useDispatch } from 'react-redux'
 import { useData } from "../hooks/useData"
+import { fetchJSON } from "../functions/API"
+import { Loader, serverPath } from "../main"
+import { notify } from "../hooks/useNofication"
+import { useCustomNavigation } from "../hooks/useCustomNavigation"
+import { useState } from "react"
 
 
 export function Choice() {
 
     const params = useParams()
+    const navigate = useNavigate()
+    const price = params.data
+    const {user, type} = useData()
+    const {state, navigateTo} = useCustomNavigation()
+    const [link, setLink] = useState('')
+    const [mode, setMode] = useState('')
+
+    /**
+     * 
+     * @param {Event} e 
+     */
+    function setActive(e) {
+        const allItems = document.querySelectorAll('.choice-item')
+        const element = e.currentTarget
+        allItems.forEach(item => {
+            item.classList.remove('active')
+        })
+        element.classList.add('active')
+    }
+
+    function initPayement() {
+        navigateTo('submitting')
+        const dataTofetch = {
+            price,
+            id: user._id,
+            mode,
+            type
+        }
+
+        fetchJSON(`${serverPath}initPayement`, {
+            json: dataTofetch
+        }).then(
+            data => {
+                navigateTo('idle')
+                if(data.statut === true) {
+                    notify.success('Votre requête a bien été envoyée')
+                    // navigate(link)
+                } else {
+                    notify.failed('échec de l\'opération veuillez retenter')
+                }
+            }
+        ).catch(
+            err => {
+                navigateTo('idle')
+                notify.failed('une erreur est survenue')
+            }
+        )
+        
+    }
     console.log(params)
     return(
         <>
+        <a href="tel:+22607224034"></a>
+            {state === 'submitting' && <Loader />}
             <div style={{ padding: '1rem' }}>
                 <NavLink style={{ color: '#027bff' }} to={'/profil'}>
                     <i className="fa-solid fa-circle-left fa-2x"></i>
@@ -21,7 +77,7 @@ export function Choice() {
             </center>
 
             <div className="choice">
-                <div className="choice-item">
+                <div className="choice-item active" onClick={(e) => { setActive(e); setLink(''); setMode('Agence')}}>
                     <div>
                         <center>
                             <i className="fa-brands fa-dropbox fa-2x"></i>
@@ -29,7 +85,7 @@ export function Choice() {
                         </center>
                     </div>
                 </div>
-                <div className="choice-item">
+                <div className="choice-item" onClick={(e) => { setActive(e); setLink('tel:+22607224034'); setMode('Appel') }}>
                     <div>
                         <center>
                             <i className="fa-solid fa-phone fa-2x"></i>
@@ -37,7 +93,7 @@ export function Choice() {
                         </center>
                     </div>
                 </div>
-                <div className="choice-item">
+                <div className="choice-item" onClick={(e) => { setActive(e); setLink('https://wa.me/22655270506'); setMode('WhatsApp') }}>
                     <div>
                         <center>
                             <i className="fa-brands fa-square-whatsapp fa-3x"></i>
@@ -48,7 +104,7 @@ export function Choice() {
             </div>
 
            <center>
-                <button className="go">Allez-y</button>
+                <button className="go" onClick={initPayement}>Allez-y</button>
            </center>
         </>
     )

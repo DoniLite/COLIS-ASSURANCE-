@@ -117,7 +117,7 @@ export function TableauDeBord() {
                             <h4>Nom</h4>
                             <h4>Montant</h4>
                             <h4>Mode</h4>
-                            <h4>Agent de recharge</h4>
+                            <h4>Agent</h4>
                             <h4>Statut</h4>
                             <h4>Action</h4>
                         </div>

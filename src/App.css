@@ -577,6 +577,11 @@ body {
   justify-content: space-between;
 }
 
+.choice .active {
+  background-color: #027bff;
+  color: #ffffff;
+}
+
 .choice-item {
   display: flex;
   justify-content: center;
@@ -588,10 +593,10 @@ body {
   border-radius: 15px;
 }
 
-.choice-item:nth-child(1) {
+/* .choice-item:nth-child(1) {
   background-color: #027bff;
   color: #ffffff;
-}
+} */
 
 .go {
   width: 70%;
