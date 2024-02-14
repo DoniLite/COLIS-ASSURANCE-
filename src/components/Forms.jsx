@@ -705,7 +705,6 @@ export function CompleteProfil() {
                 country,
                 town,
                 avatar,
-                isAvatarPresent
             }
         } else {
             dataFetch = {
@@ -827,24 +826,20 @@ export function CompleteProfil() {
 
                 </>)}
 
-                {user.location === '' && (
+                {(!user.location || user.location === '') && (
                     <>
-                        <center>
-                            <div className="input">
-                                <input type="text" name="country" id="country" style={thisInputStyle} placeholder="Pays" required />
-                                <div className="i">
-                                    <i className="fa-solid fa-phone"></i>
-                                </div>
+                        <div className="input" style={{ textAlign: 'center' }}>
+                            <input type="text" name="country" id="country" style={thisInputStyle} placeholder="Pays" required />
+                            <div className="i">
+                                <i className="fa-solid fa-phone"></i>
                             </div>
-                        </center>
-                        <center>
-                            <div className="input">
-                                <input type="text" name="town" id="town" style={thisInputStyle} placeholder="Ville" onChange={setValid(true)} required />
-                                <div className="i">
-                                    <i className="fa-solid fa-phone"></i>
-                                </div>
+                        </div>
+                        <div className="input" style={{ textAlign: 'center' }}>
+                            <input type="text" name="town" id="town" style={thisInputStyle} placeholder="Ville" onChange={() => setValid(true)} required />
+                            <div className="i">
+                                <i className="fa-solid fa-phone"></i>
                             </div>
-                        </center>
+                        </div>
                     </>
                 )}
 

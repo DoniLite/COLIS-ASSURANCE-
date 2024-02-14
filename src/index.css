@@ -45,24 +45,28 @@
 /* CSS */
 ::-webkit-input-placeholder {
     /* Chrome/Opera/Safari */
-    color: #ffffff;
+    /* color: #ffffff; */
     /* Couleur du texte du placeholder */
 }
 
 ::-moz-placeholder {
     /* Firefox 19+ */
-    color: #ffffff;
+    /* color: #ffffff; */
     /* Couleur du texte du placeholder */
 }
 
 :-ms-input-placeholder {
     /* IE 10+ */
-    color: #ffffff;
+    /* color: #ffffff; */
     /* Couleur du texte du placeholder */
 }
 
 :-moz-placeholder {
     /* Firefox 18- */
-    color: #ffffff;
+    /* color: #ffffff; */
     /* Couleur du texte du placeholder */
+}
+
+input[type='search']::placeholder {
+    color: #ffffff;
 }
