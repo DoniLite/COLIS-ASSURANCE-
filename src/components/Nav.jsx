@@ -26,7 +26,7 @@ export function FixedNavbar() {
     console.log(user)
     const squareList = [
         {
-            title: user.accounts == undefined? 0: user.accounts,
+            title: user.accounts,
             desc: 'Sous-comptes',
             color: '#23d3ef'
         },

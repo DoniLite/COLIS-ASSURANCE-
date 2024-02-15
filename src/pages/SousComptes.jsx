@@ -20,7 +20,8 @@ import { addDataToState, putConnected, setUserType, ToogleUpdate } from '../app/
 export function SousComptePage() {
 
     const {user, updateData, type} = useData()
-    const [sousComptes, updateAccount] = useState(null)
+    const [sousComptes, updateAccount] = useState([])
+    console.log(sousComptes)
     const dispatch = useDispatch()
 
     function openBox(e) {
@@ -33,7 +34,9 @@ export function SousComptePage() {
         fetchJSON(`${serverPath}allusers?refKey=${user._id}`).then(
             data => {
                 console.log(data)
-                updateAccount(data)
+                updateAccount([
+                    ...data.allUsers
+                ])
             }
         )
         dispatch(ToogleUpdate(false))
@@ -44,8 +47,11 @@ export function SousComptePage() {
     useEffect(() => {
         fetchJSON(`${serverPath}allusers?refKey=${user._id}`).then(
             data => {
+                console.log(user)
                 console.log(data)
-                updateAccount(data)
+                updateAccount([
+                    ...data.allUsers
+                ])
             }
         )
     }, [])
@@ -98,10 +104,9 @@ function AllUsers({users}) {
             <> <p>Aucun utilisateurs 🥱...</p> </>
         )
     } else {
-        const sousComptes = users.allUsers
         return(
             <div className="sous-compte-div">
-                {sousComptes.map((user, index) => (<SousCompte user={user} />))}
+                {users.map((user, index) => (<SousCompte user={user} />))}
                 {/* <SousCompte />
                     <SousCompte />
                     <SousCompte />

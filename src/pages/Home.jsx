@@ -64,9 +64,9 @@ const coliList = [
 export function Home() {
 
     const navigate = useNavigate()
-    const {userState, user, updateData} = useData()
+    const {userState, user, type, updateData} = useData()
     const dispatch = useDispatch()
-    const [coli, setColis] = useState(null)
+    const [colis, setColis] = useState([])
     const navigation = useNavigation()
     const {state} = navigation
 
@@ -99,25 +99,28 @@ export function Home() {
 
     if(userState) {
         useEffect(() => {
-            fetchJSON(`${serverPath}allColis?refKey=${user._id}`).then(
+            fetchJSON(`${serverPath}allColis?refKey=${user._id}&type=${type}`).then(
                 data => {
                     // console.log(data)
                     // dispatch(updateColis(data))
-                    setColis(data.allColis)
+                    setColis([
+                        ...data.allColis
+                    ])
+                    console.log(data)
                 }
             ).catch(
                 error => {
                     console.log(error)
                 }
             )
-        }, [updateData])
+        }, [])
         
         return (
             <>
                 <FixedNavbar />
                 {state === 'idle' && (<div className="body">
                     <p style={{ color: 'black', fontWeight: 'bold', padding: '5px' }}>Récents</p>
-                    <ColisContainer coliList={coli} />
+                    <ColisContainer coliList={colis} />
                 </div>)}
                 {state === 'loading' || state === 'submitting' && (<HashLoader color={"#1d1d1d"} />)}
                 <BottomNav />
