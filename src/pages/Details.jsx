@@ -4,7 +4,7 @@ import { useData } from "../hooks/useData";
 import { fetchJSON } from "../functions/API";
 import { ToogleUpdate } from '../app/userSlice'
 import { useSelector, useDispatch } from 'react-redux'
-import { serverPath } from "../main";
+import { Loader, serverPath } from "../main";
 import { useState } from "react";
 import axios from 'axios'
 import { toast } from 'react-toastify'
@@ -171,6 +171,7 @@ export function NewColis() {
                 }
             ).catch(
                 err => {
+                    navigateTo('idle')
                     console.log(err)
                     notify.failed()
                     navigateTo('idle')
@@ -178,6 +179,7 @@ export function NewColis() {
                 }
             )
         } else {
+            navigateTo('idle')
             notify.warning()
             setColor(true)
             setTimeout(() => {

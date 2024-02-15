@@ -552,7 +552,7 @@ export function CreateUser() {
                         setTimeout(() => notify.warning('Veuillez réessayer 🧐'), 1000)
                     } else {
                         dispatch(ToogleUpdate(true))
-                        dispatch(addDataToState(data.user))
+                        dispatch(addDataToState(data))
                         notify.success('Opération éffectuée 💯💫')
                         setTimeout(() => notify.success('vous pouvez fermer cette fenêtre'), 1000)
                     }
