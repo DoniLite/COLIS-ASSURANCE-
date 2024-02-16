@@ -240,7 +240,11 @@ export function Connexion() {
                 setError(error = false)
                 dispatch(putConnected())
                 dispatch(addDataToState(data))
-                dispatch(updateBalance(data.user.balance))
+                if(type === 'principal') {
+                    dispatch(updateBalance(data.user.balance))
+                } else {
+                    dispatch(updateBalance(data.admin.balance))
+                }
                 setValid(true)
                 navigateTo('idle')
                 // console.log(redirect('/'))
@@ -875,6 +879,7 @@ export function ColiActionConfirmation ({coliId}) {
     const [isValid, setValid] = useState(true)
     const {state, navigateTo} = useCustomNavigation()
     const {type} = useData()
+    const dispatch = useDispatch()
 
     const color = isValid ? '#027bff' : 'red'
 
@@ -904,9 +909,9 @@ export function ColiActionConfirmation ({coliId}) {
         fetchJSON(`${serverPath}addColis?code=${coliOtp}&id=${coliId}&type=${type}`).then(
             data => {
                 navigateTo('idle')
-                if(data.statut){
+                if(data.statut===true){
+                    dispatch(addDataToState(data))
                     notify.success('Course confirmée!🤙🏾')
-                    closeBox()
                     window.location.reload()
                 } else {
                     setAlert(true)
@@ -954,6 +959,96 @@ export function ColiActionConfirmation ({coliId}) {
 
             </form>
             
+        </div>
+    )
+}
+
+
+export function DropColiConfirmation({coliId}) {
+    const [isValid, setValid] = useState(true)
+    const { state, navigateTo } = useCustomNavigation()
+    const { type } = useData()
+    const dispatch = useDispatch()
+
+    const color = isValid ? '#027bff' : 'red'
+
+    const thisInputStyle = {
+        ...inputStyle,
+        border: inputStyle.border + color
+    }
+
+    const [canAlert, setAlert] = useState(false)
+
+    /**
+     * 
+     * @param {Event} e 
+     */
+    function closeBox(e) {
+        e.preventDefault()
+        const box = document.querySelector('.create-user-box2')
+        box.style.transform = 'translateX(110%)'
+    }
+
+    async function ConfirmColi(e) {
+        e.preventDefault()
+        navigateTo('submitting')
+        const formData = new FormData(e.currentTarget)
+        const coliOtp = formData.get('coliOtp')
+
+        fetchJSON(`${serverPath}dropColiCode?code=${coliOtp}&id=${coliId}&type=${type}`).then(
+            data => {
+                console.log(data)
+                navigateTo('idle')
+                if (data.statut === false) {
+                    setAlert(true)
+                    setValid(false)
+                    notify.warning('Données invalides!🙄')
+                    return
+                }
+                dispatch(addDataToState(data))
+                notify.success('Course annulée!🫡')
+                setTimeout(() => notify.success('Vous pouvez fermer cette fenêtre'), 1000)
+            }
+        ).catch(
+            err => {
+                notify.failed('Une erreur est survenue 🤕')
+                navigateTo('idle')
+            }
+        )
+    }
+
+    return (
+        <div className="create-user-box2">
+            {state === 'submitting' && <Loader />}
+            <div className="flex">
+                <div>
+                    <h3 style={{ color: 'blue' }}>Annulation de la course</h3>
+                    <p>###</p>
+                </div>
+                <div className="close-box" onClick={closeBox}>
+                    <i className="fa-solid fa-circle-xmark fa-2x"></i>
+                </div>
+            </div>
+
+
+            {canAlert && <center><p style={{ color: 'red' }}>Code incorrect !!!</p></center>}
+
+            <form action="" onSubmit={ConfirmColi}>
+                <center>
+                    <div className="input">
+                        <input type="text" name="coliOtp" id="coliOtp" style={thisInputStyle} placeholder="Code de confirmation" onChange={() => { setAlert(false); setValid(true) }} />
+                        <div className="i">
+                            <i className="fa-solid fa-key"></i>
+                        </div>
+                    </div>
+                </center>
+
+                <center>
+                    <button type="submit">Enregistrer</button>
+                </center>
+
+            </form>
+
         </div>
     )
 }

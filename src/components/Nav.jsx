@@ -36,7 +36,7 @@ export function FixedNavbar() {
             color: '#09f109'
         },
         {
-            title: user.balance,
+            title: 1,
             desc: 'Cartes',
             color: '#00147e'
         }

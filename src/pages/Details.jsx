@@ -100,7 +100,7 @@ export function NewColis() {
         warning: () => toast.warning('Votre solde est insufisant')
     }
 
-    const {user} = useData()
+    const {user, type} = useData()
     const navigate = useNavigate()
     const dispatch = useDispatch()
     const [canNavigate, setNavigate] = useState(false)
@@ -148,6 +148,7 @@ export function NewColis() {
             lieu,
             refKey,
             avatar: file,
+            type,
         }
         navigateTo('submitting')
         if (user.balance > 50 + price) {

@@ -7,7 +7,7 @@ import { sliceColi } from "../functions/sliceColi"
 import { serverPath } from "../main"
 import { Modal, Button } from 'flowbite-react'
 import { toast } from 'react-toastify';
-import { ColiActionConfirmation } from "./Forms"
+import { ColiActionConfirmation, DropColiConfirmation } from "./Forms"
 
 
 export function ColisContainer({ coliList }) {
@@ -177,11 +177,20 @@ export function ColiStatut() {
         box.style.transform = 'translateX(0%)'
     }
 
+    function openSecondBox() {
+        const box = document.querySelector('.create-user-box2')
+        box.style.transform = 'translateX(0%)'
+    }
+
     async function dropColi(e) {
         e.preventDefault()
         const data = await fetchJSON(`${serverPath}dropColi?id=${id}&type=${type}`)
         if(data.statut===true) {
-            notify.success('Votre coli a été annulé')
+            notify.success('Votre opération a été effectuée ☺️')
+            setTimeout(() => {
+                notify.success('Poursuivons avec la vérification')
+            })
+            openSecondBox()
             setOpenModal(false)
         } else {
             notify.failed(`Échec de l'opération`)
@@ -216,7 +225,7 @@ export function ColiStatut() {
 
                         </div>
                         <div>
-                            <img src={`${serverPath}assets/user/${coli.coliIcon}`} alt="" style={{width: '100%', height: '100px', borderRadius: '10px'}} />
+                            <img src={`${serverPath}assets/colis/${coli.coliIcon}`} alt="" style={{width: '100%', height: '100px', borderRadius: '10px'}} />
                             <p style={{ marginTop: '1rem' }}>Image du colis</p>
                         </div>
                     </div>
@@ -253,6 +262,7 @@ export function ColiStatut() {
                
 
                 <ColiActionConfirmation coliId={id} />
+                <DropColiConfirmation coliId={id} />
             </>
         )
     }

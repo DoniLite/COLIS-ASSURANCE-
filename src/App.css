@@ -875,7 +875,7 @@ label {
   border-radius: 10px;
 }
 
-.create-user-box {
+.create-user-box, .create-user-box2 {
   width: 90%;
   padding: 1rem;
   left: 5%;
@@ -888,11 +888,11 @@ label {
   transform: translateX(110%);
 }
 
-.create-user-box form {
+.create-user-box form, .create-user-box2 form {
   margin: 2rem 0;
 }
 
-.create-user-box input {
+.create-user-box input, .create-user-box2 input{
   width: 90%;
   padding: 1rem;
   border: solid 1px #027bff;
@@ -901,7 +901,7 @@ label {
   margin-bottom: 1rem;
 }
 
-.create-user-box button {
+.create-user-box button, .create-user-box2 button {
   width: 90%;
   padding: 0.5rem;
   border: none;
