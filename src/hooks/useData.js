@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+import { reduceBalance } from '../functions/sliceBalance'
 
 export function useData() {
     /**
@@ -19,13 +20,13 @@ export function useData() {
      */
     const updateData = useSelector((state) => state.userState.updateData)
     /**
-     * @type {typeof user.balance}
+     * @type {string}
      */
-    const balance = useSelector((state) => state.userState.balance)
+    const balance = reduceBalance(useSelector((state) => state.userState.balance))
     /**
      * @type {boolean}
      */
-    const adminAccess = useSelector((state) => state.userState.adminAccess)
+    const adminAccess = useSelector((state) => state.admin.canConnect)
 
     return {
         user,

@@ -22,7 +22,7 @@ function Nav() {
 
 export function FixedNavbar() {
 
-    const { user, type } = useData()
+    const { user, type, balance } = useData()
     console.log(user)
     const squareList = [
         {
@@ -59,7 +59,7 @@ export function FixedNavbar() {
                 </div>
                 <div>
                     <p>Balance</p>
-                    <p>{user.balance == undefined ? 0 : user.balance} FCFA</p>
+                    <p>{balance}</p>
                 </div>
                 <div className="absolute-card">
                     <div>

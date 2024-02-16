@@ -2,7 +2,7 @@ import { NavLink } from "react-router-dom";
 import { SousCompte } from "../components/Colis";
 import { CreateUser } from "../components/Forms";
 import { useSelector, useDispatch } from 'react-redux'
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { fetchJSON } from "../functions/API";
 import { serverPath } from "../main";
 import { useData } from "../hooks/useData";
@@ -19,9 +19,14 @@ import { addDataToState, putConnected, setUserType, ToogleUpdate } from '../app/
 
 export function SousComptePage() {
 
-    const {user, updateData, type} = useData()
-    const [sousComptes, updateAccount] = useState([])
+    const { user, updateData, type } = useData()
+    /**
+     * @type {{current: typeof user[]}}
+     */
+    const ref = useRef([])
+    const [sousComptes, updateAccount] = useState([ref.current])
     console.log(sousComptes)
+    console.log(ref.current)
     const dispatch = useDispatch()
 
     function openBox(e) {
@@ -34,9 +39,8 @@ export function SousComptePage() {
         fetchJSON(`${serverPath}allusers?refKey=${user._id}`).then(
             data => {
                 console.log(data)
-                updateAccount([
-                    ...data.allUsers
-                ])
+                ref.current = data.allUsers
+                updateAccount(ref.current)
             }
         )
         dispatch(ToogleUpdate(false))
@@ -49,9 +53,8 @@ export function SousComptePage() {
             data => {
                 console.log(user)
                 console.log(data)
-                updateAccount([
-                    ...data.allUsers
-                ])
+                ref.current = data.allUsers
+                updateAccount(ref.current)
             }
         )
     }, [])
@@ -70,7 +73,21 @@ export function SousComptePage() {
                     <div className="icon-searh">
                         <i className="fa-solid fa-magnifying-glass"></i>
                     </div>
-                    <input type="search" name="searchBar" id="searchBar" onChange={(e) => updateAccount(sousComptes.filter(account => account.firstname.includes(e.target.value) || account.lastname.includes(e.target.value) || account.username.includes(e.target.value) ))} placeholder="Recherchez un sous compte" />
+                    <input type="search" name="searchBar" id="searchBar" onChange={(e) => {
+                        const searchText = e.target.value.toLowerCase();
+                        if (searchText === '') {
+                            // Si le champ de recherche est vide, réinitialise le tableau d'état
+                            updateAccount(ref.current);
+                        } else {
+                            // Sinon, filtre les sous-comptes en fonction du texte de recherche
+                            updateAccount(sousComptes.filter(account => {
+                                const lowercaseFirstName = account.hasOwnProperty('firstname') ? account.firstname.toLowerCase() : '';
+                                const lowercaseLastName = account.hasOwnProperty('lastname') ? account.lastname.toLowerCase() : '';
+                                const lowercaseUsername = account.username.toLowerCase();
+                                return lowercaseFirstName.includes(searchText) || lowercaseLastName.includes(searchText) || lowercaseUsername.includes(searchText);
+                            }));
+                        }
+                    }} placeholder="Recherchez un sous compte" />
                 </div>
             </div>
             <div className="page-content-side">
@@ -106,7 +123,7 @@ function AllUsers({users}) {
     } else {
         return(
             <div className="sous-compte-div">
-                {users.map((user, index) => (<SousCompte user={user} />))}
+                {users.map((user, index) => (<SousCompte user={user} key={index} />))}
                 {/* <SousCompte />
                     <SousCompte />
                     <SousCompte />

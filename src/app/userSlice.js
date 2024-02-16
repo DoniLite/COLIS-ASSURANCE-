@@ -7,8 +7,7 @@ export const authentificateSlice = createSlice({
         data: {},
         type: undefined,
         updateData: false,
-        balance: 0,
-        adminAccess: false,
+        balance: 0
     },
     reducers: {
         putConnected: (state) => {
@@ -21,6 +20,13 @@ export const authentificateSlice = createSlice({
                 ...state,
                 value: true
             }
+        },
+        updateBalance: (state, action) => {
+            return{
+                ...state,
+                balance: action.payload
+            }
+        
         },
         disconnected: (state) => {
             return{
@@ -57,6 +63,6 @@ export const authentificateSlice = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-export const { putConnected, disconnected, addDataToState, setUserType, ToogleUpdate } = authentificateSlice.actions
+export const { putConnected, updateBalance, disconnected, addDataToState, setUserType, ToogleUpdate } = authentificateSlice.actions
 
 export default authentificateSlice.reducer

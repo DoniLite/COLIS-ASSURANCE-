@@ -4,7 +4,7 @@ import Google from "../assets/img/Google.png"
 import { NavLink, useNavigate, useParams, redirect, useNavigation } from "react-router-dom"
 import { fetchJSON } from "../functions/API"
 import { useSelector, useDispatch } from 'react-redux'
-import { addDataToState, putConnected, setUserType, ToogleUpdate } from '../app/userSlice'
+import { addDataToState, putConnected, setUserType, ToogleUpdate, updateBalance } from '../app/userSlice'
 import { useData } from "../hooks/useData"
 import { Loader, serverPath } from "../main"
 import { HashLoader } from "react-spinners";
@@ -67,6 +67,7 @@ export function Authentification() {
                 console.log(data)
                 if(data.statut===true) {
                     dispatch(addDataToState(data))
+                    dispatch(updateBalance(data.user.balance))
                     dispatch(putConnected())
                     setNavigate(true)
                     navigateTo('idle')
@@ -239,6 +240,7 @@ export function Connexion() {
                 setError(error = false)
                 dispatch(putConnected())
                 dispatch(addDataToState(data))
+                dispatch(updateBalance(data.user.balance))
                 setValid(true)
                 navigateTo('idle')
                 // console.log(redirect('/'))

@@ -2,7 +2,7 @@ import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { Info } from "../components/Colis";
 import { useData } from "../hooks/useData";
 import { fetchJSON } from "../functions/API";
-import { ToogleUpdate } from '../app/userSlice'
+import { ToogleUpdate, addDataToState, updateBalance } from '../app/userSlice'
 import { useSelector, useDispatch } from 'react-redux'
 import { Loader, serverPath } from "../main";
 import { useState } from "react";
@@ -14,8 +14,7 @@ import { inputStyle } from "../components/Forms";
 
 export function Details() {
 
-    const {user} = useData()
-    const balance = user.balance
+    const {user, balance} = useData()
     
     return(
         <div style={{ backgroundColor: '#027bff'}}>
@@ -127,33 +126,31 @@ export function NewColis() {
      */
     async function createColis(e) {
         e.preventDefault()
+        const formData = new FormData(e.currentTarget)
+        const price = parseInt(formData.get('price'))
+        const senderName = formData.get('senderName')
+        const receverName = formData.get('receverName')
+        const senderNumber = formData.get('senderNumber')
+        const receverNumber = formData.get('receverNumber')
+        const description = formData.get('description')
+        const lieu = formData.get('lieu')
+        const file = formData.get('avatar')
+        console.log(file)
+        const refKey = user._id
+
+        const fetchData = {
+            price,
+            senderName,
+            receverName,
+            senderNumber,
+            receverNumber,
+            description,
+            lieu,
+            refKey,
+            avatar: file,
+        }
         navigateTo('submitting')
-        if (user.balance > 50) {
-            const formData = new FormData(e.currentTarget)
-            const price = formData.get('price')
-            const senderName = formData.get('senderName')
-            const receverName = formData.get('receverName')
-            const senderNumber = formData.get('senderNumber')
-            const receverNumber = formData.get('receverNumber')
-            const description = formData.get('description')
-            const lieu = formData.get('lieu')
-            const file = formData.get('avatar')
-            console.log(file)
-            const refKey = user._id
-
-            const fetchData = {
-                price,
-                senderName,
-                receverName,
-                senderNumber,
-                receverNumber,
-                description,
-                lieu,
-                refKey,
-                avatar: file,
-            }
-
-
+        if (user.balance > 50 + price) {
             axios.post(`${serverPath}addColis`, {
                 ...fetchData
             }, {
@@ -165,7 +162,13 @@ export function NewColis() {
                 ({ data }) => {
                     navigateTo("idle")
                     console.log(data)
+                    if(data.statut === false) {
+                        notify.failed()
+                        return
+                    }
                     dispatch(ToogleUpdate(true))
+                    dispatch(addDataToState(data))
+                    dispatch(updateBalance(data.user.balance))
                     notify.success()
                     setNavigate(true)
                 }
@@ -226,7 +229,7 @@ export function NewColis() {
 
             {user.balance < 50 && <p style={{color: 'red'}}>Vous ne pouvez pas ajouter de colis pour l'instant</p>}
 
-            <form action="" onSubmit={createColis} enctype="multipart/form-data">
+            <form action="" onSubmit={createColis} encType="multipart/form-data">
                 <center>
                     <div className="input">
                         <input type="text" name="senderName" id="senderName" placeholder="Nom" style={thisInputStyle} onChange={() => setValid(true)} />
@@ -299,7 +302,7 @@ export function NewColis() {
                     <div className="input">
                         <input type="text" name="lieu" id="lieu" placeholder="Lieu de livraison" style={thisInputStyle} onChange={() => setValid(true)} />
                         <div className="i">
-                            <i class="fa-solid fa-location-dot"></i>
+                            <i className="fa-solid fa-location-dot"></i>
                         </div>
                     </div>
                 </center>

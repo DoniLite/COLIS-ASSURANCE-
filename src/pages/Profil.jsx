@@ -6,8 +6,7 @@ import { serverPath } from "../main";
 
 
 export function Profil() {
-    const {user} = useData()
-    const balance = user.balance
+    const {user, balance} = useData()
     console.log(balance)
     return(
         <>
@@ -23,7 +22,7 @@ export function Profil() {
                 <img src={`${serverPath}assets/user/${user.userIcon}`} alt="" className="user-balance" />
                 <div style={{marginLeft: '1rem'}}>
                     {user.firstname && (<p>{user.firstname} {user.lastname}</p>)}
-                    <p style={{marginTop: '10px'}}>Balance :{balance}  FCFA</p>
+                    <p style={{marginTop: '10px'}}>Balance :{balance}  </p>
                     <p>23.10.2023</p>
                 </div>
             </div>
@@ -47,7 +46,7 @@ export function Profil() {
 
 
 export function Balance() {
-    const {user} = useData()
+    const {user, balance} = useData()
     let [icrement, setIncrement] = useState(1)
     let value = 5000*icrement
 
@@ -67,7 +66,7 @@ export function Balance() {
             <div className="pack">
                 <div>
                     <p style={{ marginBottom: '0.5rem' }}>Balance actuelle</p>
-                    <h2>{user.balance}</h2>
+                    <h2>{balance}</h2>
                 </div>
             </div>
         
