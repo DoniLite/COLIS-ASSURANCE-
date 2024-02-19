@@ -6,19 +6,32 @@ import { fetchJSON } from "../functions/API";
 import { useData } from "../hooks/useData";
 import { serverPath } from "../main";
 import { notify } from "../hooks/useNofication";
+import { all } from "axios";
 
 /**
  * @param {Object[]} state - L'état du reducer.
  * @param {{type: 'en cours'|'terminé'|'annulé', payload: Object[]}} action - L'objet de réduction permettant de recueillir l'action.
  */
 function reducer(state, action) {
-    if(action.type === 'en cours') {
-        return state.filter(item => item.state === 'en cours')
-    } else if(action.type === 'terminé') {
-        return state.filter(item => item.state === 'terminé')
-    } else if (action.type === 'annulé') {
-        return state.filter(item => item.state === 'annulé')
+    switch(action.type) {
+        case 'en cours':
+            return [
+                ...action.payload
+            ]
+        case 'terminé':
+            return [
+                ...action.payload
+            ]
+        case 'annulé':
+            return [
+                ...action.payload
+            ]
+        case 'update':
+            return [...action.payload]
+        default: 
+            return state
     }
+    
 }
 
 const coliList = [
@@ -74,10 +87,23 @@ const coliList = [
 
 
 export function Historique() {
+    /**
+     * 
+     * @param {Event} e 
+     */
+    function setActive(e) {
+        const allItems = document.querySelectorAll('.stat-item')
+        const element = e.currentTarget
+        allItems.forEach(item => {
+            item.classList.remove('active')
+        })
+        element.classList.add('active')
+    }
 
     const params = useParams()
-    const {user, type} = useData()
-    const [colis, addColis] = useState(null)
+    const {user, type, balance} = useData()
+    const [colis, addColis] = useState([])
+    const [filterState, setFilterState] = useState('Tous les colis')
     const [state, dispatch] = useReducer(reducer, colis)
     useEffect(() => {
         fetchJSON(`${serverPath}allColis?refKey=${params.id}&type=${type}`).then(
@@ -86,11 +112,23 @@ export function Historique() {
                 if(data.statut && data.statut === false) {
                     notify.warning('Une erreur s\'est produite 🤕')
                 } else {
-                    addColis(data.allColis)
+                    addColis([
+                        ...data.allColis
+                    ])
+                    dispatch(
+                        {
+                            type: 'update',
+                            payload: data.allColis
+                        }
+                    )
                 }
             }
         )
     }, [])
+
+    const colisTerminés = colis.filter(item => item.state === 'terminé')
+    const colisEnCours = colis.filter(item => item.state === 'en cours')
+    const colisAnnulés = colis.filter(item => item.state === 'annulé')
     return(
         <>
             <div className="first-story-container">
@@ -100,38 +138,38 @@ export function Historique() {
                 <center style={{marginTop: '2.5rem'}}>
                     <img src={`${serverPath}assets/user/${user.userIcon}`} alt="" className="user-balance" />
                     <p style={{ fontWeight: 'bold', marginBottom: '2rem' }}>{user.firstname} {user.lastname}</p>
-                    <h3 style={{marginBottom: '2rem'}}>BALANCE {user.balance[0].balance}</h3>
+                    <h3 style={{marginBottom: '2rem'}}>BALANCE {balance}</h3>
                 </center>
 
                 <div className="side-stat">
-                    <div style={{ color: '#049104', display: 'flex', justifyContent: 'center', alignItems: 'center'}} className="stat-item">
+                    <div style={{ color: '#049104', display: 'flex', justifyContent: 'center', alignItems: 'center' }} className="stat-item" onClick={(e) => {dispatch({type:'terminé', payload: colisTerminés}); setActive(e);}}>
                         <div>
                             <center>
-                                <h3>15</h3>
-                            </center>
-                            <small>En cours</small>
-                        </div>
-                    </div>
-                    <div style={{ color: '#d44115'}} className="stat-item">
-                        <div>
-                            <center>
-                                <h3>10</h3>
+                                <h3>{colisTerminés.length}</h3>
                             </center>
                             <small>Terminés</small>
                         </div>
                     </div>
-                    <div style={{ color: '#d48115' }} className="stat-item">
+                    <div style={{ color: '#d44115' }} className="stat-item" onClick={(e) => {dispatch({ type: 'annulé', payload: colisAnnulés }); setActive(e);}}>
                         <div>
                             <center>
-                                <h3>03</h3>
+                                <h3>{colisAnnulés.length}</h3>
                             </center>
                             <small>Annulés</small>
+                        </div>
+                    </div>
+                    <div style={{ color: '#d48115' }} className="stat-item" onClick={(e) => {dispatch({ type: 'en cours', payload: colisEnCours }); setActive(e);}}>
+                        <div>
+                            <center>
+                                <h3>{colisEnCours.length}</h3>
+                            </center>
+                            <small>En cours</small>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <p style={{marginTop: '350px', padding: '1rem'}}>En cours</p>
+            <p style={{ marginTop: '350px', padding: '1rem' }}>{filterState}</p>
             <ColisContainer coliList={state} />
         </>
     )

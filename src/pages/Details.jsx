@@ -100,7 +100,7 @@ export function NewColis() {
         warning: () => toast.warning('Votre solde est insufisant')
     }
 
-    const {user, type} = useData()
+    const {user, type, trueBalance} = useData()
     const navigate = useNavigate()
     const dispatch = useDispatch()
     const [canNavigate, setNavigate] = useState(false)
@@ -151,7 +151,7 @@ export function NewColis() {
             type,
         }
         navigateTo('submitting')
-        if (user.balance > 50 + price) {
+        if (trueBalance > 50 + price) {
             axios.post(`${serverPath}addColis`, {
                 ...fetchData
             }, {
@@ -228,7 +228,7 @@ export function NewColis() {
             <div style={{ marginTop: '2rem' }} className="trait"></div>
             <h3>Profil expéditeur</h3>
 
-            {user.balance < 50 && <p style={{color: 'red'}}>Vous ne pouvez pas ajouter de colis pour l'instant</p>}
+            {trueBalance < 50 && <p style={{color: 'red'}}>Vous ne pouvez pas ajouter de colis pour l'instant</p>}
 
             <form action="" onSubmit={createColis} encType="multipart/form-data">
                 <center>

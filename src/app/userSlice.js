@@ -22,16 +22,11 @@ export const authentificateSlice = createSlice({
                 value: true
             }
         },
-        updateBalance: async (state, action) => {
-            if(state.type === 'principal'){
-                /**
-                 * @type {{refkey?: string, firstname?: string, lastname?: string, username: string, password?: string, balance?: number, email?: string, phoneNumber?: string, location?: string, userIcon?: string, accounts?: number, livraisons: number, profilCompleted: boolean, registerDate: typeof Date | string, _id: string}}
-                 */
-                const user = await fetchJSON(`api/user?id=${action.payload}&type=${state.type}`)
-                return{
-                    ...state,
-                    balance: user.balance
-                }
+        updateBalance: (state, action) => {
+
+            return {
+                ...state,
+                balance: action.payload
             }
         
         },

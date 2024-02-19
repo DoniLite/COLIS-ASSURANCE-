@@ -86,13 +86,13 @@ export function AdminDetails() {
                 <div className="second-admin-details-comptes">
                     <div className="second-admin-details-comptes-nav">
                         <ul>
-                            <NavLink to={`/colis-assurance/page/admin/accounts-details/${user._id}`}>
+                            <NavLink to={`/colis-assurance/page/admin/accounts-details/${user._id}`} end>
                                 <li><i className="fa-solid fa-user-tag"></i> Sous-comptes</li>
                             </NavLink>
-                            <NavLink to={`/colis-assurance/page/admin/accounts-details/${user._id}/userStory`}>
+                            <NavLink to={`/colis-assurance/page/admin/accounts-details/${user._id}/userStory`} end>
                                 <li><i className="fa-solid fa-clipboard"></i> Historique</li>
                             </NavLink>
-                            <NavLink to={`/colis-assurance/page/admin/accounts-details/${user._id}/actions`}>
+                            <NavLink to={`/colis-assurance/page/admin/accounts-details/${user._id}/actions`} end>
                                 <li><i className="fa-solid fa-gear"></i> Actions</li>
                             </NavLink>
                         </ul>

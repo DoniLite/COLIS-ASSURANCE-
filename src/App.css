@@ -246,10 +246,7 @@ body {
 }
 
 .flex-element .active {
-  background-color: #027bff;
-  padding: 0.5rem;
-  border-radius: 10px 10px 0 0;
-  color: #ffffff;
+  border-bottom: solid 4px #040984;
 }
 
 .balance-cont {
@@ -416,6 +413,10 @@ body {
   display: flex;
   justify-content: space-between;
   padding: 1rem;
+}
+
+.side-stat .active {
+  border-bottom: solid 4px #040984;
 }
 
 .stat-item {

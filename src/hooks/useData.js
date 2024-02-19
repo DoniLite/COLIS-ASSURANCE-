@@ -24,6 +24,10 @@ export function useData() {
      */
     const balance = reduceBalance(useSelector((state) => state.userState.balance))
     /**
+     * @type {number}
+     */
+    const trueBalance = useSelector((state) => state.userState.balance) 
+    /**
      * @type {boolean}
      */
     const adminAccess = useSelector((state) => state.admin.canConnect)
@@ -34,6 +38,7 @@ export function useData() {
         userState,
         updateData,
         balance,
-        adminAccess
+        adminAccess,
+        trueBalance
     }
 }

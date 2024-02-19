@@ -67,7 +67,11 @@ export function Authentification() {
                 console.log(data)
                 if(data.statut===true) {
                     dispatch(addDataToState(data))
-                    dispatch(updateBalance(data.user._id))
+                    if (type === 'principal') {
+                        dispatch(updateBalance(data.user.balance))
+                    } else {
+                        dispatch(updateBalance(data.admin.balance))
+                    }
                     dispatch(putConnected())
                     setNavigate(true)
                     navigateTo('idle')
@@ -235,17 +239,23 @@ export function Connexion() {
                 setError( true)
                 setValid(false)
                 navigateTo('idle')
-                return
+                
+            } else {
+                setError(false)
+                dispatch(putConnected())
+                dispatch(addDataToState(data))
+                if(type==='principal') {
+                    dispatch(updateBalance(data.user.balance))
+                } else {
+                    dispatch(updateBalance(data.admin.balance))
+                }
+                setValid(true)
+                navigateTo('idle')
+                // console.log(redirect('/'))
+                // return 
+                setNavigate(true)
             }
-            setError(false)
-            dispatch(putConnected())
-            dispatch(addDataToState(data))
-            dispatch(updateBalance(data.user._id))
-            setValid(true)
-            navigateTo('idle')
-            // console.log(redirect('/'))
-            // return 
-            setNavigate(true)
+            
         }).catch(
             err => {
                 navigateTo('idle')
@@ -906,7 +916,11 @@ export function ColiActionConfirmation ({coliId}) {
                 navigateTo('idle')
                 if(data.statut===true){
                     dispatch(addDataToState(data))
-                    dispatch(updateBalance(data.user._id))
+                    if (type === 'principal') {
+                        dispatch(updateBalance(data.user.balance))
+                    } else {
+                        dispatch(updateBalance(data.admin.balance))
+                    }
                     notify.success('Course confirmée!🤙🏾')
                     window.location.reload()
                 } else {
@@ -1002,7 +1016,11 @@ export function DropColiConfirmation({coliId}) {
                     return
                 }
                 dispatch(addDataToState(data))
-                dispatch(updateBalance(data.user._id))
+                if (type === 'principal') {
+                    dispatch(updateBalance(data.user.balance))
+                } else {
+                    dispatch(updateBalance(data.admin.balance))
+                }
                 notify.success('Course annulée!🫡')
                 setTimeout(() => notify.success('Vous pouvez fermer cette fenêtre'), 1000)
             }

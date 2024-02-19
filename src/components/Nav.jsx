@@ -107,7 +107,7 @@ export function BottomNav() {
                 </NavLink>
             </div>
             <div>
-                <NavLink to={'/home'} className="prin">
+                <NavLink to={'/'} className="prin">
                     <div>
                         <i className="fa-brands fa-windows fa-2x"></i>
                     </div>
