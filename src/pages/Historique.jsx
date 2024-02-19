@@ -12,7 +12,7 @@ import { all } from "axios";
  * @param {Object[]} state - L'état du reducer.
  * @param {{type: 'en cours'|'terminé'|'annulé', payload: Object[]}} action - L'objet de réduction permettant de recueillir l'action.
  */
-function reducer(state, action) {
+export function coliReducer(state, action) {
     switch(action.type) {
         case 'en cours':
             return [
@@ -104,7 +104,7 @@ export function Historique() {
     const {user, type, balance} = useData()
     const [colis, addColis] = useState([])
     const [filterState, setFilterState] = useState('Tous les colis')
-    const [state, dispatch] = useReducer(reducer, colis)
+    const [state, dispatch] = useReducer(coliReducer, colis)
     useEffect(() => {
         fetchJSON(`${serverPath}allColis?refKey=${params.id}&type=${type}`).then(
             data => {
@@ -142,7 +142,7 @@ export function Historique() {
                 </center>
 
                 <div className="side-stat">
-                    <div style={{ color: '#049104', display: 'flex', justifyContent: 'center', alignItems: 'center' }} className="stat-item" onClick={(e) => {dispatch({type:'terminé', payload: colisTerminés}); setActive(e);}}>
+                    <div style={{ color: '#049104', display: 'flex', justifyContent: 'center', alignItems: 'center' }} className="stat-item" onClick={(e) => {dispatch({type:'terminé', payload: colisTerminés}); setActive(e); setFilterState('terminés')}}>
                         <div>
                             <center>
                                 <h3>{colisTerminés.length}</h3>
@@ -150,7 +150,7 @@ export function Historique() {
                             <small>Terminés</small>
                         </div>
                     </div>
-                    <div style={{ color: '#d44115' }} className="stat-item" onClick={(e) => {dispatch({ type: 'annulé', payload: colisAnnulés }); setActive(e);}}>
+                    <div style={{ color: '#d44115' }} className="stat-item" onClick={(e) => { dispatch({ type: 'annulé', payload: colisAnnulés }); setActive(e); setFilterState('annulé') }}>
                         <div>
                             <center>
                                 <h3>{colisAnnulés.length}</h3>
@@ -158,7 +158,7 @@ export function Historique() {
                             <small>Annulés</small>
                         </div>
                     </div>
-                    <div style={{ color: '#d48115' }} className="stat-item" onClick={(e) => {dispatch({ type: 'en cours', payload: colisEnCours }); setActive(e);}}>
+                    <div style={{ color: '#d48115' }} className="stat-item" onClick={(e) => { dispatch({ type: 'en cours', payload: colisEnCours }); setActive(e); setFilterState('en cours') }}>
                         <div>
                             <center>
                                 <h3>{colisEnCours.length}</h3>

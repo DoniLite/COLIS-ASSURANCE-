@@ -4,7 +4,7 @@ import { reduceBalance } from '../functions/sliceBalance'
 
 export function useData() {
     /**
-     * @type {{refkey?: string, firstname?: string, lastname?: string, username: string, password?: string, balance?: number, email?: string, phoneNumber?: string, location?: string, userIcon?: string, accounts?: number, livraisons: number, profilCompleted: boolean, registerDate: typeof Date | string, _id: string}}
+     * @type {{refkey?: string, firstname?: string, lastname?: string, username: string, password?: string, balance?: number, email?: string, phoneNumber?: string, location?: string, userIcon?: string, accounts?: number, livraisons: number, isChecked?: boolean, profilCompleted: boolean, registerDate: typeof Date | string, _id: string}}
      */
     const user = useSelector((state) => state.userState.data.user)
     /**

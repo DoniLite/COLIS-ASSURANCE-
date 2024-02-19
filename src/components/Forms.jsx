@@ -64,8 +64,8 @@ export function Authentification() {
             json: fetchData
         }).then(
             data => {
-                console.log(data)
-                if(data.statut===true) {
+                
+                if (data.statut ===true) {
                     dispatch(addDataToState(data))
                     if (type === 'principal') {
                         dispatch(updateBalance(data.user.balance))

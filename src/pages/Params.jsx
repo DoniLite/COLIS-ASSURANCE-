@@ -57,7 +57,7 @@ export function Params() {
             <p className="intitulé">Profil d'utilisateur</p>
             <div className="det-params">
                 {user.isChecked === false && (
-                    <NavLink to={'/phoneVerification'}>
+                    <NavLink to={`/phoneVerification/${user._id}`}>
                         <div className="params-item">
                             <i className="fa-solid fa-phone"></i>
                             <p>vérifier votre numéro de téléphone</p>

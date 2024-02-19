@@ -1,14 +1,33 @@
-import { useEffect, useState} from "react"
+import { useEffect, useReducer, useState} from "react"
 import { NavLink, useParams } from 'react-router-dom'
 import { fetchJSON } from "../functions/API"
 import { serverPath } from "../main"
 import { notify } from "../hooks/useNofication"
 import { ColisContainer } from "../components/Colis"
+import { useData } from "../hooks/useData"
+import { coliReducer } from "./Historique"
 
 
 export function SousComptesDetails() {
+
+    /**
+    * 
+    * @param {Event} e 
+    */
+    function setActive(e) {
+        const allItems = document.querySelectorAll('.stat-item')
+        const element = e.currentTarget
+        allItems.forEach(item => {
+            item.classList.remove('active')
+        })
+        element.classList.add('active')
+    }
+
     const [user, setUser] = useState({})
     const [colis, setColis] = useState([])
+    const [filterState, setFilterState] = useState('Tous les colis')
+    const [state, dispatch] = useReducer(coliReducer, colis)
+    const {balance} = useData()
     const params = useParams()
 
     useEffect(() => {
@@ -24,12 +43,17 @@ export function SousComptesDetails() {
                     setColis([
                         ...data.allColis
                     ])
+                    dispatch({type: 'update', payload: data.allColis})
                 }
             }
         ).catch(
 
         )
     }, [])
+
+    const colisTerminés = colis.filter(item => item.state === 'terminé')
+    const colisEnCours = colis.filter(item => item.state === 'en cours')
+    const colisAnnulés = colis.filter(item => item.state === 'annulé')
 
     return (
         <>
@@ -40,39 +64,39 @@ export function SousComptesDetails() {
                 <center style={{ marginTop: '2.5rem' }}>
                     <img src={`${serverPath}assets/user/${user.userIcon}`} alt="" className="user-balance" />
                     <p style={{ fontWeight: 'bold', marginBottom: '2rem' }}>{user.firstname} {user.lastname}</p>
-                    <h3 style={{ marginBottom: '2rem' }}>BALANCE {user.balance}</h3>
+                    <h3 style={{ marginBottom: '2rem' }}>BALANCE {balance}</h3>
                 </center>
 
                 <div className="side-stat">
-                    <div style={{ color: '#049104', display: 'flex', justifyContent: 'center', alignItems: 'center' }} className="stat-item">
+                    <div style={{ color: '#049104', display: 'flex', justifyContent: 'center', alignItems: 'center' }} className="stat-item" onClick={(e) => { dispatch({ type: 'terminé', payload: colisTerminés }); setActive(e); setFilterState('terminés') }}>
                         <div>
                             <center>
-                                <h3>15</h3>
-                            </center>
-                            <small>En cours</small>
-                        </div>
-                    </div>
-                    <div style={{ color: '#d44115' }} className="stat-item">
-                        <div>
-                            <center>
-                                <h3>10</h3>
+                                <h3>{colisTerminés.length}</h3>
                             </center>
                             <small>Terminés</small>
                         </div>
                     </div>
-                    <div style={{ color: '#d48115' }} className="stat-item">
+                    <div style={{ color: '#d44115' }} className="stat-item" onClick={(e) => { dispatch({ type: 'annulé', payload: colisAnnulés }); setActive(e); setFilterState('annulé') }}>
                         <div>
                             <center>
-                                <h3>03</h3>
+                                <h3>{colisAnnulés.length}</h3>
                             </center>
                             <small>Annulés</small>
+                        </div>
+                    </div>
+                    <div style={{ color: '#d48115' }} className="stat-item" onClick={(e) => { dispatch({ type: 'en cours', payload: colisEnCours }); setActive(e); setFilterState('en cours')}}>
+                        <div>
+                            <center>
+                                <h3>{colisEnCours.length}</h3>
+                            </center>
+                            <small>En cours</small>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <p style={{ marginTop: '350px', padding: '1rem' }}>En cours</p>
-            <ColisContainer coliList={colis} />
+            <p style={{ marginTop: '350px', padding: '1rem' }}>{filterState}</p>
+            <ColisContainer coliList={state} />
         </>
     )
 }
