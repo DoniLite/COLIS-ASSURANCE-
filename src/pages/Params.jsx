@@ -19,7 +19,7 @@ export function Params() {
     }
 
     if(canNavigate) {
-        navigate(`/connexion/${type}`)
+        navigate(`/`)
     }
     console.log(user)
     return(

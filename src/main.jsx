@@ -32,5 +32,5 @@ export function Loader() {
   )
 }
 
-export const serverPath = 'http://localhost:3005/'
+export const serverPath = 'https://coli-api.onrender.com/'
 //'https://coli-api.onrender.com/' 

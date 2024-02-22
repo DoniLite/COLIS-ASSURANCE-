@@ -73,7 +73,6 @@ export function Home() {
 
     // const date = moment(user.registerDate)
     // console.log(date.format('DD, MMM YYYY'))
-    console.log(user.registerDate)
 
     
     // if(updateData) {

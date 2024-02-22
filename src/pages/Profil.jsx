@@ -3,6 +3,7 @@ import userImg from "../assets/img/Ghost.jpeg"
 import { useState } from "react";
 import { useData } from "../hooks/useData";
 import { serverPath } from "../main";
+import moment from "moment";
 
 
 export function Profil() {
@@ -23,7 +24,7 @@ export function Profil() {
                 <div style={{marginLeft: '1rem'}}>
                     {user.firstname && (<p>{user.firstname} {user.lastname}</p>)}
                     <p style={{marginTop: '10px'}}>Balance :{balance}  </p>
-                    <p>{user.registerDate}</p>
+                    <p>{moment(user.registerDate).format('DD, MMM YYYY')}</p>
                 </div>
             </div>
 

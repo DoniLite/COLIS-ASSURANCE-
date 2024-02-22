@@ -776,9 +776,9 @@ export function CompleteProfil() {
         // ) 
     }
     
-    // if (nav) {
-    //     navigate('/paramètre')
-    // }
+    if (nav) {
+        navigate('/paramètre')
+    }
 
     return(
         <div className="complet-profil">
@@ -910,7 +910,6 @@ export function ColiActionConfirmation ({coliId}) {
         navigateTo('submitting')
         const formData = new FormData(e.currentTarget)
         const coliOtp = formData.get('coliOtp')
-
         fetchJSON(`${serverPath}addColis?code=${coliOtp}&id=${coliId}&type=${type}`).then(
             data => {
                 navigateTo('idle')
