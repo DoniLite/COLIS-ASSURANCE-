@@ -23,7 +23,7 @@ export function Profil() {
                 <div style={{marginLeft: '1rem'}}>
                     {user.firstname && (<p>{user.firstname} {user.lastname}</p>)}
                     <p style={{marginTop: '10px'}}>Balance :{balance}  </p>
-                    <p>23.10.2023</p>
+                    <p>{user.registerDate}</p>
                 </div>
             </div>
 

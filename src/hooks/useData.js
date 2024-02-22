@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { reduceBalance } from '../functions/sliceBalance'
+import moment from 'moment'
 
 export function useData() {
     /**
@@ -33,7 +34,10 @@ export function useData() {
     const adminAccess = useSelector((state) => state.admin.canConnect)
 
     return {
-        user,
+        user: {
+            ...user,
+            registerDate: moment(user.registerDate).format('DD, MMM YYYY'),
+        },
         type,
         userState,
         updateData,

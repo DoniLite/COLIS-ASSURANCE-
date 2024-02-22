@@ -9,6 +9,7 @@ import { fetchJSON } from "../functions/API";
 import { HashLoader } from "react-spinners";
 import { ToogleUpdate } from '../app/userSlice'
 import { serverPath } from "../main";
+import moment from "moment";
 
 const coliList = [
     {
@@ -69,6 +70,10 @@ export function Home() {
     const [colis, setColis] = useState([])
     const navigation = useNavigation()
     const {state} = navigation
+
+    // const date = moment(user.registerDate)
+    // console.log(date.format('DD, MMM YYYY'))
+    console.log(user.registerDate)
 
     
     // if(updateData) {
