@@ -114,11 +114,33 @@ export function NewColis() {
         border: inputStyle.border + color
     }
     
-    console.log(inputColor)
     function fileUpload(e) {
         e.preventDefault()
         document.querySelector('#colis-file').click()
     }
+
+    const [imageURL, setImageURL] = useState('');
+    const [inputChanged, setInputChanged] = useState(false)
+
+    /**
+     * @param {InputEvent} event
+     */
+    const handleFileChange = (event) => {
+        const file = event.target.files[0];
+
+        if (file) {
+            // Utilise FileReader pour lire le contenu du fichier
+            const reader = new FileReader();
+
+            reader.onloadend = () => {
+                // Met à jour l'état avec l'URL de l'image
+                setImageURL(reader.result);
+                setInputChanged(true)
+            };
+
+            reader.readAsDataURL(file);
+        }
+    };
 
     /**
      * 
@@ -270,11 +292,13 @@ export function NewColis() {
                 <div className="flex">
                     <p style={{ marginTop: '2rem', color: inputColor, }} >Image du colis</p>
                     <div>
-                        <label htmlFor="colis-file"  style={{cursor: 'pointer'}} onClick={fileUpload}>
-                            <i className="fa-solid fa-cloud-arrow-up fa-2x" style={{ color: '#027bff'}} ></i>
+                        <label htmlFor="colis-file" style={{ cursor: 'pointer' }} onClick={fileUpload} >
+                            {!inputChanged && <i className="fa-solid fa-cloud-arrow-up fa-2x" style={{ color: '#027bff' }} ></i>}
                             {inputColor && (<div style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: 'red', position: 'relative', top: '-17px',}}></div>)}
                         </label>
-                        <input type="file" name="avatar" id="colis-file" style={{ display: 'none' }} onChange={() => setColor(true)} />
+                        {inputChanged && <img src={imageURL} alt="colis" style={{ width: '100px', height: '100px', borderRadius: '15px', objectFit: 'cover' }} />}
+                        
+                        <input type="file" name="avatar" id="colis-file" style={{ display: 'none' }} onChange={(e) => { setColor(true); handleFileChange(e) ;}} />
                     </div>
                 </div>
 

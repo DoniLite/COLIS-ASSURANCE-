@@ -8,6 +8,10 @@ import { serverPath } from "../main"
 import { Modal, Button } from 'flowbite-react'
 import { toast } from 'react-toastify';
 import { ColiActionConfirmation, DropColiConfirmation } from "./Forms"
+import moment from "moment"
+moment.locale('fr', {
+    months : ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre']
+})
 
 
 export function ColisContainer({ coliList }) {
@@ -79,7 +83,7 @@ function Coli({data}) {
             </div>
             <div className="redirect">
                 <div>
-                    <NavLink style={{ color: '#ffffff'}} to={`/statut/${data._id}`}>
+                    <NavLink style={{ color: '#ffffff'}} to={`/statut/${data._id}/${data.type}`}>
                         <i className="fa-solid fa-arrow-right"></i>
                     </NavLink>
                 </div>
@@ -152,8 +156,8 @@ export function ColiStatut() {
     const [canAlert, setAlert] = useState(false)
     const [openModal, setOpenModal] = useState(false);
     const coli = coliData.coli
-    const id = params.id
-    const {user, type} = useData()
+    const {id, type} = params   
+    const {user} = useData()
 
     const notify = {
         success: (message) => toast.success(message),
@@ -164,6 +168,7 @@ export function ColiStatut() {
     useEffect(() => {
         fetchJSON(`${serverPath}coliData?id=${id}&type=${type}`).then(
             data => {
+                console.log(data)   
                 addColi(data)
                 
             }
@@ -219,13 +224,12 @@ export function ColiStatut() {
                     <h3>Profil expéditeur</h3>
                     <Info det={coli.inFoExpediteur}>
                         <li key={coli.price}> <span>Valeur</span> : {coli.price} FCFA</li>
+                        <li key={coli.begining}><span>Créé le</span> : {moment(coli.begining).format('DD, MMMM YYYY H[H]:mm')}</li>
                     </Info>
                     <div className="flex">
+                        <div></div>
                         <div>
-
-                        </div>
-                        <div>
-                            <img src={`${serverPath}assets/colis/${coli.coliIcon}`} alt="" style={{width: '100%', height: '100px', borderRadius: '10px'}} />
+                            <img src={`${serverPath}assets/user/${coli.coliIcon}`} alt="" style={{width: '100%', height: '100px', borderRadius: '10px'}} />
                             <p style={{ marginTop: '1rem' }}>Image du colis</p>
                         </div>
                     </div>

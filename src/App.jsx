@@ -80,7 +80,7 @@ const router = createBrowserRouter([
         element: <Statut />,
         children: [
           {
-            path:':id',
+            path:':id/:type',
             element: <ColiStatut />
           }
         ]
