@@ -51,7 +51,7 @@ export function SousComptesDetails() {
         )
     }, [])
 
-    const colisTerminés = colis.filter(item => item.state === 'terminé')
+    const colisTerminés = colis.filter(item => item.state === 'livré')
     const colisEnCours = colis.filter(item => item.state === 'en cours')
     const colisAnnulés = colis.filter(item => item.state === 'annulé')
 
