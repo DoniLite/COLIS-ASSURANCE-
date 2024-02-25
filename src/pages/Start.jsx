@@ -4,7 +4,7 @@ import secondIcon from "../assets/img/COLIS.png"
 import thirdIcon from "../assets/img/icon1.png"
 import { useNavigate } from "react-router-dom"
 import { setUserType } from '../app/userSlice'
-import { useSelector, useDispatch } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { useData } from "../hooks/useData"
 
 export function Start() {

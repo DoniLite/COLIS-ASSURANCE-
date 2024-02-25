@@ -1,5 +1,4 @@
 import { NavLink, useNavigate } from "react-router-dom"
-import user from "../assets/img/Ghost.jpeg"
 import { useData } from "../hooks/useData"
 import { serverPath } from "../main"
 import { disconnected } from "../app/userSlice"

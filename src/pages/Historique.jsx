@@ -1,12 +1,10 @@
 import { ColisContainer } from "../components/Colis";
-import user from "../assets/img/Ghost.jpeg"
 import { NavLink, useParams } from "react-router-dom";
 import { useEffect, useReducer, useState } from "react";
 import { fetchJSON } from "../functions/API";
 import { useData } from "../hooks/useData";
 import { serverPath } from "../main";
 import { notify } from "../hooks/useNofication";
-import { all } from "axios";
 
 /**
  * @param {Object[]} state - L'état du reducer.

@@ -1,12 +1,12 @@
 import { NavLink } from "react-router-dom";
 import { SousCompte } from "../components/Colis";
 import { CreateUser } from "../components/Forms";
-import { useSelector, useDispatch } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { useEffect, useRef, useState } from "react";
 import { fetchJSON } from "../functions/API";
 import { serverPath } from "../main";
 import { useData } from "../hooks/useData";
-import { addDataToState, putConnected, setUserType, ToogleUpdate } from '../app/userSlice'
+import { ToogleUpdate } from '../app/userSlice'
 
 // /**
 //  * 

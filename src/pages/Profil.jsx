@@ -1,5 +1,4 @@
-import { NavLink, Navigate, Outlet, redirect, useNavigate } from "react-router-dom";
-import userImg from "../assets/img/Ghost.jpeg"
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useData } from "../hooks/useData";
 import { serverPath } from "../main";

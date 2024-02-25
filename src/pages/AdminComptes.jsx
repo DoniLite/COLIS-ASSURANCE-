@@ -1,6 +1,5 @@
 import { DashBordNav, TableContainer, TableHeader } from "./TableauDeBord";
-import user from "../assets/img/Ghost.jpeg"
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { fetchJSON } from "../functions/API";
 import { serverPath } from "../main";
 import { NavLink } from 'react-router-dom'

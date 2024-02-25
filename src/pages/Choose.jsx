@@ -1,7 +1,7 @@
 import { NavLink, useParams, useNavigate } from "react-router-dom"
 import colis from "../assets/img/COLIS.png"
 import { setUserType } from "../app/userSlice"
-import { useSelector, useDispatch } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { useData } from "../hooks/useData"
 import { fetchJSON } from "../functions/API"
 import { Loader, serverPath } from "../main"

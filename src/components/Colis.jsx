@@ -1,11 +1,10 @@
 import { NavLink, useParams } from "react-router-dom"
-import user from "../assets/img/Ghost.jpeg"
 import { useData } from "../hooks/useData"
 import { useEffect, useState } from "react"
 import { fetchJSON } from "../functions/API"
 import { sliceColi } from "../functions/sliceColi"
 import { serverPath } from "../main"
-import { Modal, Button } from 'flowbite-react'
+import { Modal } from 'flowbite-react'
 import { toast } from 'react-toastify';
 import { ColiActionConfirmation, DropColiConfirmation } from "./Forms"
 import moment from "moment"

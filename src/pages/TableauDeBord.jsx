@@ -1,6 +1,5 @@
-import { NavLink, Outlet } from "react-router-dom";
+import { NavLink, } from "react-router-dom";
 import logo from '../assets/img/COLIS.png'
-import user from "../assets/img/Ghost.jpeg"
 import { sliceColi } from "../functions/sliceColi";
 import { serverPath } from "../main";
 import { useEffect, useState } from "react";

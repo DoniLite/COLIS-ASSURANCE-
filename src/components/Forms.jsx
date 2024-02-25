@@ -1,16 +1,13 @@
-import { useEffect, useState } from "react"
+import {  useState } from "react"
 import colis from "../assets/img/COLIS.png"
 import Google from "../assets/img/Google.png"
-import { NavLink, useNavigate, useParams, redirect, useNavigation } from "react-router-dom"
+import { NavLink, useNavigate, useParams } from "react-router-dom"
 import { fetchJSON } from "../functions/API"
-import { useSelector, useDispatch } from 'react-redux'
+import {  useDispatch } from 'react-redux'
 import { addDataToState, putConnected, setUserType, ToogleUpdate, updateBalance } from '../app/userSlice'
 import { useData } from "../hooks/useData"
 import { Loader, serverPath } from "../main"
-import { HashLoader } from "react-spinners";
 import axios from 'axios'
-import { toast } from 'react-toastify';
-import { Modal } from 'flowbite-react';
 import 'react-toastify/dist/ReactToastify.min.css';
 import { useCustomNavigation } from "../hooks/useCustomNavigation"
 import { notify } from "../hooks/useNofication"

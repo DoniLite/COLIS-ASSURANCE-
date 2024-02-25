@@ -1,9 +1,8 @@
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { Info } from "../components/Colis";
 import { useData } from "../hooks/useData";
-import { fetchJSON } from "../functions/API";
 import { ToogleUpdate, addDataToState, updateBalance } from '../app/userSlice'
-import { useSelector, useDispatch } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { Loader, serverPath } from "../main";
 import { useState } from "react";
 import axios from 'axios'

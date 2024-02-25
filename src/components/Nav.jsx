@@ -1,5 +1,4 @@
 import { NavLink } from "react-router-dom";
-import userimg from '../assets/img/Ghost.jpeg'
 import qrCode from '../assets/img/qr.png'
 import { useData } from "../hooks/useData";
 import { serverPath } from "../main";
