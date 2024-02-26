@@ -148,7 +148,7 @@ export function DashBordNav() {
             </div>
 
             <div className="admin-nav-row">
-                <NavLink to={'/colis-assurance/page/admin/hrm'}>
+                <NavLink to={'/colis-assurance/page/admin/hrm'} >
                     <div className="admin-nav-element">
                         <div style={{ display: 'flex', marginLeft: '1.5rem' }}>
                             <i className="fa-solid fa-shapes fa-2x"></i>

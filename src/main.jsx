@@ -6,7 +6,6 @@ import { Provider } from 'react-redux'
 import persistedStore from './app/store'
 import { PersistGate } from 'redux-persist/integration/react'
 import { HashLoader } from "react-spinners";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 
 const { store, persistor } = persistedStore();
@@ -32,5 +31,5 @@ export function Loader() {
   )
 }
 
-export const serverPath = 'https://coli-api.onrender.com/'
+export const serverPath = 'http://localhost:3005/'
 //'https://coli-api.onrender.com/' 
