@@ -235,105 +235,115 @@ export function NewColis() {
         navigate('/')
     }
 
-    return(
-        <div className="new-colis">
-            {state === 'submitting' && <Loader />}
-            <div className="flex">
-                <div>
-                    <h3>Ajouter une course</h3>
-                    <p>Compte principal</p>
-                </div>
-
-                <div></div>
+    if(user.blocked & user.blocked === true) {
+        return(
+            <div className="">
+                <center>
+                    <p>Désolé mais votre compte est blocqué <br /> certains actions sont restraintes sur votre compte</p>
+                </center>
             </div>
-            <div style={{ marginTop: '2rem' }} className="trait"></div>
-            <h3>Profil expéditeur</h3>
-
-            {trueBalance < 50 && <p style={{color: 'red'}}>Vous ne pouvez pas ajouter de colis pour l'instant</p>}
-
-            <form action="" onSubmit={createColis} encType="multipart/form-data">
-                <center>
-                    <div className="input">
-                        <input type="text" name="senderName" id="senderName" placeholder="Nom" style={thisInputStyle} onChange={() => setValid(true)} />
-                        <div className="i">
-                            <i className="fa-solid fa-user-tag"></i>
-                        </div>
-                    </div>
-                </center>
-
-                <center>
-                    <div className="input">
-                        <input type="tel" name="senderNumber" id="senderNumber" placeholder="Numéro de télephone" style={thisInputStyle} />
-                        <div className="i">
-                            <i className="fa-solid fa-phone"></i>
-                        </div>
-                    </div>
-                </center>
-
-                <center>
-                    <div className="input">
-                        <input type="text" name="price" id="price" placeholder="Valeur du colis" style={thisInputStyle} />
-                        <div className="i">
-                            <i className="fa-solid fa-money-bill-1"></i>
-                        </div>
-                    </div>
-                </center>
-
-                <center>
-                    <div className="input">
-                        <input type="text" name="description" id="description" placeholder="Description du colis" style={thisInputStyle} />
-                        <div className="i">
-                            <i className="fa-solid fa-font"></i>
-                        </div>
-                    </div>
-                </center>
-
+        )
+    } else {
+        return (
+            <div className="new-colis">
+                {state === 'submitting' && <Loader />}
                 <div className="flex">
-                    <p style={{ marginTop: '2rem', color: inputColor, }} >Image du colis</p>
                     <div>
-                        <label htmlFor="colis-file" style={{ cursor: 'pointer' }} onClick={fileUpload} >
-                            <i className="fa-solid fa-cloud-arrow-up fa-2x" style={{ color: '#027bff' }} ></i>
-                            {inputColor && (<div style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: 'red', position: 'relative', top: '-17px',}}></div>)}
-                        </label>
-                        <input type="file" name="avatar" id="colis-file" style={{ display: 'none' }} onChange={(e) => { setColor(true); handleFileChange(e) ;}} />
+                        <h3>Ajouter une course</h3>
+                        <p>Compte principal</p>
                     </div>
+
+                    <div></div>
                 </div>
-
                 <div style={{ marginTop: '2rem' }} className="trait"></div>
-                <h3>Profile recepteur</h3>
+                <h3>Profil expéditeur</h3>
 
-                <center>
-                    <div className="input">
-                        <input type="receverName" name="receverName" id="" placeholder="Nom" style={thisInputStyle} />
-                        <div className="i">
-                            <i className="fa-solid fa-user-tag"></i>
+                {trueBalance < 50 && <p style={{ color: 'red' }}>Vous ne pouvez pas ajouter de colis pour l'instant</p>}
+
+                <form action="" onSubmit={createColis} encType="multipart/form-data">
+                    <center>
+                        <div className="input">
+                            <input type="text" name="senderName" id="senderName" placeholder="Nom" style={thisInputStyle} onChange={() => setValid(true)} />
+                            <div className="i">
+                                <i className="fa-solid fa-user-tag"></i>
+                            </div>
+                        </div>
+                    </center>
+
+                    <center>
+                        <div className="input">
+                            <input type="tel" name="senderNumber" id="senderNumber" placeholder="Numéro de télephone" style={thisInputStyle} />
+                            <div className="i">
+                                <i className="fa-solid fa-phone"></i>
+                            </div>
+                        </div>
+                    </center>
+
+                    <center>
+                        <div className="input">
+                            <input type="text" name="price" id="price" placeholder="Valeur du colis" style={thisInputStyle} />
+                            <div className="i">
+                                <i className="fa-solid fa-money-bill-1"></i>
+                            </div>
+                        </div>
+                    </center>
+
+                    <center>
+                        <div className="input">
+                            <input type="text" name="description" id="description" placeholder="Description du colis" style={thisInputStyle} />
+                            <div className="i">
+                                <i className="fa-solid fa-font"></i>
+                            </div>
+                        </div>
+                    </center>
+
+                    <div className="flex">
+                        <p style={{ marginTop: '2rem', color: inputColor, }} >Image du colis</p>
+                        <div>
+                            <label htmlFor="colis-file" style={{ cursor: 'pointer' }} onClick={fileUpload} >
+                                <i className="fa-solid fa-cloud-arrow-up fa-2x" style={{ color: '#027bff' }} ></i>
+                                {inputColor && (<div style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: 'red', position: 'relative', top: '-17px', }}></div>)}
+                            </label>
+                            <input type="file" name="avatar" id="colis-file" style={{ display: 'none' }} onChange={(e) => { setColor(true); handleFileChange(e); }} />
                         </div>
                     </div>
-                </center>
 
-                <center>
-                    <div className="input">
-                        <input type="tel" name="receverNumber" id="receverNumber" placeholder="Numéro de télephone" style={thisInputStyle} />
-                        <div className="i">
-                            <i className="fa-solid fa-phone"></i>
+                    <div style={{ marginTop: '2rem' }} className="trait"></div>
+                    <h3>Profile recepteur</h3>
+
+                    <center>
+                        <div className="input">
+                            <input type="receverName" name="receverName" id="" placeholder="Nom" style={thisInputStyle} />
+                            <div className="i">
+                                <i className="fa-solid fa-user-tag"></i>
+                            </div>
                         </div>
-                    </div>
-                </center>
+                    </center>
 
-                <center>
-                    <div className="input">
-                        <input type="text" name="lieu" id="lieu" placeholder="Lieu de livraison" style={thisInputStyle} onChange={() => setValid(true)} />
-                        <div className="i">
-                            <i className="fa-solid fa-location-dot"></i>
+                    <center>
+                        <div className="input">
+                            <input type="tel" name="receverNumber" id="receverNumber" placeholder="Numéro de télephone" style={thisInputStyle} />
+                            <div className="i">
+                                <i className="fa-solid fa-phone"></i>
+                            </div>
                         </div>
-                    </div>
-                </center>
+                    </center>
 
-                <center>
-                    <button type="submit">Enregistrer</button>
-                </center>
+                    <center>
+                        <div className="input">
+                            <input type="text" name="lieu" id="lieu" placeholder="Lieu de livraison" style={thisInputStyle} onChange={() => setValid(true)} />
+                            <div className="i">
+                                <i className="fa-solid fa-location-dot"></i>
+                            </div>
+                        </div>
+                    </center>
 
-            </form>
-        </div>
-    )
+                    <center>
+                        <button type="submit">Enregistrer</button>
+                    </center>
+
+                </form>
+            </div>
+        )
+    }
 }

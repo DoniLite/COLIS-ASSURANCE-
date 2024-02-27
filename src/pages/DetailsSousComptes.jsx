@@ -1,5 +1,5 @@
 import { useEffect, useReducer, useState} from "react"
-import { NavLink, useParams } from 'react-router-dom'
+import { NavLink, useParams, useNavigation } from 'react-router-dom'
 import { fetchJSON } from "../functions/API"
 import { serverPath } from "../main"
 import { notify } from "../hooks/useNofication"
@@ -14,10 +14,12 @@ export function SousComptesDetails() {
 
     const [user, setUser] = useState({})
     const [colis, setColis] = useState([])
+    const [canNavigate, setNavigate] = useState(false)
     const [openModal, setOpenModal] = useState(false);
     const [action, setAction] = useState('')
     const [filterState, setFilterState] = useState('Tous les colis')
     const [state, dispatch] = useReducer(coliReducer, colis)
+    const navigate = useNavigation()
     const {user: admin} = useData()
     const params = useParams()
 
@@ -88,8 +90,11 @@ export function SousComptesDetails() {
                         console.log(data)
                         if(data.statut && data.statut === true) {
                             notify.success('Le compte a été bloqué')
+                            setOpenModal(false)
+                            setNavigate(true)
                         }else {
                             notify.failed('Une erreur est survenue')
+                            setOpenModal(false)
                         }
                     }
                 ).catch(
@@ -104,8 +109,11 @@ export function SousComptesDetails() {
                         console.log(data)
                         if(data.statut && data.statut === true) {
                             notify.success('Le compte a été supprimé')
+                            setOpenModal(false)
+                            setNavigate(true)
                         }else {
                             notify.failed('Une erreur est survenue')
+                            setOpenModal(false)
                         }
                     }
                 ).catch(
@@ -141,6 +149,10 @@ export function SousComptesDetails() {
     const colisTerminés = colis.filter(item => item.state === 'livré')
     const colisEnCours = colis.filter(item => item.state === 'en cours')
     const colisAnnulés = colis.filter(item => item.state === 'annulé')
+
+    if(canNavigate) {
+        navigate('/compte-entreprise')
+    }
 
     return (
         <>
