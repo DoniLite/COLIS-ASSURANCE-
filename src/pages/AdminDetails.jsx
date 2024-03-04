@@ -377,6 +377,7 @@ export function AdminActions() {
         }).then(
             data => {
                 if(data.statut === true) {
+                    notify.success('Action effectuée avec succès')
                     window.location.reload()
                 } else {
                     notify.failed("une erreur s'est produite veuillez réssayer")
@@ -395,7 +396,7 @@ export function AdminActions() {
                 <div className="close-box"></div>
             </div>
 
-            <form action="" style={{width: '50%', margin: '0 auto'}}>
+            <form action="" style={{ width: '50%', margin: '0 auto' }} onSubmit={rechargement}>
                 <center>
                     <div className="input">
                         <input type="text" name="value" id="value" style={thisInputStyle}  placeholder="Montant de la recharge"  />

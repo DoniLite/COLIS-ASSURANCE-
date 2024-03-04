@@ -5,11 +5,14 @@ import { useData } from "../hooks/useData";
 import { useEffect, useState } from "react";
 import { fetchJSON } from "../functions/API";
 import { serverPath } from "../main";
+import { updateBalance } from "../app/userSlice";
+import {useDispatch} from 'react-redux'
 
 export function Home() {
 
     const {userState, user, type,} = useData()
     const [colis, setColis] = useState([])
+    const dispatch = useDispatch()
     
     if(userState) {
         useEffect(() => {
@@ -20,6 +23,7 @@ export function Home() {
                     setColis([
                         ...data.allColis
                     ])
+                    dispatch(updateBalance(data.balance))
                     console.log(data)
                 }
             ).catch(
@@ -31,12 +35,22 @@ export function Home() {
         
         return (
             <>
-                <FixedNavbar />
-                <div className="body">
-                    <p style={{ color: 'black', fontWeight: 'bold', padding: '5px' }}>Récents</p>
-                    <ColisContainer coliList={colis} />
-                </div>
-                <BottomNav />
+               {user.blocked===false && (
+                    <>
+                        <FixedNavbar />
+                        <div className="body">
+                            <p style={{ color: 'black', fontWeight: 'bold', padding: '5px' }}>Récents</p>
+                            <ColisContainer coliList={colis} />
+                        </div>
+                        <BottomNav />
+                    </>
+               )}
+
+               {user.blocked===true && (
+                    <>
+                        <p style={{textAlign: 'center', fontWeight: 'bold', marginTop: '50vh'}}>L'accès à votre compte vous a été revoqué...</p>
+                    </>
+               )}
             </>
         )
     } else {
