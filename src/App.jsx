@@ -15,7 +15,7 @@ import { SousComptePage } from './pages/SousComptes'
 import { AdminConnexion } from './pages/AdminConnexion'
 import { AllRecharges, TableauDeBord } from './pages/TableauDeBord'
 import { AccountsManagement } from './pages/AdminComptes'
-import { AdminActions, AdminComptesStory, AdminDetails, AdminSousComptes, FlowBox } from './pages/AdminDetails'
+import { AdminActions, AdminComptesStory, AdminDetails, AdminSousComptes, FlowBox, StoryContainer } from './pages/AdminDetails'
 import { forwardRef, useEffect } from 'react'
 import { fetchJSON } from './functions/API'
 import { useData } from './hooks/useData'
@@ -156,23 +156,13 @@ const router = createBrowserRouter([
           {
             path: '',
             element: <AdminSousComptes />,
-            children: [
-              {
-                path: 'path/:id',
-                element: <FlowBox />
-              },
-              {
-                path: 'story',
-                element: <AdminComptesStory />
-              }
-            ]
           },
           {
             path: 'userStory',
-            element: <AdminComptesStory />
+            element: <StoryContainer />
           },
           {
-            path: 'actions',
+            path: 'actions/:amount',
             element: <AdminActions />,
           }
         ]

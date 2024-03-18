@@ -2,7 +2,7 @@ import { Outlet, NavLink, useParams } from "react-router-dom";
 import { DashBordNav, TableContainer, TableHeader } from "./TableauDeBord";
 import userPNG from "../assets/img/Ghost.jpeg"
 import { ColisContainer } from "../components/Colis";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { fetchJSON } from "../functions/API";
 import { serverPath } from "../main";
 import { notify } from "../hooks/useNofication";
@@ -23,6 +23,7 @@ export function AdminDetails() {
                 setuser({
                     ...data.user
                 })
+                console.log(data)
             }
         ).catch(
             err => {
@@ -104,7 +105,7 @@ export function AdminDetails() {
                             <NavLink to={`/colis-assurance/page/admin/accounts-details/${user._id}/userStory`} end>
                                 <li><i className="fa-solid fa-clipboard"></i> Historique</li>
                             </NavLink>
-                            <NavLink to={`/colis-assurance/page/admin/accounts-details/${user._id}/actions`} end>
+                            <NavLink to={`/colis-assurance/page/admin/accounts-details/${user._id}/actions/0`} end>
                                 <li><i className="fa-solid fa-gear"></i> Actions</li>
                             </NavLink>
                         </ul>
@@ -122,6 +123,8 @@ export function AdminDetails() {
 export function AdminSousComptes() {
 
     const params = useParams()
+    const [componentParam, setParam] = useState('')
+    const [component, setComponent] = useState('Profil')
     const {id} = params
     const [accounts, setAccounts] = useState([])
 
@@ -141,6 +144,33 @@ export function AdminSousComptes() {
         )
     }, [])
     console.log(id)
+    console.log(component)
+
+    /**
+     * 
+     * @param {MouseEvent} e 
+     */
+    const putRef = (e)=>{
+        e.preventDefault()
+        const el = e.currentTarget
+        console.log(el.getAttribute('id'))
+        setParam(el.getAttribute('id'))
+    }
+
+    /**
+     * 
+     * @param {MouseEvent} e 
+     */
+    const loadComponant = (e)=>{
+        e.preventDefault()
+        const el = e.currentTarget
+        const links = document.querySelectorAll('.second-admin-details-comptes-nav ul li')
+        links.forEach(link=>{
+            link.classList.remove('active')
+        })
+        setComponent(el.innerText)
+        el.classList.add('active')
+    }
     
 
     return(
@@ -160,14 +190,14 @@ export function AdminSousComptes() {
 
                 <div className="recent-users-grid2">
                     {accounts.map(user => (
-                        <div style={{ marginBottom: '0.5rem' }} className="recent-user-element">
+                        <div key={user._id} id={user._id} style={{ marginBottom: '0.5rem', cursor: 'pointer' }} className="recent-user-element" onClick={putRef}>
                             <div>
                                 <center>
                                     <img src={`${serverPath}assets/user/${user.userIcon}`} alt="" className="user-balance" />
                                 </center>
                                 <div style={{ marginTop: '0.5rem' }}>
                                     <center>
-                                        <h4 style={{ color: '#33379b' }}>{user.firstname ?? sliceColi(user._id)} {user.lastname ?? 'Undefined'}</h4>
+                                        <h4 style={{ color: '#33379b' }}>{user.firstname ?? ''} {user.lastname ?? user.email.slice(0, 10) + '...'}</h4>
                                         <small>{user.location ?? '###'}</small>
                                     </center>
                                 </div>
@@ -182,15 +212,11 @@ export function AdminSousComptes() {
 
                 <div className="second-admin-details-comptes-nav">
                     <ul>
-                        <NavLink to={`/colis-assurance/page/admin/accounts-details/${id}`}>
-                            <li>Profil</li>
-                        </NavLink>
-                        <NavLink to={`/colis-assurance/page/admin/accounts-details/${id}/story`}>
-                            <li>Historique</li>
-                        </NavLink>
+                        <li className="active" onClick={loadComponant}>Profil</li>
+                        <li onClick={loadComponant}>Historique</li>
                     </ul>
                     <div className="render-box-model">
-                        <Outlet />
+                        <AdminFlowChildren activComponent={component} param={componentParam} />
                     </div>
                 </div>
             </div>
@@ -198,27 +224,56 @@ export function AdminSousComptes() {
     )
 }
 
-
-export function FlowBox() {
-
-    const user = {
-        _id: '65c0d424522ad8102f0e41f5',
-        username: 'brigitte',
-        password: '$2b$10$2q46cjDZVlG6Xv1k4dOR1.16ikYJmaba87Z2sM8lBa5I8Yf.ZCjsW',
-        balance: [{ balance: 0, _id: '65c0d424522ad8102f0e41f4' }],
-        email: 'brigitte@mail.com',
-        location: 'Hawai',
-        userIcon: 'user.svg',
-        accounts: 0,
-        livraisons: 0,
-        profilCompleted: false,
-        isChecked: false,
-        registerDate: '2024-02-05T12:27:16.848Z',
-        __v: 0,
-        phoneNumber: '+22607224034',
-        firstname: 'Doni',
-        lastname: 'Ghost',
+const AdminFlowChildren = ({activComponent, param})=>{
+    if(activComponent==='Profil'){
+        return <FlowBox param={param}/>
     }
+    return <AdminComptesStory param={param} />
+}
+
+/**
+ * 
+ * @param {{param: string}} param0 
+ * @returns 
+ */
+export function FlowBox({param}) {
+
+    
+    if(param.length<5){
+        return <></>
+    } 
+
+    const [user, setUser] = useState()
+    useEffect(() => {
+        fetchJSON(`${serverPath}api/userData?id=${param}&type=secondaire`)
+            .then(data => {
+                console.log(data)
+                setUser(data.user)
+            })
+            .catch(err => {
+                console.log(err)
+                notify.failed('une erreur s\'est produite')
+            })
+    }, [])
+
+    // const user = {
+    //     _id: '65c0d424522ad8102f0e41f5',
+    //     username: 'brigitte',
+    //     password: '$2b$10$2q46cjDZVlG6Xv1k4dOR1.16ikYJmaba87Z2sM8lBa5I8Yf.ZCjsW',
+    //     balance: [{ balance: 0, _id: '65c0d424522ad8102f0e41f4' }],
+    //     email: 'brigitte@mail.com',
+    //     location: 'Hawai',
+    //     userIcon: 'user.svg',
+    //     accounts: 0,
+    //     livraisons: 0,
+    //     profilCompleted: false,
+    //     isChecked: false,
+    //     registerDate: '2024-02-05T12:27:16.848Z',
+    //     __v: 0,
+    //     phoneNumber: '+22607224034',
+    //     firstname: 'Doni',
+    //     lastname: 'Ghost',
+    // }
 
     return (
         <>
@@ -250,16 +305,21 @@ export function FlowBox() {
             </div>
         </>
     )
+    
 }
 
-export function AdminComptesStory() {
+/**
+ * 
+ * @param {{param: string, type: 'principal'|'secondaire'}} param0 
+ * @returns 
+ */
+export function AdminComptesStory({param, type}) {
     const [colis, setColis] = useState([])
-    const params = useParams()
-    const type = 'principal'
-    console.log(params.id)
-
+    if(param.length<5){
+        return <></>
+    }
     useEffect(() => {
-        fetchJSON(`${serverPath}allColis?refKey=${params.id}&type=${type}`).then(
+        fetchJSON(`${serverPath}allColis?refKey=${param}&type=${type}`).then(
             data => {
                 setColis([
                     ...data.allColis
@@ -281,9 +341,21 @@ export function AdminComptesStory() {
     )
 }
 
+export const StoryContainer = ()=>{
+    const params = useParams()
+    const {id} = params
+    return (
+        <>
+            <AdminComptesStory param={id} type="principal" />
+        </>
+    )
+}
+
 
 export function AdminActions() {
     const params = useParams()
+    const {amount} = params
+    const [inputValue, setValue] = useState(amount)
     const [isValid, setValid] = useState(true)
     const {state, navigateTo} = useCustomNavigation()
     const [action, setAction] = useState('')
@@ -307,6 +379,13 @@ export function AdminActions() {
             case 'Bloquer':
                 setAction('bloquer')
                 setOpenModal(true)
+                fetchJSON()
+                    .then(data=>{
+                        console.log(data)
+                    })
+                    .catch(err=>{
+                        console.log(err)
+                    })
                 break
             case 'Supprimer':
                 setAction('supprimer')
@@ -318,7 +397,7 @@ export function AdminActions() {
     function actionsHandler() {
         switch (action) {
             case 'bloquer':
-                fetchJSON(`${serverPath}sousComptes?action=bloquer&id=${user._id}`).then(
+                fetchJSON(`${serverPath}accountsActions?action=bloquer&id=${params.id}`).then(
                     data => {
                         console.log(data)
                         if (data.statut && data.statut === true) {
@@ -337,7 +416,7 @@ export function AdminActions() {
                 )
                 break
             case 'supprimer':
-                fetchJSON(`${serverPath}accountsActions?action=supprimer&id=${user._id}&admin=${admin._id}`).then(
+                fetchJSON(`${serverPath}accountsActions?action=supprimer&id=${params.id}`).then(
                     data => {
                         console.log(data)
                         if (data.statut && data.statut === true) {
@@ -399,7 +478,7 @@ export function AdminActions() {
             <form action="" style={{ width: '50%', margin: '0 auto' }} onSubmit={rechargement}>
                 <center>
                     <div className="input">
-                        <input type="text" name="value" id="value" style={thisInputStyle}  placeholder="Montant de la recharge"  />
+                        <input type="text" name="value" id="value" onChange={(e)=>{setValue(e.currentTarget.value)}} value={inputValue} style={thisInputStyle}  placeholder="Montant de la recharge"  />
                         <div className="i">
                             <i className="fa-regular fa-credit-card"></i>
                         </div>

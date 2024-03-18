@@ -219,7 +219,7 @@ function TableDataContent({user}) {
             <h4>{user.mode}</h4>
             <h4>{user.agent}</h4>
             <h4>{user.statut}</h4>
-            <NavLink to={`/colis-assurance/page/admin/accounts-details/${user._id}`}>
+            <NavLink to={`/colis-assurance/page/admin/accounts-details/${user._id}/actions/${user.amount}`} end>
                 <h4 style={{ cursor: 'pointer' }}><i className="fa-solid fa-circle-arrow-right fa-2x"></i></h4>
             </NavLink>
         </div>

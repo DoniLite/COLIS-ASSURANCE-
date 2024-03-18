@@ -1,34 +1,25 @@
 import { DashBordNav, TableContainer, TableHeader } from "./TableauDeBord";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState, lazy } from "react";
 import { fetchJSON } from "../functions/API";
-import { serverPath } from "../main";
+import { Loader, serverPath } from "../main";
 import { NavLink } from 'react-router-dom'
+import { CreateForm, createUserCustomHandler } from "../components/CreateForm";
 
 
 export function AccountsManagement() {
 
-    const [allUsers, setUser] = useState([])
-    // const [canFetch, setFetch] = useState(true)
+   
     
 
-    useEffect(() => {
-        fetchJSON(`${serverPath}allUserAdmin`).then(
-            data => {
-                setUser([
-                    ...data.allUsers
-                ])
-                setFetch(false)
-            }
-        ).catch(
-            err => {
-                console.log(err)
-            }
-        )
-    }, [])
-
-    console.log(allUsers)
-    
-
+    /**
+     * 
+     * @param {MouseEvent} e 
+     */
+    function showForm(e) {
+        e.preventDefault()
+        const box = document.querySelector('.create-user-box')
+        box.style.transform = 'translateX(0%)'
+    }
     
 
     return(
@@ -40,7 +31,7 @@ export function AccountsManagement() {
                     <div className="first-admin-comptes-label-child">
                         <div>
                             <h1>Utilisateurs</h1>
-                            <button>Ajouter</button>
+                            <button style={{cursor: 'pointer',}} onClick={showForm}>Ajouter</button>
                         </div>
                         <div>
                             <p>Voir de 1 à 9 comptes principaux</p>
@@ -55,9 +46,10 @@ export function AccountsManagement() {
                         </dir>
                     </div>
 
-                    <div className="second-admin-comptes-label-child">
-                        {allUsers.map(user => <ComptesCard user={user}/>)}
-                    </div>
+                    <Suspense fallback={<Loader />}>
+                        <Users />
+                    </Suspense>
+                    <CreateUserBox />
                 </div>
             </div>
         </TableContainer>
@@ -65,29 +57,36 @@ export function AccountsManagement() {
 }
 
 
-function ComptesCard({user}) {
-    return(
-        <div className="card-admin-comptes-label">
-            <div className="row">
-                <div className="grid">
-                    <img src={`${serverPath}assets/user/${user.userIcon}`} alt="" className="user-balance" />
-                    <p><b>{user.firstname ?? 'Unknown'} {user.lastname??''}</b> <br />
-                        <small>{user.location??'###'}</small>
-                    </p>
-                </div>
+const Users = lazy(()=> import('../components/AllUsers'))
 
-                <div className="grid-button">
-                    <NavLink>
-                        <button>Recharges</button>
-                    </NavLink>
-                    <NavLink to={`/colis-assurance/page/admin/accounts-details/${user._id}`}>
-                        <button>Profil</button>
-                    </NavLink>
-                </div>
-            </div>
-            <div className="row">
-                <small>Balance: {user.balance}</small> <small>Courses: {user.livraisons}</small> <small>Sous-comptes: {user.accounts}</small>
-            </div>
+const CreateUserBox = ()=> {
+    return(
+        <div style={{width: '70%', margin: '0 auto'}}>
+            <CreateForm
+                customObject={[
+                    {
+                        type: 'text',
+                        inputName: 'username',
+                        placeholder: 'Nom d\'utilisateur',
+                        iconClass: 'fa-solid fa-user-tag'
+                    },
+                    {
+                        type: 'email',
+                        inputName: 'email',
+                        placeholder: 'Adresse mail',
+                        iconClass: 'fa-solid fa-envelope'
+                    },
+                    {
+                        type: 'password',
+                        inputName: 'password',
+                        placeholder: 'Mot de passe',
+                        iconClass: 'fa-solid fa-key'
+                    }
+                ]}
+                inputDescription="Ajouter un utilisateur"
+                btn="Enregisrer"
+                eventHandler={createUserCustomHandler}
+            />
         </div>
     )
 }

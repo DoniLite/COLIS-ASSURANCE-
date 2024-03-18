@@ -1,7 +1,7 @@
-import {  useState } from "react"
+import React, {  useState } from "react"
 import colis from "../assets/img/COLIS.png"
 import Google from "../assets/img/Google.png"
-import { NavLink, useNavigate, useParams } from "react-router-dom"
+import { NavLink, useNavigate, useParams, redirect } from "react-router-dom"
 import { fetchJSON } from "../functions/API"
 import {  useDispatch } from 'react-redux'
 import { addDataToState, putConnected, setUserType, ToogleUpdate, updateBalance } from '../app/userSlice'
@@ -11,6 +11,7 @@ import axios from 'axios'
 import 'react-toastify/dist/ReactToastify.min.css';
 import { useCustomNavigation } from "../hooks/useCustomNavigation"
 import { notify } from "../hooks/useNofication"
+import { Home } from "../pages/Home"
 
 export const inputStyle = {
     width: '90%',
@@ -236,22 +237,21 @@ export function Connexion() {
                 setError( true)
                 setValid(false)
                 navigateTo('idle')
-                
-            } else {
-                setError(false)
-                dispatch(putConnected())
-                dispatch(addDataToState(data))
-                if(type==='principal') {
-                    dispatch(updateBalance(data.user.balance))
-                } else {
-                    dispatch(updateBalance(data.admin.balance))
-                }
-                setValid(true)
-                navigateTo('idle')
-                // console.log(redirect('/'))
-                // return 
-                setNavigate(true)
+                return
             }
+            setError(false)
+            dispatch(putConnected())
+            dispatch(addDataToState(data))
+            if (type === 'principal') {
+                dispatch(updateBalance(data.user.balance))
+            } else {
+                dispatch(updateBalance(data.admin.balance))
+            }
+            setValid(true)
+            navigateTo('idle')
+            // console.log(redirect('/'))
+            // return  redirect('/')
+            setNavigate(true)
             
         }).catch(
             err => {
@@ -261,68 +261,68 @@ export function Connexion() {
         )
     }
 
-    if(canNavigate) {
-        navigate('/')
-    }
-
-    return (
-        <div className="connexion">
-            { state === 'submitting'  && <Loader />}
-            <div className="flex-div">
-                <div></div>
-                <img src={colis} alt="" className="app-logo" />
-            </div>
-
-            <h3 style={{ color: 'black', marginTop: '2rem' }}>Renseignez...</h3>
-            <p style={{  marginBottom: '2rem' }}>Bienvenue sur Colis-Assurance</p>
-            {error && (<p style={{ color: 'red' }}>Nom d'utilisateur ou mot de passe incorect...</p>)}
-
-            <form action="" onSubmit={connectUser}>
-                <label htmlFor="email">Adresse email</label>
-                <center>
-                    <div className="input">
-                        <input type="text" name="email" id="email" style={thisInputStyle} onChange={() => {setValid(true); setError(false);}}/>
-                        <div className="i">
-                            <i className="fa-solid fa-envelope"></i>
-                        </div>
-                    </div>
-                </center>
-
-                <label htmlFor="passWord">Mot de passe</label>
-                <center>
-                    <div className="input">
-                        <input type={inputClass} name="password" id="password" style={thisInputStyle} onChange={() => { setInput(false); setValid(true); setError(false); }} />
-                        <div className="i" onClick={() => setInput(v => !v)}>
-                            <i className='fa-solid fa-key'></i>
-                        </div>
-                    </div>
-                </center>
-                <div style={{ margin: '1rem' }}>
-                    <NavLink to={'/recupération'}>
-                        Mot de passe oublié?
-                    </NavLink>
+    if(!canNavigate) {
+        return(
+            <div className="connexion">
+                {state === 'submitting' && <Loader />}
+                <div className="flex-div">
+                    <div></div>
+                    <img src={colis} alt="" className="app-logo" />
                 </div>
 
-                <center>
-                    <div className="btn-group">
-                        <button>CONNEXION</button>
-                        <button>
-                            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', height: '100%' }}>
-                                <div style={{position: 'relative', bottom: '6px'}}>
-                                    <img src={Google} alt="" style={{ width: '1.5rem', position: 'relative', top: '7px', right: '10px' }} />
-                                       Connexion avec Google
-                                </div>
-                            </div>
-                        </button>
-                    </div>
-                </center>
-            </form>
+                <h3 style={{ color: 'black', marginTop: '2rem' }}>Renseignez...</h3>
+                <p style={{ marginBottom: '2rem' }}>Bienvenue sur Colis-Assurance</p>
+                {error && (<p style={{ color: 'red' }}>Nom d'utilisateur ou mot de passe incorect...</p>)}
 
-            <div style={{ margin: '1rem' }}>
-                <small>N'avez vous pas de <NavLink to={'/inscription'} style={{ color: 'blue' }} >compte</NavLink>?</small>
+                <form action="" onSubmit={connectUser}>
+                    <label htmlFor="email">Adresse email</label>
+                    <center>
+                        <div className="input">
+                            <input type="text" name="email" id="email" style={thisInputStyle} onChange={() => { setValid(true); setError(false); }} />
+                            <div className="i">
+                                <i className="fa-solid fa-envelope"></i>
+                            </div>
+                        </div>
+                    </center>
+
+                    <label htmlFor="passWord">Mot de passe</label>
+                    <center>
+                        <div className="input">
+                            <input type={inputClass} name="password" id="password" style={thisInputStyle} onChange={() => { setInput(false); setValid(true); setError(false); }} />
+                            <div className="i" onClick={() => setInput(v => !v)}>
+                                <i className='fa-solid fa-key'></i>
+                            </div>
+                        </div>
+                    </center>
+                    <div style={{ margin: '1rem' }}>
+                        <NavLink to={'/recupération'}>
+                            Mot de passe oublié?
+                        </NavLink>
+                    </div>
+
+                    <center>
+                        <div className="btn-group">
+                            <button>CONNEXION</button>
+                            <button>
+                                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', height: '100%' }}>
+                                    <div style={{ position: 'relative', bottom: '6px' }}>
+                                        <img src={Google} alt="" style={{ width: '1.5rem', position: 'relative', top: '7px', right: '10px' }} />
+                                        Connexion avec Google
+                                    </div>
+                                </div>
+                            </button>
+                        </div>
+                    </center>
+                </form>
+
+                <div style={{ margin: '1rem' }}>
+                    <small>N'avez vous pas de <NavLink to={'/inscription'} style={{ color: 'blue' }} >compte</NavLink>?</small>
+                </div>
             </div>
-        </div>
-    )
+        )
+    }
+    return <Home />
+
 }
 
 export function Inscription() {
