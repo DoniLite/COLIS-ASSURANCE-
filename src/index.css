@@ -41,6 +41,13 @@
     } */
 }
 
+@media (min-width:1000px) {
+    .create-user-box {
+        width: 50%;
+        left: 46%;
+    }
+}
+
 input[type='search']::placeholder {
     color: #ffffff;
 }

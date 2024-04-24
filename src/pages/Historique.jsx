@@ -117,7 +117,7 @@ export function Historique() {
             </div>
 
             <p style={{ marginTop: '350px', padding: '1rem' }}>{filterState}</p>
-            <ColisContainer coliList={state} />
+            <ColisContainer coliList={state} admin={false} />
         </>
     )
 }

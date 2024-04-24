@@ -123,6 +123,9 @@ export function Authentification() {
 
 export function PhoneVerification() {
     const navigate = useNavigate()
+    /**
+     * @type {string}
+     */
     let errorMessage
     const [isValid, setValid] = useState(true)
     const { state, navigateTo } = useCustomNavigation()
@@ -184,6 +187,45 @@ export function PhoneVerification() {
                 </center>
 
                 <center style={{marginTop: '2rem'}}>
+                    <button type="submit">Ajouter le numéro</button>
+                </center>
+            </form>
+        </div>
+    )
+}
+
+export function Recupération() {
+    const [isValid, setValid] = useState(true)
+    const { state, navigateTo } = useCustomNavigation()
+
+    const color = isValid ? '#027bff' : 'red'
+
+    const thisInputStyle = {
+        ...inputStyle,
+        border: inputStyle.border + color
+    }
+
+    return (
+        <div className="verif">
+
+            {state === 'submitting' && <Loader />}
+            <div className="flex-div">
+                <div></div>
+                <img src={colis} alt="" className="app-logo" />
+            </div>
+
+            <h1 style={{ color: 'black', marginTop: '6rem' }}>Vérification Phone</h1>
+            <p style={{ fontWeight: 'bold', marginBottom: '4rem' }}>Veuillez insérer votre numéro</p>
+            {errorMessage !== undefined && <center><p>{errorMessage}</p> </center>}
+
+            <form action="" onSubmit={SubmitPhone}>
+                <small>Saisissez le numéro sans identifiant ex:00112233</small>
+                <label htmlFor="number">Numéro</label>
+                <center>
+                    <input type="tel" name="number" id="number" style={thisInputStyle} onChange={() => setValid(true)} />
+                </center>
+
+                <center style={{ marginTop: '2rem' }}>
                     <button type="submit">Ajouter le numéro</button>
                 </center>
             </form>

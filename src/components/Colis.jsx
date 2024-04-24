@@ -1,6 +1,6 @@
 import { NavLink, useParams } from "react-router-dom"
 import { useData } from "../hooks/useData"
-import { useEffect, useState } from "react"
+import React, { useEffect, useState } from "react"
 import { fetchJSON } from "../functions/API"
 import { sliceColi } from "../functions/sliceColi"
 import { serverPath } from "../main"
@@ -12,8 +12,11 @@ moment.locale('fr', {
     months : ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre']
 })
 
-
-export function ColisContainer({ coliList }) {
+/**
+ * 
+ * @param {{coliList: {user: string, price: number, isValidate: boolean, droped: boolean, state: string, description: string, lieu: string, begining: Date ,inFoExpediteur: any[], inFoRecepteur: any[], coliIcon: string,type: String}[], admin: boolean}} param0  
+ */
+export function ColisContainer({ coliList, admin }) {
     
     if (coliList === null) {
         return(
@@ -26,14 +29,19 @@ export function ColisContainer({ coliList }) {
     } else {
         return (
             <>
-                {coliList.map((coli, index) => <Coli key={index} data={coli} />)}
+                {coliList.map((coli, index) => <Coli key={index} data={coli} isAdmin={admin} />)}
             </>
         )
     }
     
 }
 
-function Coli({data}) {
+/**
+ * 
+* @param {{data: {user: string, price: number, isValidate: boolean, droped: boolean, state: string, description: string, lieu: string, begining: Date,inFoExpediteur: any[], inFoRecepteur: any[], coliIcon: string,type: String}, isAdmin: boolean}} param0 
+ * @returns {React.JSX.Element}
+ */
+function Coli({data, isAdmin}) {
 
     const statut = data.state
     
@@ -82,7 +90,7 @@ function Coli({data}) {
             </div>
             <div className="redirect">
                 <div>
-                    <NavLink style={{ color: '#ffffff'}} to={`/statut/${data._id}/${data.type}`}>
+                    <NavLink style={{ color: '#ffffff' }} to={`/statut/${isAdmin}/${data._id}/${data.type}`}>
                         <i className="fa-solid fa-arrow-right"></i>
                     </NavLink>
                 </div>
@@ -103,59 +111,14 @@ export function Info({det, children}) {
 }
 
 
-const infoExpéditeur = [
-    {
-        title: 'Nom',
-        info: 'TRAORE Gounghin',
-    },
-    {
-        title: 'N°CNI',
-        info: 'B12349000'
-    },
-    {
-        title: 'Numéro',
-        info: '+226 74678999'
-    },
-    {
-        title: 'Valeur du colis',
-        info: '18 000'
-    },
-    {
-        title: 'Description',
-        info: 'Colis de madame TRAORE Gounghin, envoyé par M. OUEDRAOGO de Karparla 18h30. Valeur du colis 18 000. Sac de tisane'
-    }
-]
-
-const infoReceveur = [
-    {
-        title: 'Nom',
-        info: 'OUEDRAOGO Josué',
-    },
-    {
-        title: 'N°CNI',
-        info: 'B12098900',
-    },
-    {
-        title: 'Numéro',
-        info: '+226 74678999'
-    },
-    {
-        title: 'Valeur du colis',
-        info: '18 000'
-    },
-    {
-        title: 'Lieu de livraison',
-        info: 'KARPARLA'
-    }
-]
-
 export function ColiStatut() {
     const params = useParams()
     const [coliData, addColi] = useState({})
     const [canAlert, setAlert] = useState(false)
     const [openModal, setOpenModal] = useState(false);
     const coli = coliData.coli
-    const {id, type} = params   
+    const {id, type, admin} = params   
+    console.log(admin)
     const {user} = useData()
 
     const notify = {

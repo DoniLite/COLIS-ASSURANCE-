@@ -10,6 +10,7 @@ import {useDispatch} from 'react-redux'
 
 export function Home() {
 
+    const ws = new WebSocket('ws://localhost:3005/')
     const {userState, user, type,} = useData()
     const [colis, setColis] = useState([])
     const dispatch = useDispatch()

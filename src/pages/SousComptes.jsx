@@ -24,7 +24,7 @@ export function SousComptePage() {
      * @type {{current: typeof user[]}}
      */
     const ref = useRef([])
-    const [sousComptes, updateAccount] = useState([ref.current])
+    const [sousComptes, updateAccount] = useState([...ref.current])
     console.log(sousComptes)
     console.log(ref.current)
     const dispatch = useDispatch()
@@ -75,7 +75,7 @@ export function SousComptePage() {
                     </div>
                     <input type="search" name="searchBar" id="searchBar" onChange={(e) => {
                         const searchText = e.target.value.toLowerCase();
-                        if (searchText === '') {
+                        if (searchText.length < 1) {
                             // Si le champ de recherche est vide, réinitialise le tableau d'état
                             updateAccount(ref.current);
                         } else {

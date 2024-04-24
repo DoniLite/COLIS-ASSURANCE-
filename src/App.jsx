@@ -76,7 +76,7 @@ const router = createBrowserRouter([
         element: <CompleteProfil />,
       },
       {
-        path: 'statut',
+        path: 'statut/:admin',
         element: <Statut />,
         children: [
           {
@@ -162,7 +162,7 @@ const router = createBrowserRouter([
             element: <StoryContainer />
           },
           {
-            path: 'actions/:amount',
+            path: 'actions/:amount/:userState',
             element: <AdminActions />,
           }
         ]

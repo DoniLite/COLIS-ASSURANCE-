@@ -11,12 +11,13 @@ const persistConfig = {
 }
 
 const persistedReducer = persistReducer(persistConfig, userStateReducer)
+const persistedAdmin = persistReducer(persistConfig, adminReducer)
 
 export default () => {
     let store = configureStore({
         reducer: {
             userState: persistedReducer,
-            admin: adminReducer,
+            admin: persistedAdmin,
         }
     })
     let persistor = persistStore(store)
