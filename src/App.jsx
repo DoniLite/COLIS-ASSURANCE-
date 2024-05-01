@@ -9,7 +9,7 @@ import { Historique } from './pages/Historique'
 import { Map } from './pages/Map'
 import { Choice, Choose } from './pages/Choose'
 import { Start } from './pages/Start'
-import { Authentification, CompleteProfil, Connexion, Inscription, PhoneVerification } from './components/Forms'
+import { Authentification, CompleteProfil, Connexion, Inscription, PhoneVerification, Recupération, ResetPassword } from './components/Forms'
 import { ColiStatut, ColisContainer } from './components/Colis'
 import { SousComptePage } from './pages/SousComptes'
 import { AdminConnexion } from './pages/AdminConnexion'
@@ -61,7 +61,12 @@ const router = createBrowserRouter([
         element: <Choose />
       },
       {
-        path: 'recupération'
+        path: 'recupération',
+        element: <Recupération />
+      },
+       {
+        path: 'reset/:id/:action',
+        element: <ResetPassword />
       },
       {
         path: 'details-souscomptes/:id',
