@@ -218,19 +218,21 @@ export function AdminSousComptes() {
 
                 <div className="recent-users-grid2">
                     {accounts.map(user => (
-                        <div key={user._id} data-id={user._id} style={{ marginBottom: '0.5rem', cursor: 'pointer' }} className="recent-user-element" onClick={putRef}>
-                            <div>
-                                <center>
-                                    <img src={`${serverPath}assets/user/${user.userIcon}`} alt="" className="user-balance" />
-                                </center>
-                                <div style={{ marginTop: '0.5rem' }}>
+                        <NavLink key={user._id} to={` path/${user._id}`}>
+                            <div style={{ marginBottom: '0.5rem', cursor: 'pointer' }} className="recent-user-element">
+                                <div>
                                     <center>
-                                        <h4 style={{ color: '#33379b' }}>{user.firstname ?? ''} {user.lastname ?? user.email.slice(0, 10) + '...'}</h4>
-                                        <small>{user.location ?? '###'}</small>
+                                        <img src={`${serverPath}assets/user/${user.userIcon}`} alt="" className="user-balance" />
                                     </center>
+                                    <div style={{ marginTop: '0.5rem' }}>
+                                        <center>
+                                            <h4 style={{ color: '#33379b' }}>{user.firstname ?? ''} {user.lastname ?? user.email.slice(0, 10) + '...'}</h4>
+                                            <small>{user.location ?? '###'}</small>
+                                        </center>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        </NavLink>
                     ))}
                 </div>
             </div>
@@ -252,67 +254,41 @@ export function AdminSousComptes() {
     )
 }
 
-const AdminFlowChildren = ({activComponent, param})=>{
-    if(activComponent==='Profil'){
-        return <FlowBox param={param}/>
-    }
-    return <AdminComptesStory param={param} />
-}
 
-/**
- * 
- * @param {{param: string}} param0 
- * @returns 
- */
-export function FlowBox({param}) {
+export function FlowBox() {
 
-    
-    if(param.length<5){
-        return <></>
-    } 
+    const params = useParams()
+    const {id} = params
 
-    const {user} = useData()
-    // /**
-    //  * @type {{current: typeof user}}
-    //  */
-    // const userRef = useRef()
-    const [ThisUser, setUser] = useState()
-    const [canRender, setRender] = useState(false)
-    useEffect(() => {
-        fetchJSON(`${serverPath}api/userData?id=${param}&type=secondaire`)
-            .then(data => {
-                console.log(data)
-                // userRef.current = data.user
-                setUser(data.user)
-                setRender(true)
+    useEffect(()=>{
+        fetchJSON(`${serverPath}`)
+            .then(data=>{
+                
             })
-            .catch(err => {
+            .catch(err=>{
                 console.log(err)
                 notify.failed('une erreur s\'est produite')
             })
-    }, [param])
+    }, [])
 
-    console.log(ThisUser) 
-    
-
-    // const user = {
-    //     _id: '65c0d424522ad8102f0e41f5',
-    //     username: 'brigitte',
-    //     password: '$2b$10$2q46cjDZVlG6Xv1k4dOR1.16ikYJmaba87Z2sM8lBa5I8Yf.ZCjsW',
-    //     balance: [{ balance: 0, _id: '65c0d424522ad8102f0e41f4' }],
-    //     email: 'brigitte@mail.com',
-    //     location: 'Hawai',
-    //     userIcon: 'user.svg',
-    //     accounts: 0,
-    //     livraisons: 0,
-    //     profilCompleted: false,
-    //     isChecked: false,
-    //     registerDate: '2024-02-05T12:27:16.848Z',
-    //     __v: 0,
-    //     phoneNumber: '+22607224034',
-    //     firstname: 'Doni',
-    //     lastname: 'Ghost',
-    // }
+    const user = {
+        _id: '65c0d424522ad8102f0e41f5',
+        username: 'brigitte',
+        password: '$2b$10$2q46cjDZVlG6Xv1k4dOR1.16ikYJmaba87Z2sM8lBa5I8Yf.ZCjsW',
+        balance: [{ balance: 0, _id: '65c0d424522ad8102f0e41f4' }],
+        email: 'brigitte@mail.com',
+        location: 'Hawai',
+        userIcon: 'user.svg',
+        accounts: 0,
+        livraisons: 0,
+        profilCompleted: false,
+        isChecked: false,
+        registerDate: '2024-02-05T12:27:16.848Z',
+        __v: 0,
+        phoneNumber: '+22607224034',
+        firstname: 'Doni',
+        lastname: 'Ghost',
+    }
 
     if(canRender) {
         return (
