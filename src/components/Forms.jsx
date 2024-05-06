@@ -376,14 +376,13 @@ export function ResetPassword() {
                 {errorMessage !== undefined && <center><p>{errorMessage}</p> </center>}
 
                 <form action="" onSubmit={submitPassword}>
-                    <small>Vous recevrez un SMS pour confirmer votre appartenence au compte</small>
-                    <label htmlFor="number"></label>
+                    <label htmlFor="number">Mot de passe</label>
                     <center>
                         <input type="password" name="password" id="password" style={thisInputStyle} onChange={() => setValid(true)} />
                     </center>
 
                     <center style={{ marginTop: '2rem' }}>
-                        <button type="submit">Retrouver...</button>
+                        <button type="submit">Mettre à jour</button>
                     </center>
                 </form>
             </div>
