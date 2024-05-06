@@ -1,5 +1,6 @@
 import { useSelector } from 'react-redux'
 import { reduceBalance } from '../functions/sliceBalance'
+import { useRef } from 'react'
 
 export function useData() {
     /**
@@ -30,7 +31,6 @@ export function useData() {
      * @type {boolean}
      */
     const adminAccess = useSelector((state) => state.admin.canConnect)
-
     /**
      * @type {typeof user[]}
      */

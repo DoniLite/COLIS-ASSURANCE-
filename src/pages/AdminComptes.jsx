@@ -2,7 +2,7 @@ import { DashBordNav, TableContainer, TableHeader } from "./TableauDeBord";
 import { Suspense, useEffect, useState, lazy, useRef } from "react";
 import { fetchJSON } from "../functions/API";
 import { Loader, serverPath } from "../main";
-import { NavLink } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
 import { CreateForm, createUserCustomHandler } from "../components/CreateForm";
 import { useData } from "../hooks/useData";
 import { AdminConnexion } from "./AdminConnexion";
@@ -14,6 +14,7 @@ export function AccountsManagement() {
 
    const {adminAccess, allUsers} = useData()
    const dispatch = useDispatch()
+   const navigate = useNavigate()
    const usersRef = useRef(allUsers)
     
 
@@ -40,8 +41,7 @@ export function AccountsManagement() {
         dispatch(filterList(paylod))
     }
 
-    if (adminAccess) {
-        return (
+    return (
             <TableContainer>
                 <DashBordNav />
                 <div className="table-content2">
@@ -73,11 +73,6 @@ export function AccountsManagement() {
                 </div>
             </TableContainer>
         )
-    }
-    
-    return (
-        <AdminConnexion />
-    )
     
 }
 
