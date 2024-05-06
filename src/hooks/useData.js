@@ -31,6 +31,11 @@ export function useData() {
      */
     const adminAccess = useSelector((state) => state.admin.canConnect)
 
+    /**
+     * @type {typeof user[]}
+     */
+    const allUsers = useSelector(state => state.users.list)
+
     return {
         user,
         type,
@@ -38,6 +43,7 @@ export function useData() {
         updateData,
         balance,
         adminAccess,
-        trueBalance
+        trueBalance,
+        allUsers
     }
 }

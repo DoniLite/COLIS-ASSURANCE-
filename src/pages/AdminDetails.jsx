@@ -68,7 +68,7 @@ export function AdminDetails() {
                                 <img src={`${serverPath}assets/user/${user.userIcon}`} alt="" />
                                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginLeft: '1rem' }}>
                                     <div>
-                                        <h2 style={{ color: 'blue' }}>{user.firstname} {user.lastname}</h2>
+                                        <h2 style={{ color: 'blue' }}>{user.firstname?? user.username} {user.lastname}</h2>
                                         <p>{moment(user.registerDate).format('DD, MMM YYYY')}</p>
                                     </div>
                                 </div>
@@ -266,7 +266,6 @@ const AdminFlowChildren = ({activComponent, param})=>{
  */
 export function FlowBox({param}) {
 
-    
     if(param.length<5){
         return <></>
     } 
@@ -276,6 +275,8 @@ export function FlowBox({param}) {
     //  * @type {{current: typeof user}}
     //  */
     // const userRef = useRef()
+    const [action, setAction] = useState('')
+    const [openModal, setOpenModal] = useState(false);
     const [ThisUser, setUser] = useState()
     const [canRender, setRender] = useState(false)
     useEffect(() => {
@@ -293,6 +294,88 @@ export function FlowBox({param}) {
     }, [param])
 
     console.log(ThisUser) 
+
+     /**
+     * 
+     * @param {PointerEvent} e 
+     */
+    function actionControler(e) {
+        e.preventDefault()
+        let text = e.currentTarget.innerText
+        switch (text) {
+            case 'Bloquer':
+                setAction('bloquer')
+                setOpenModal(true)
+                break
+            case 'Supprimer':
+                setAction('supprimer')
+                setOpenModal(true)
+                break
+            case 'Débloquer':
+                setAction('débloquer')
+                setOpenModal(true)
+                break
+        }
+    }
+
+    function actionsHandler() {
+        switch (action) {
+            case 'bloquer':
+                fetchJSON(`${serverPath}accountsActions?action=bloquer&id=${param}&admin=${ThisUser.user}`).then(
+                    data => {
+                        console.log(data)
+                        if (data.statut === true) {
+                            notify.success('Le compte a été bloqué')
+                            setOpenModal(false)
+                        } else {
+                            notify.failed('Une erreur est survenue')
+                            setOpenModal(false)
+                        }
+                    }
+                ).catch(
+                    err => {
+                        notify.failed('Une erreur est survenue')
+                    }
+                )
+                break
+            case 'supprimer':
+                fetchJSON(`${serverPath}accountsActions?action=supprimer&id=${param}&admin=${ThisUser.user}`).then(
+                    data => {
+                        console.log(data)
+                        if (data.statut === true) {
+                            notify.success('Le compte a été supprimé')
+                            setOpenModal(false)
+                        } else {
+                            notify.failed('Une erreur est survenue')
+                            setOpenModal(false)
+                        }
+                    }
+                ).catch(
+                    err => {
+                        notify.failed('Une erreur est survenue')
+                    }
+                )
+                break;
+            case 'débloquer' :
+                fetchJSON(`${serverPath}accountsActions?action=débloquer&id=${param}&admin=${ThisUser.user}`).then(
+                    data => {
+                        console.log(data)
+                        if (data.statut === true) {
+                            notify.success('Le compte a été débloquer')
+                            setOpenModal(false)
+                        } else {
+                            notify.failed('Une erreur est survenue')
+                            setOpenModal(false)
+                        }
+                    }
+                ).catch(
+                    err => {
+                        notify.failed('Une erreur est survenue')
+                    }
+                )
+                break;
+        }
+    }   
     
 
     // const user = {
@@ -322,13 +405,13 @@ export function FlowBox({param}) {
                         <img style={{ width: '3rem', height: '3rem', borderRadius: '50%', marginTop: '10px' }} src={`${serverPath}assets/user/${ThisUser.userIcon}`} alt="" />
                         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginLeft: '10px', }}>
                             <div>
-                                <h4 style={{ color: 'blue' }}>{ThisUser.firstname??''} {ThisUser.lastname??''}</h4>
+                                <h4 style={{ color: 'blue' }}>{ThisUser.firstname?? ThisUser.username} {ThisUser.lastname??''}</h4>
                                 <p>{moment(ThisUser.registerDate).format('DD, MMM YYYY')}</p>
                             </div>
                         </div>
                     </div>
                     <div className="column">
-                        <p><i className="fa-solid fa-envelope"></i> {ThisUser.email}</p>
+                        <p><i className="fa-solid fa-envelope"></i> {ThisUser.email.length > 10 ? ThisUser.email.slice(0, 10)+'...' : ThisUser.email}</p>
                         <p><i className="fa-solid fa-phone"></i> {ThisUser.phoneNumber}</p>
                         <p><i className="fa-solid fa-location-dot"></i> {ThisUser.location} </p>
                     </div>
@@ -340,9 +423,23 @@ export function FlowBox({param}) {
                     </div>
                 </div>
                 <div className="flex">
-                    <button style={{ width: '40%', padding: '10px', background: 'orange' }}>Bloquer</button>
-                    <button style={{ width: '40%', padding: '10px', background: 'red' }}>Supprimer</button>
+                    <button style={{ width: '40%', padding: '10px', background: 'orange'}} onClick={actionControler}>Bloquer</button>
+                    <button style={{ width: '40%', padding: '10px', background: 'red' }} onClick={actionControler}>Supprimer</button>
                 </div>
+                <Modal show={openModal} onClose={() => setOpenModal(false)} style={{ zIndex: '9999' }}>
+                <div className="modal">
+                    <h3>{action} le Compte?</h3>
+                    <p>Voulez-vous vraiment {action} ce compte ? <br /> Si vous cliquez sur oui cette action ne pourra plus être irréversible</p>
+                    <div className="flex">
+                        <button variant="secondary" onClick={() => setOpenModal(false)}>
+                            Annuler
+                        </button>
+                        <button variant="primary" onClick={actionsHandler}>
+                            Oui
+                        </button>
+                    </div>
+                </div>
+            </Modal>
             </>
         )
     }

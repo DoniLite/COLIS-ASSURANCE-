@@ -18,7 +18,7 @@ export function Choice() {
     const {user, type} = useData()
     const {state, navigateTo} = useCustomNavigation()
     const [link, setLink] = useState('')
-    const [mode, setMode] = useState('')
+    const [mode, setMode] = useState('Agence')
 
     /**
      * 

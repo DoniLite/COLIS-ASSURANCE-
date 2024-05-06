@@ -9,7 +9,7 @@ import { Historique } from './pages/Historique'
 import { Map } from './pages/Map'
 import { Choice, Choose } from './pages/Choose'
 import { Start } from './pages/Start'
-import { Authentification, CompleteProfil, Connexion, Inscription, PhoneVerification } from './components/Forms'
+import { Authentification, CompleteProfil, Connexion, Inscription, PhoneVerification, Recupération, ResetPassword } from './components/Forms'
 import { ColiStatut, ColisContainer } from './components/Colis'
 import { SousComptePage } from './pages/SousComptes'
 import { AdminConnexion } from './pages/AdminConnexion'
@@ -61,7 +61,12 @@ const router = createBrowserRouter([
         element: <Choose />
       },
       {
-        path: 'recupération'
+        path: 'recupération',
+        element: <Recupération />
+      },
+      {
+        path: 'reset/:action/:id',
+        element: <ResetPassword />
       },
       {
         path: 'details-souscomptes/:id',
@@ -142,7 +147,7 @@ const router = createBrowserRouter([
         element: <TableauDeBord />,
       },
       {
-        path: 'colis-assurance/page/admin/allRecharges',
+        path: 'colis-assurance/page/admin/allRecharges/:id',
         element: <AllRecharges />,
       },
       {
@@ -172,10 +177,6 @@ const router = createBrowserRouter([
 ])
 
 function Root() {
-
-  const navigation = useNavigation()
-  let { state } = navigation
-  const {userState} = useData()
 
   return (
     <>
@@ -222,35 +223,3 @@ const Box = forwardRef(({ children }, ref) =>{
 const MotionBox = motion(Box)
 
 export default App
-
-
-// const mongoose = require('mongoose');
-
-// // Schéma pour l'utilisateur principal
-// const UtilisateurPrincipalSchema = new mongoose.Schema({
-//     nom: String,
-//     // Référence vers les sous-comptes
-//     sousComptes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'SousCompte' }]
-// });
-
-// // Schéma pour les sous-comptes
-// const SousCompteSchema = new mongoose.Schema({
-//     nom: String,
-//     // Référence vers l'utilisateur principal
-//     utilisateurPrincipal: { type: mongoose.Schema.Types.ObjectId, ref: 'UtilisateurPrincipal' }
-// });
-
-// // Modèles
-// const UtilisateurPrincipal = mongoose.model('UtilisateurPrincipal', UtilisateurPrincipalSchema);
-// const SousCompte = mongoose.model('SousCompte', SousCompteSchema);
-
-// // Utilisation de populate pour charger les sous-comptes d'un utilisateur principal
-// UtilisateurPrincipal.findById(utilisateurPrincipalId)
-//     .populate('sousComptes')
-//     .exec((err, utilisateurPrincipal) => {
-//         if (err) {
-//             console.error(err);
-//             return;
-//         }
-//         console.log(utilisateurPrincipal.sousComptes); // Les sous-comptes sont chargés ici
-//     });

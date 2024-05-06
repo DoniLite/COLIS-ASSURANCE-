@@ -6,6 +6,7 @@ import { fetchJSON } from "../functions/API";
 import { serverPath } from "../main";
 import { notify } from "../hooks/useNofication";
 import { useDispatch } from "react-redux";
+import { putList } from "../app/coliSlice";
 
 
 export function AdminConnexion() {
@@ -34,6 +35,7 @@ export function AdminConnexion() {
                 if (data.statut===true) {
                     notify.success('Bienvenu à vous cher administrateur')
                     dispatch(putAdminConnected())
+                    dispatch(putList(data.users))
                     navigate('/colis-assurance/page/admin/hrm')
                     return
                 }
@@ -77,21 +79,9 @@ export function AdminConnexion() {
                             </div>
                         </center>
 
-                        <div className="flex">
-                            <div></div>
-                            <div style={{display: 'flex', width: '40%', height: '2.5rem', justifyContent: 'space-around'}}>
-                                <input type="checkbox" name="" id="" />
-                                <small>Se souvenir de moi</small>
-                            </div>
-                        </div>
-
                         <center>
                             <button type="submit">CONNEXION</button>
                         </center>
-
-                        <div style={{ margin: '2rem' }}>
-                            <a href="#">Mot de passe oublié?</a>
-                        </div>
                     </form>
                 </div>
             </div>

@@ -48,8 +48,8 @@ export const CreateForm = ({ customObject, eventHandler, inputDescription, btn, 
 
                 <form action="" onSubmit={(e)=> eventHandler(e, navigateTo, setValid)}>
 
-                    {customObject.map(input => (
-                        <center>
+                    {customObject.map((input, index) => (
+                        <center key={index}>
                             <div className="input">
                                 <input type={input.type==='password'? inputClass: input.type} name={input.inputName} id={input.inputName} onChange={input.type === 'password' ? (e) => { setInput(false); setValid(true); } : null} style={thisInputStyle} placeholder={input.placeholder} />
                                 <div className="i" onClick={input.type === 'password' ? () => setInput(v => !v): null}>

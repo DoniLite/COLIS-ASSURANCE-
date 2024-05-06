@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 export const AdminSlice = createSlice({
-    name: 'coliState',
+    name: 'adminState',
     initialState: {
         canConnect: false
     },
@@ -11,10 +11,16 @@ export const AdminSlice = createSlice({
                 ...state,
                 canConnect: true
             }
+        },
+        disconnectAdmin: (state) => {
+            return{
+                ...state,
+                canConnect: false
+            }
         }
     }
 })
 
-export const { putAdminConnected } = AdminSlice.actions
+export const { putAdminConnected, disconnectAdmin } = AdminSlice.actions
 
 export default AdminSlice.reducer

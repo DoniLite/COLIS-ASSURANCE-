@@ -1,4 +1,4 @@
-import { NavLink, } from "react-router-dom";
+import { NavLink, useNavigate, useParams, } from "react-router-dom";
 import logo from '../assets/img/COLIS.png'
 import { sliceColi } from "../functions/sliceColi";
 import { serverPath } from "../main";
@@ -7,6 +7,9 @@ import { fetchJSON } from "../functions/API";
 import { notify } from "../hooks/useNofication";
 import { useData } from "../hooks/useData";
 import { AdminConnexion } from "./AdminConnexion";
+import { useDispatch } from "react-redux";
+import { putList } from "../app/coliSlice";
+import { disconnectAdmin } from "../app/AdminSlice";
 
 
 
@@ -153,6 +156,14 @@ export function TableauDeBord() {
 
 
 export function DashBordNav() {
+
+    const dispatch = useDispatch()
+
+    const disconnect = (e) => {
+        e.preventDefault()
+        dispatch(disconnectAdmin())
+    }
+
     return(
         <div className="table-nav">
             <div className="table-nav-logo">
@@ -180,7 +191,7 @@ export function DashBordNav() {
                     </div>
                 </NavLink>
 
-                <NavLink to={'/colis-assurance/page/admin/allRecharges'}>
+                <NavLink to={`/colis-assurance/page/admin/allRecharges/${undefined}`}>
                     <div className="admin-nav-element">
                         <div style={{ display: 'flex', marginLeft: '1.5rem' }}>
                             <i className="fa-regular fa-credit-card fa-2x"></i>
@@ -190,7 +201,7 @@ export function DashBordNav() {
                 </NavLink>
             </div>
 
-            <div className="table-btn-deconnexion">
+            <div className="table-btn-deconnexion" onClick={disconnect}>
                 <i className="fa-solid fa-right-from-bracket fa-2x"></i>
                 <h3>Déconnexion</h3>
             </div>
@@ -200,9 +211,24 @@ export function DashBordNav() {
 
 
 export function TableContainer({children}) {
-    return(
+    const dispatch = useDispatch()
+    const {allUsers, adminAccess} = useData()
+    const navigate = useNavigate()
+    useEffect(()=>{
+        fetchJSON(`${serverPath}api/allUsers`).then(
+            data => {
+                console.log(data)
+                dispatch(putList(data.users))
+            }
+        )
+    },[])
+    console.log(allUsers)
+    if(adminAccess) {
+        return(
         <div className="table-container">{children}</div>
-    )
+        )
+    }
+    return navigate('log/admin/colis-assurance/')
 }
 
 export function TableHeader({page, position}) {
@@ -269,10 +295,13 @@ function RecentUserElement({user}) {
 
 export function AllRecharges() {
     const [recharges, setRecharges] = useState([])
+    const params = useParams()
+    const {id} = params
 
     useEffect(() => {
-        fetchJSON(`${serverPath}recharges`).then(
+        fetchJSON(`${serverPath}recharges?id=${id}`).then(
             data => {
+                console.log(data)
                 setRecharges([
                     ...data.recharges
                 ])

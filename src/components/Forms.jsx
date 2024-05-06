@@ -1,4 +1,4 @@
-import React, {  useState } from "react"
+import React, {  useEffect, useState } from "react"
 import colis from "../assets/img/COLIS.png"
 import Google from "../assets/img/Google.png"
 import { NavLink, useNavigate, useParams, redirect } from "react-router-dom"
@@ -12,6 +12,8 @@ import 'react-toastify/dist/ReactToastify.min.css';
 import { useCustomNavigation } from "../hooks/useCustomNavigation"
 import { notify } from "../hooks/useNofication"
 import { Home } from "../pages/Home"
+import { emailRegex, useRegex } from "../hooks/useRegex"
+import { sliceColi } from "../functions/sliceColi"
 
 export const inputStyle = {
     width: '90%',
@@ -33,7 +35,7 @@ export function Authentification() {
     const {user, type} = useData()
     const [isValid, setValid] = useState(true)
     const { state, navigateTo } = useCustomNavigation()
-
+input
     const color = isValid ? '#027bff' : 'red'
 
     const thisInputStyle = {
@@ -197,12 +199,51 @@ export function PhoneVerification() {
 export function Recupération() {
     const [isValid, setValid] = useState(true)
     const { state, navigateTo } = useCustomNavigation()
+    const dispatch = useDispatch()
+    const {type} = useData()
+    const navigate = useNavigate()
+    /**
+     * @type {string}
+     */
+    let errorMessage
 
     const color = isValid ? '#027bff' : 'red'
 
     const thisInputStyle = {
         ...inputStyle,
         border: inputStyle.border + color
+    }
+
+    /**
+     * 
+     * @param {Event} e 
+     */
+    const submitInformation = (e) => {
+        e.preventDefault()
+        navigateTo('submitting')
+        const formData = new FormData(e.currentTarget)
+        const data = formData.get('data')
+        let email, phoneNumber
+        useRegex(emailRegex, data) ? email = data : phoneNumber = data
+        fetchJSON(`${serverPath}me?email=${email}&phoneNumber=${phoneNumber}&type=${type}`).then(
+            data => {
+                navigateTo('idle')
+                console.log(data)
+                if(!data.statut) {
+                    notify.warning('L\'opération s\'est mal terminée')
+                    errorMessage = data.message
+                    return
+                }
+                dispatch(addDataToState(data))
+                navigate(`/reset/otp/${data.user._id}`)
+            }
+        ).catch(
+            err => {
+                navigateTo('idle')
+                console.log(err)
+                notify.failed('Une erreur s\'est produite')
+            }
+        )
     }
 
     return (
@@ -214,22 +255,165 @@ export function Recupération() {
                 <img src={colis} alt="" className="app-logo" />
             </div>
 
-            <h1 style={{ color: 'black', marginTop: '6rem' }}>Vérification Phone</h1>
-            <p style={{ fontWeight: 'bold', marginBottom: '4rem' }}>Veuillez insérer votre numéro</p>
+            <h1 style={{ color: 'black', marginTop: '1rem' }}>Insérer votre adresse mail ou votre numéro de télephone</h1>
+            <p style={{ fontWeight: 'bold', marginBottom: '4rem' }}>Insérez l'une de vos infos mentionnée ci-dessus:</p>
             {errorMessage !== undefined && <center><p>{errorMessage}</p> </center>}
 
-            <form action="" onSubmit={SubmitPhone}>
-                <small>Saisissez le numéro sans identifiant ex:00112233</small>
-                <label htmlFor="number">Numéro</label>
+            <form action="" onSubmit={submitInformation}>
+                <small>Vous recevrez un SMS pour confirmer votre appartenence au compte</small>
+                <label htmlFor="number"></label>
                 <center>
-                    <input type="tel" name="number" id="number" style={thisInputStyle} onChange={() => setValid(true)} />
+                    <input type="text" name="data" id="data" style={thisInputStyle} onChange={() => setValid(true)} />
                 </center>
 
                 <center style={{ marginTop: '2rem' }}>
-                    <button type="submit">Ajouter le numéro</button>
+                    <button type="submit">Retrouver...</button>
                 </center>
             </form>
         </div>
+    )
+}
+
+export function ResetPassword() {
+    const [isValid, setValid] = useState(true)
+    const params = useParams()
+    const {action, id} = params
+    const {state, navigateTo} = useCustomNavigation()
+    const {type, user} = useData()
+    const navigate = useNavigate()
+    const dispatch = useDispatch()
+    useEffect(()=>{
+        fetchJSON(`${serverPath}`)
+    }, 
+    [])
+    /**
+     * @type {string}
+     */
+    let errorMessage
+    const color = isValid ? '#027bff' : 'red'
+
+    const thisInputStyle = {
+        ...inputStyle,
+        border: inputStyle.border + color
+    }
+
+    /**
+     * 
+     * @param {SubmitEvent} e 
+     */
+    const submitPassword = (e) => {
+        e.preventDefault()
+        navigateTo('submitting')
+        const formData = new FormData(e.currentTarget)
+        const password = formData.get('password')
+        const fetchData = {
+            password,
+            id,
+            type,
+        }
+        fetchJSON(`${serverPath}password`, {
+            json: fetchData
+        }).then(
+            data => {
+                navigateTo('idle')
+                console.log(data)
+                if(!data.statut) {
+                    notify.warning('quelque chose s\'est mal passé')
+                    return
+                }
+                dispatch(putConnected())
+                navigate('/')
+            }
+        ).catch(
+            err => {
+                console.log(err)
+                navigateTo('idle')
+                notify.failed('une erreur est survenue')
+            }
+        )
+    }
+
+    /**
+     * 
+     * @param {SubmitEvent} e 
+     */
+    const submitOtp = (e) => {
+        e.preventDefault()
+        navigateTo('submitting')
+        const formData = new FormData(e.currentTarget)
+        const otp = formData.get('otp')
+        fetchJSON(`${serverPath}password?id=${id}&type=${type}&otp=${otp}`).then(
+            data => {
+                navigateTo('idle')
+                console.log(data)
+                if(!data.statut) {
+                    errorMessage = data.message
+                    notify.warning('opération non effectuée.')
+                    return
+                }
+                navigate(`/reset/password/${id}`)
+            }
+        ).catch(
+            err => {
+                console.log(err)
+                navigateTo('idle')
+                notify.failed('une erreur est survenue')
+            }
+        )
+    }
+
+    if(action==='password') {
+        return(
+            <div className="verif">
+
+                {state === 'submitting' && <Loader />}
+                <div className="flex-div">
+                    <div></div>
+                    <img src={colis} alt="" className="app-logo" />
+                </div>
+
+                <h1 style={{ color: 'black', marginTop: '3rem' }}>Entrez votre nouveau mot de passe</h1>
+                {errorMessage !== undefined && <center><p>{errorMessage}</p> </center>}
+
+                <form action="" onSubmit={submitPassword}>
+                    <small>Vous recevrez un SMS pour confirmer votre appartenence au compte</small>
+                    <label htmlFor="number"></label>
+                    <center>
+                        <input type="password" name="password" id="password" style={thisInputStyle} onChange={() => setValid(true)} />
+                    </center>
+
+                    <center style={{ marginTop: '2rem' }}>
+                        <button type="submit">Retrouver...</button>
+                    </center>
+                </form>
+            </div>
+        )
+    }
+    return(
+        
+        <div className="verif">
+
+                {state === 'submitting' && <Loader />}
+                <div className="flex-div">
+                    <div></div>
+                    <img src={colis} alt="" className="app-logo" />
+                </div>
+
+                <h1 style={{ color: 'black', marginTop: '3rem' }}>Renseignez le code 🤖### </h1>
+                {errorMessage !== undefined && <center><p>{errorMessage}</p> </center>}
+
+                <form action="" onSubmit={submitOtp}>
+                    <small>Vous recevrez un SMS pour confirmer votre appartenence au compte avec le numéro se terminant par: <br /> {sliceColi(user.phoneNumber, -4)}</small>
+                    <label htmlFor="number"></label>
+                    <center>
+                        <input type="text" name="otp" id="otp" style={thisInputStyle} onChange={() => setValid(true)} />
+                    </center>
+
+                    <center style={{ marginTop: '2rem' }}>
+                        <button type="submit">Confirmez</button>
+                    </center>
+                </form>
+            </div>
     )
 }
 
@@ -345,14 +529,14 @@ export function Connexion() {
                     <center>
                         <div className="btn-group">
                             <button>CONNEXION</button>
-                            <button>
+                            {/* <button>
                                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', height: '100%' }}>
                                     <div style={{ position: 'relative', bottom: '6px' }}>
                                         <img src={Google} alt="" style={{ width: '1.5rem', position: 'relative', top: '7px', right: '10px' }} />
                                         Connexion avec Google
                                     </div>
                                 </div>
-                            </button>
+                            </button> */}
                         </div>
                     </center>
                 </form>
@@ -516,14 +700,14 @@ export function Inscription() {
                 <center>
                     <div className="btn-group">
                         <button disabled={!checked} type="submit">INSCRIPTION</button>
-                        <button>
+                        {/* <button>
                             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', height: '100%' }}>
                                 <div style={{ position: 'relative', bottom: '6px' }}>
                                     <img src={Google} alt="" style={{ width: '1.5rem', position: 'relative', top: '7px', right: '10px' }} />
                                     Inscription avec Google
                                 </div>
                             </div>
-                        </button>
+                        </button> */}
                     </div>
                 </center>
             </form>
