@@ -552,7 +552,6 @@ export function Connexion() {
 
 export function Inscription() {
 
-
     const [checked, setChecked] = useState(false)
     let [error, setError] = useState(false)
     let [errorData, setErrorData] = useState('')
@@ -630,6 +629,8 @@ export function Inscription() {
                     }
                 } else{
                     console.log(data)
+                    dispatch(addDataToState(data)) // just for this test instance
+                    dispatch(putConnected()) // also just for this instance 
                     setUserCreated({
                         ...data.user
                     })
@@ -645,7 +646,8 @@ export function Inscription() {
     }
 
     if (canNavigate) {
-        navigate(`/phoneVerification/${userCreated._id}`)
+        navigate(`/`);
+        // navigate(`/phoneVerification/${userCreated._id}`)
     }
 
     return(

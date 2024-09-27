@@ -31,5 +31,5 @@ export function Loader() {
   )
 }
 
-export const serverPath = 'http://localhost:3005/'
+export const serverPath = process.env.NODE_ENV === 'production' ? 'https://coli-api.onrender.com/' : 'http://localhost:3005/';
 //'https://coli-api.onrender.com/' 
