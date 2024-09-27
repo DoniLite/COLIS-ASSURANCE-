@@ -85,7 +85,7 @@ export function SousComptesDetails() {
     function actionsHandler() {
         switch (action) {
             case 'bloquer':
-                fetchJSON(`${serverPath}sousComptes?action=bloquer&id=${user._id}`).then(
+                fetchJSON(`${serverPath}accountsActions?action=bloquer&id=${user._id}`).then(
                     data => {
                         console.log(data)
                         if(data.statut && data.statut === true) {

@@ -903,7 +903,7 @@ label {
 }
 
 .create-user-box button, .create-user-box2 button {
-  width: 90%;
+  width: 89%;
   padding: 0.5rem;
   border: none;
   background-color: #027bff;
@@ -1104,7 +1104,7 @@ label {
 }
 
 .admin-nav-element {
-  width: 100%;
+  max-width: 100%;
   height: 100%;
   background-color: #0064ed;
   display: flex;
@@ -1157,7 +1157,7 @@ label {
 
 
 .table-btn-deconnexion {
-  width: 100%;
+  max-width: 100%;
   height: 35%;
   display: flex;
   justify-content: center;
@@ -1320,6 +1320,7 @@ label {
 
 .card-admin-comptes-label {
   width: 100%;
+  height: 13rem;
   padding: 1rem;
   background-color: #ffffff;
   display: grid;
@@ -1411,8 +1412,12 @@ label {
 }
 
 .flow-box-cont .column:nth-child(1) {
-  width: 30%;
+  width: 38%;
   display: flex;
+}
+
+.flow-box-cont .column:nth-child(2) {
+  margin-left: -5rem;
 }
 
 .flow-box-cont .column:nth-last-child(1) {

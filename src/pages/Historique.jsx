@@ -32,57 +32,6 @@ export function coliReducer(state, action) {
     
 }
 
-const coliList = [
-    {
-        index: 0,
-        price: '18 000',
-        isValidate: true,
-        state: 'livré'
-    },
-    {
-        index: 0,
-        price: '18 000',
-        isValidate: true,
-        state: 'en cours'
-    }, 
-    {
-        index: 0,
-        price: '18 000',
-        isValidate: true,
-        state: 'livré'
-    }, 
-    {
-        index: 0,
-        price: '18 000',
-        isValidate: true,
-        state: 'livré'
-    }, 
-    {
-        index: 0,
-        price: '18 000',
-        isValidate: true,
-        state: 'annulé'
-    }, 
-    {
-        index: 0,
-        price: '18 000',
-        isValidate: true,
-        state: 'en cours'
-    }, 
-    {
-        index: 0,
-        price: '18 000',
-        isValidate: true,
-        state: 'en cours'
-    }, 
-    {
-        index: 0,
-        price: '18 000',
-        isValidate: true,
-        state: 'en cours'
-    }
-]
-
 
 export function Historique() {
     /**
@@ -168,7 +117,7 @@ export function Historique() {
             </div>
 
             <p style={{ marginTop: '350px', padding: '1rem' }}>{filterState}</p>
-            <ColisContainer coliList={state} />
+            <ColisContainer coliList={state} admin={false} />
         </>
     )
 }

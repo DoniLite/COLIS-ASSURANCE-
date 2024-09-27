@@ -15,7 +15,7 @@ import { SousComptePage } from './pages/SousComptes'
 import { AdminConnexion } from './pages/AdminConnexion'
 import { AllRecharges, TableauDeBord } from './pages/TableauDeBord'
 import { AccountsManagement } from './pages/AdminComptes'
-import { AdminActions, AdminComptesStory, AdminDetails, AdminSousComptes, FlowBox } from './pages/AdminDetails'
+import { AdminActions, AdminComptesStory, AdminDetails, AdminSousComptes, FlowBox, StoryContainer } from './pages/AdminDetails'
 import { forwardRef, useEffect } from 'react'
 import { fetchJSON } from './functions/API'
 import { useData } from './hooks/useData'
@@ -64,8 +64,8 @@ const router = createBrowserRouter([
         path: 'recupération',
         element: <Recupération />
       },
-       {
-        path: 'reset/:id/:action',
+      {
+        path: 'reset/:action/:id',
         element: <ResetPassword />
       },
       {
@@ -81,7 +81,7 @@ const router = createBrowserRouter([
         element: <CompleteProfil />,
       },
       {
-        path: 'statut',
+        path: 'statut/:admin',
         element: <Statut />,
         children: [
           {
@@ -147,7 +147,7 @@ const router = createBrowserRouter([
         element: <TableauDeBord />,
       },
       {
-        path: 'colis-assurance/page/admin/allRecharges',
+        path: 'colis-assurance/page/admin/allRecharges/:id',
         element: <AllRecharges />,
       },
       {
@@ -161,23 +161,13 @@ const router = createBrowserRouter([
           {
             path: '',
             element: <AdminSousComptes />,
-            children: [
-              {
-                path: 'path/:id',
-                element: <FlowBox />
-              },
-              {
-                path: 'story',
-                element: <AdminComptesStory />
-              }
-            ]
           },
           {
             path: 'userStory',
-            element: <AdminComptesStory />
+            element: <StoryContainer />
           },
           {
-            path: 'actions',
+            path: 'actions/:amount/:userState',
             element: <AdminActions />,
           }
         ]
@@ -187,10 +177,6 @@ const router = createBrowserRouter([
 ])
 
 function Root() {
-
-  const navigation = useNavigation()
-  let { state } = navigation
-  const {userState} = useData()
 
   return (
     <>
@@ -237,35 +223,3 @@ const Box = forwardRef(({ children }, ref) =>{
 const MotionBox = motion(Box)
 
 export default App
-
-
-// const mongoose = require('mongoose');
-
-// // Schéma pour l'utilisateur principal
-// const UtilisateurPrincipalSchema = new mongoose.Schema({
-//     nom: String,
-//     // Référence vers les sous-comptes
-//     sousComptes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'SousCompte' }]
-// });
-
-// // Schéma pour les sous-comptes
-// const SousCompteSchema = new mongoose.Schema({
-//     nom: String,
-//     // Référence vers l'utilisateur principal
-//     utilisateurPrincipal: { type: mongoose.Schema.Types.ObjectId, ref: 'UtilisateurPrincipal' }
-// });
-
-// // Modèles
-// const UtilisateurPrincipal = mongoose.model('UtilisateurPrincipal', UtilisateurPrincipalSchema);
-// const SousCompte = mongoose.model('SousCompte', SousCompteSchema);
-
-// // Utilisation de populate pour charger les sous-comptes d'un utilisateur principal
-// UtilisateurPrincipal.findById(utilisateurPrincipalId)
-//     .populate('sousComptes')
-//     .exec((err, utilisateurPrincipal) => {
-//         if (err) {
-//             console.error(err);
-//             return;
-//         }
-//         console.log(utilisateurPrincipal.sousComptes); // Les sous-comptes sont chargés ici
-//     });

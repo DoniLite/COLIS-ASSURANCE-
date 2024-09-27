@@ -1,8 +1,8 @@
-import { Outlet, NavLink, useParams } from "react-router-dom";
+import { Outlet, NavLink, useParams, useNavigate } from "react-router-dom";
 import { DashBordNav, TableContainer, TableHeader } from "./TableauDeBord";
 import userPNG from "../assets/img/Ghost.jpeg"
 import { ColisContainer } from "../components/Colis";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { fetchJSON } from "../functions/API";
 import { serverPath } from "../main";
 import { notify } from "../hooks/useNofication";
@@ -10,11 +10,16 @@ import { inputStyle } from "../components/Forms";
 import { useCustomNavigation } from "../hooks/useCustomNavigation";
 import { sliceColi } from "../functions/sliceColi";
 import { Modal } from 'flowbite-react'
+import { useData } from "../hooks/useData";
+import moment from "moment";
+import { AdminConnexion } from "./AdminConnexion";
 
 
 export function AdminDetails() {
 
     const params = useParams()
+    const {adminAccess} = useData()
+    const navigate = useNavigate()
     const [user, setuser] = useState({})
 
     useEffect(() => {
@@ -23,6 +28,7 @@ export function AdminDetails() {
                 setuser({
                     ...data.user
                 })
+                console.log(data)
             }
         ).catch(
             err => {
@@ -49,81 +55,84 @@ export function AdminDetails() {
     //     firstname: 'Doni',
     //     lastname: 'Ghost',
     // }
- 
 
-    return(
-        <TableContainer>
-            <DashBordNav />
-            <div className="table-content3">
-                <TableHeader page={'DÉTAILS DU COMPTE'} position={'fixed'} />
-                <div className="first-admin-details-comptes">
-                    <h4 style={{padding: '10px'}}>Utilisateur &gt; <span style={{ color: '#027bff'}}>Profil du compte</span></h4>
-                    <div className="flow-box-cont">
-                        <div className="column">
-                            <img src={`${serverPath}assets/user/${user.userIcon}`} alt="" />
-                            <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', marginLeft: '1rem'}}>
-                                <div>
-                                    <h2 style={{ color: 'blue' }}>{user.firstname} {user.lastname}</h2>
-                                    <p>{user.registerDate}</p>
+    return (
+            <TableContainer>
+                <DashBordNav />
+                <div className="table-content3">
+                    <TableHeader page={'DÉTAILS DU COMPTE'} position={'fixed'} />
+                    <div className="first-admin-details-comptes">
+                        <h4 style={{ padding: '10px' }}>Utilisateur &gt; <span style={{ color: '#027bff' }}>Profil du compte</span></h4>
+                        <div className="flow-box-cont">
+                            <div className="column">
+                                <img src={`${serverPath}assets/user/${user.userIcon}`} alt="" />
+                                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginLeft: '1rem' }}>
+                                    <div>
+                                        <h2 style={{ color: 'blue' }}>{user.firstname?? user.username} {user.lastname}</h2>
+                                        <p>{moment(user.registerDate).format('DD, MMM YYYY')}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="column">
+                                <h3 style={{ marginTop: '1rem' }}>Adresse</h3>
+                                <p><i className="fa-solid fa-envelope"></i> {user.email}</p>
+                                <p><i className="fa-solid fa-phone"></i> {user.phoneNumber}</p>
+                                <p><i className="fa-solid fa-location-dot"></i> {user.location} </p>
+                            </div>
+                            <div className="column">
+                                <div className="">
+                                    <h3 style={{ color: '#0263ce' }}>{user.balance}</h3>
+                                    <p>Balance</p>
+                                </div>
+                                <div className="">
+                                    <h3 style={{ color: '#0263ce' }}>{user.livraisons}</h3>
+                                    <p>Courses</p>
+                                </div>
+                                <div className="">
+                                    <h3 style={{ color: '#0263ce' }}>{user.accounts}</h3>
+                                    <p>Sous-Comptes</p>
+                                </div>
+                                <div className="">
+                                    <h3 style={{ color: '#0263ce' }}>{user.accounts}</h3>
+                                    <p>Gains</p>
                                 </div>
                             </div>
                         </div>
-                        <div className="column">
-                            <h3 style={{marginTop: '1rem'}}>Adresse</h3>
-                            <p><i className="fa-solid fa-envelope"></i> {user.email}</p>
-                            <p><i className="fa-solid fa-phone"></i> {user.phoneNumber}</p>
-                            <p><i className="fa-solid fa-location-dot"></i> {user.location} </p>
-                        </div>
-                        <div className="column">
-                            <div className="">
-                                <h3 style={{ color: '#0263ce'}}>{user.balance}</h3>
-                                <p>Balance</p>
-                            </div>
-                            <div className="">
-                                <h3 style={{ color: '#0263ce' }}>{user.livraisons}</h3>
-                                <p>Courses</p>
-                            </div>
-                            <div className="">
-                                <h3 style={{ color: '#0263ce' }}>{user.accounts}</h3>
-                                <p>Sous-Comptes</p>
-                            </div>
-                            <div className="">
-                                <h3 style={{ color: '#0263ce' }}>{user.accounts}</h3>
-                                <p>Gains</p>
-                            </div>
-                        </div>
                     </div>
-                </div>
 
-                <div className="second-admin-details-comptes">
-                    <div className="second-admin-details-comptes-nav">
-                        <ul>
-                            <NavLink to={`/colis-assurance/page/admin/accounts-details/${user._id}`} end>
-                                <li><i className="fa-solid fa-user-tag"></i> Sous-comptes</li>
-                            </NavLink>
-                            <NavLink to={`/colis-assurance/page/admin/accounts-details/${user._id}/userStory`} end>
-                                <li><i className="fa-solid fa-clipboard"></i> Historique</li>
-                            </NavLink>
-                            <NavLink to={`/colis-assurance/page/admin/accounts-details/${user._id}/actions`} end>
-                                <li><i className="fa-solid fa-gear"></i> Actions</li>
-                            </NavLink>
-                        </ul>
-                        <div className="render-box-model">
-                            <Outlet />
+                    <div className="second-admin-details-comptes">
+                        <div className="second-admin-details-comptes-nav">
+                            <ul>
+                                <NavLink to={`/colis-assurance/page/admin/accounts-details/${user._id}`} end>
+                                    <li><i className="fa-solid fa-user-tag"></i> Sous-comptes</li>
+                                </NavLink>
+                                <NavLink to={`/colis-assurance/page/admin/accounts-details/${user._id}/userStory`} end>
+                                    <li><i className="fa-solid fa-clipboard"></i> Historique</li>
+                                </NavLink>
+                                <NavLink to={`/colis-assurance/page/admin/accounts-details/${user._id}/actions/0/${user.blocked ? 'blocked' : 'not-blocked'}`} end>
+                                    <li><i className="fa-solid fa-gear"></i> Actions</li>
+                                </NavLink>
+                            </ul>
+                            <div className="render-box-model">
+                                <Outlet />
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </TableContainer>
-    )
+            </TableContainer>
+        )
+
 }
 
 
 export function AdminSousComptes() {
 
     const params = useParams()
+    const [componentParam, setParam] = useState('')
+    const [component, setComponent] = useState('Profil')
     const {id} = params
     const [accounts, setAccounts] = useState([])
+    const accountsRef = useRef()
 
     useEffect(() => {
         fetchJSON(`${serverPath}userDetailsAdmin?id=${id}`).then(
@@ -132,6 +141,7 @@ export function AdminSousComptes() {
                 setAccounts([
                     ...data.sousCompte
                 ])
+                accountsRef.current = data.sousCompte
                 console.log(accounts)
             }
         ).catch(
@@ -141,6 +151,34 @@ export function AdminSousComptes() {
         )
     }, [])
     console.log(id)
+    console.log(component)
+
+    /**
+     * 
+     * @param {MouseEvent} e 
+     */
+    const putRef = (e)=>{
+        e.preventDefault()
+        const el = e.currentTarget
+        console.log(el.dataset.id)
+        const id = el.dataset.id
+        setParam(id)
+    }
+
+    /**
+     * 
+     * @param {MouseEvent} e 
+     */
+    const loadComponant = (e)=>{
+        e.preventDefault()
+        const el = e.currentTarget
+        const links = document.querySelectorAll('.second-admin-details-comptes-nav ul li')
+        links.forEach(link=>{
+            link.classList.remove('active')
+        })
+        setComponent(el.innerText)
+        el.classList.add('active')
+    }
     
 
     return(
@@ -153,21 +191,35 @@ export function AdminSousComptes() {
                             <div className="icon-searh">
                                 <i className="fa-solid fa-magnifying-glass"></i>
                             </div>
-                            <input type="search" name="searchBar" id="searchBar" placeholder="Recherchez un compte" />
+                            <input type="search" name="searchBar" id="searchBar" placeholder="Recherchez un compte" onChange={(e)=>{
+                                const searchText = e.target.value.toLowerCase();
+                                if (searchText.length < 1) {
+                                    // Si le champ de recherche est vide, réinitialise le tableau d'état
+                                    setAccounts(accountsRef.current);
+                                } else {
+                                    // Sinon, filtre les sous-comptes en fonction du texte de recherche
+                                    setAccounts(accounts.filter(account => {
+                                        const lowercaseFirstName = account.hasOwnProperty('firstname') ? account.firstname.toLowerCase() : '';
+                                        const lowercaseLastName = account.hasOwnProperty('lastname') ? account.lastname.toLowerCase() : '';
+                                        const lowercaseUsername = account.username.toLowerCase();
+                                        return lowercaseFirstName.includes(searchText) || lowercaseLastName.includes(searchText) || lowercaseUsername.includes(searchText);
+                                    }));
+                                }
+                            }} />
                         </div>
                     </div>
                 </div>
 
                 <div className="recent-users-grid2">
                     {accounts.map(user => (
-                        <div style={{ marginBottom: '0.5rem' }} className="recent-user-element">
+                        <div key={user._id} data-id={user._id} style={{ marginBottom: '0.5rem', cursor: 'pointer' }} className="recent-user-element" onClick={putRef}>
                             <div>
                                 <center>
                                     <img src={`${serverPath}assets/user/${user.userIcon}`} alt="" className="user-balance" />
                                 </center>
                                 <div style={{ marginTop: '0.5rem' }}>
                                     <center>
-                                        <h4 style={{ color: '#33379b' }}>{user.firstname ?? sliceColi(user._id)} {user.lastname ?? 'Undefined'}</h4>
+                                        <h4 style={{ color: '#33379b' }}>{user.firstname ?? ''} {user.lastname ?? user.email.slice(0, 10) + '...'}</h4>
                                         <small>{user.location ?? '###'}</small>
                                     </center>
                                 </div>
@@ -182,15 +234,11 @@ export function AdminSousComptes() {
 
                 <div className="second-admin-details-comptes-nav">
                     <ul>
-                        <NavLink to={`/colis-assurance/page/admin/accounts-details/${id}`}>
-                            <li>Profil</li>
-                        </NavLink>
-                        <NavLink to={`/colis-assurance/page/admin/accounts-details/${id}/story`}>
-                            <li>Historique</li>
-                        </NavLink>
+                        <li className="active" style={{cursor: "pointer"}} onClick={loadComponant}>Profil</li>
+                        <li onClick={loadComponant} style={{ cursor: "pointer" }}>Historique</li>
                     </ul>
                     <div className="render-box-model">
-                        <Outlet />
+                        <AdminFlowChildren activComponent={component} param={componentParam} />
                     </div>
                 </div>
             </div>
@@ -198,68 +246,212 @@ export function AdminSousComptes() {
     )
 }
 
+const AdminFlowChildren = ({activComponent, param})=>{
+    if(activComponent==='Profil'){
+        return <FlowBox param={param}/>
+    }
+    return <AdminComptesStory param={param} />
+}
 
-export function FlowBox() {
+/**
+ * 
+ * @param {{param: string}} param0 
+ * @returns 
+ */
+export function FlowBox({param}) {
 
-    const user = {
-        _id: '65c0d424522ad8102f0e41f5',
-        username: 'brigitte',
-        password: '$2b$10$2q46cjDZVlG6Xv1k4dOR1.16ikYJmaba87Z2sM8lBa5I8Yf.ZCjsW',
-        balance: [{ balance: 0, _id: '65c0d424522ad8102f0e41f4' }],
-        email: 'brigitte@mail.com',
-        location: 'Hawai',
-        userIcon: 'user.svg',
-        accounts: 0,
-        livraisons: 0,
-        profilCompleted: false,
-        isChecked: false,
-        registerDate: '2024-02-05T12:27:16.848Z',
-        __v: 0,
-        phoneNumber: '+22607224034',
-        firstname: 'Doni',
-        lastname: 'Ghost',
+    if(param.length<5){
+        return <></>
+    } 
+
+    const {user} = useData()
+    // /**
+    //  * @type {{current: typeof user}}
+    //  */
+    // const userRef = useRef()
+    const [action, setAction] = useState('')
+    const [openModal, setOpenModal] = useState(false);
+    const [ThisUser, setUser] = useState()
+    const [canRender, setRender] = useState(false)
+    useEffect(() => {
+        fetchJSON(`${serverPath}api/userData?id=${param}&type=secondaire`)
+            .then(data => {
+                console.log(data)
+                // userRef.current = data.user
+                setUser(data.user)
+                setRender(true)
+            })
+            .catch(err => {
+                console.log(err)
+                notify.failed('une erreur s\'est produite')
+            })
+    }, [param])
+
+    console.log(ThisUser) 
+
+     /**
+     * 
+     * @param {PointerEvent} e 
+     */
+    function actionControler(e) {
+        e.preventDefault()
+        let text = e.currentTarget.innerText
+        switch (text) {
+            case 'Bloquer':
+                setAction('bloquer')
+                setOpenModal(true)
+                break
+            case 'Supprimer':
+                setAction('supprimer')
+                setOpenModal(true)
+                break
+            case 'Débloquer':
+                setAction('débloquer')
+                setOpenModal(true)
+                break
+        }
     }
 
-    return (
-        <>
-            <div className="flow-box-cont2">
-                <div className="column">
-                    <img style={{ width: '3rem', height: '3rem', borderRadius: '50%', marginTop: '10px' }} src={userPNG} alt="" />
-                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginLeft: '10px', }}>
-                        <div>
-                            <h4 style={{ color: 'blue' }}>{user.firstname} {user.lastname}</h4>
-                            <p>{user.registerDate}</p>
+    function actionsHandler() {
+        switch (action) {
+            case 'bloquer':
+                fetchJSON(`${serverPath}accountsActions?action=bloquer&id=${param}&admin=${ThisUser.user}`).then(
+                    data => {
+                        console.log(data)
+                        if (data.statut === true) {
+                            notify.success('Le compte a été bloqué')
+                            setOpenModal(false)
+                        } else {
+                            notify.failed('Une erreur est survenue')
+                            setOpenModal(false)
+                        }
+                    }
+                ).catch(
+                    err => {
+                        notify.failed('Une erreur est survenue')
+                    }
+                )
+                break
+            case 'supprimer':
+                fetchJSON(`${serverPath}accountsActions?action=supprimer&id=${param}&admin=${ThisUser.user}`).then(
+                    data => {
+                        console.log(data)
+                        if (data.statut === true) {
+                            notify.success('Le compte a été supprimé')
+                            setOpenModal(false)
+                        } else {
+                            notify.failed('Une erreur est survenue')
+                            setOpenModal(false)
+                        }
+                    }
+                ).catch(
+                    err => {
+                        notify.failed('Une erreur est survenue')
+                    }
+                )
+                break;
+            case 'débloquer' :
+                fetchJSON(`${serverPath}accountsActions?action=débloquer&id=${param}&admin=${ThisUser.user}`).then(
+                    data => {
+                        console.log(data)
+                        if (data.statut === true) {
+                            notify.success('Le compte a été débloquer')
+                            setOpenModal(false)
+                        } else {
+                            notify.failed('Une erreur est survenue')
+                            setOpenModal(false)
+                        }
+                    }
+                ).catch(
+                    err => {
+                        notify.failed('Une erreur est survenue')
+                    }
+                )
+                break;
+        }
+    }   
+    
+
+    // const user = {
+    //     _id: '65c0d424522ad8102f0e41f5',
+    //     username: 'brigitte',
+    //     password: '$2b$10$2q46cjDZVlG6Xv1k4dOR1.16ikYJmaba87Z2sM8lBa5I8Yf.ZCjsW',
+    //     balance: [{ balance: 0, _id: '65c0d424522ad8102f0e41f4' }],
+    //     email: 'brigitte@mail.com',
+    //     location: 'Hawai',
+    //     userIcon: 'user.svg',
+    //     accounts: 0,
+    //     livraisons: 0,
+    //     profilCompleted: false,
+    //     isChecked: false,
+    //     registerDate: '2024-02-05T12:27:16.848Z',
+    //     __v: 0,
+    //     phoneNumber: '+22607224034',
+    //     firstname: 'Doni',
+    //     lastname: 'Ghost',
+    // }
+
+    if(canRender) {
+        return (
+            <>
+                <div className="flow-box-cont2">
+                    <div className="column">
+                        <img style={{ width: '3rem', height: '3rem', borderRadius: '50%', marginTop: '10px' }} src={`${serverPath}assets/user/${ThisUser.userIcon}`} alt="" />
+                        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginLeft: '10px', }}>
+                            <div>
+                                <h4 style={{ color: 'blue' }}>{ThisUser.firstname?? ThisUser.username} {ThisUser.lastname??''}</h4>
+                                <p>{moment(ThisUser.registerDate).format('DD, MMM YYYY')}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="column">
+                        <p><i className="fa-solid fa-envelope"></i> {ThisUser.email.length > 10 ? ThisUser.email.slice(0, 10)+'...' : ThisUser.email}</p>
+                        <p><i className="fa-solid fa-phone"></i> {ThisUser.phoneNumber}</p>
+                        <p><i className="fa-solid fa-location-dot"></i> {ThisUser.location} </p>
+                    </div>
+                    <div className="column">
+                        <div className="">
+                            <h3 style={{ color: '#0263ce' }}>{ThisUser.livraisons}</h3>
+                            <p>Courses</p>
                         </div>
                     </div>
                 </div>
-                <div className="column">
-                    <p><i className="fa-solid fa-envelope"></i> {user.email}</p>
-                    <p><i className="fa-solid fa-phone"></i> {user.phoneNumber}</p>
-                    <p><i className="fa-solid fa-location-dot"></i> {user.location} </p>
+                <div className="flex">
+                    <button style={{ width: '40%', padding: '10px', background: 'orange'}} onClick={actionControler}>Bloquer</button>
+                    <button style={{ width: '40%', padding: '10px', background: 'red' }} onClick={actionControler}>Supprimer</button>
                 </div>
-                <div className="column">
-                    <div className="">
-                        <h3 style={{ color: '#0263ce' }}>{user.livraisons}</h3>
-                        <p>Courses</p>
+                <Modal show={openModal} onClose={() => setOpenModal(false)} style={{ zIndex: '9999' }}>
+                    <div className="modal">
+                        <h3>{action} le Compte?</h3>
+                        <p>Voulez-vous vraiment {action} ce compte ? <br /> Si vous cliquez sur oui cette action ne pourra plus être irréversible</p>
+                        <div className="flex">
+                            <button variant="secondary" onClick={() => setOpenModal(false)}>
+                                Annuler
+                            </button>
+                            <button variant="primary" onClick={actionsHandler}>
+                                Oui
+                            </button>
+                        </div>
                     </div>
-                </div>
-            </div>
-            <div className="flex">
-                <button style={{ width: '40%', padding: '10px', background: 'orange' }}>Bloquer</button>
-                <button style={{ width: '40%', padding: '10px', background: 'red' }}>Supprimer</button>
-            </div>
-        </>
-    )
+                </Modal>
+            </>
+        )
+    }
+    
 }
 
-export function AdminComptesStory() {
+/**
+ * 
+ * @param {{param: string, type: 'principal'|'secondaire'}} param0 
+ * @returns 
+ */
+export function AdminComptesStory({param, type}) {
     const [colis, setColis] = useState([])
-    const params = useParams()
-    const type = 'principal'
-    console.log(params.id)
-
+    if(param.length<5){
+        return <></>
+    }
     useEffect(() => {
-        fetchJSON(`${serverPath}allColis?refKey=${params.id}&type=${type}`).then(
+        fetchJSON(`${serverPath}allColis?refKey=${param}&type=${type}`).then(
             data => {
                 setColis([
                     ...data.allColis
@@ -274,9 +466,19 @@ export function AdminComptesStory() {
     return(
         <>
             <div style={{width: '70%', margin: '0 auto'}}>
-                <ColisContainer coliList={colis} />
+                <ColisContainer coliList={colis} admin={true} />
             </div>
             
+        </>
+    )
+}
+
+export const StoryContainer = ()=>{
+    const params = useParams()
+    const {id} = params
+    return (
+        <>
+            <AdminComptesStory param={id} type="principal" />
         </>
     )
 }
@@ -284,10 +486,13 @@ export function AdminComptesStory() {
 
 export function AdminActions() {
     const params = useParams()
+    const {amount, userState} = params
+    const [inputValue, setValue] = useState(amount)
     const [isValid, setValid] = useState(true)
     const {state, navigateTo} = useCustomNavigation()
     const [action, setAction] = useState('')
     const [openModal, setOpenModal] = useState(false);
+    const btn = userState === 'blocked'? 'Débloquer': 'Bloquer'
 
     const color = isValid ? '#027bff' : 'red'
 
@@ -312,16 +517,20 @@ export function AdminActions() {
                 setAction('supprimer')
                 setOpenModal(true)
                 break
+            case 'Débloquer':
+                setAction('débloquer')
+                setOpenModal(true)
+                break
         }
     }
 
     function actionsHandler() {
         switch (action) {
             case 'bloquer':
-                fetchJSON(`${serverPath}sousComptes?action=bloquer&id=${user._id}`).then(
+                fetchJSON(`${serverPath}accountsActions?action=bloquer&id=${params.id}`).then(
                     data => {
                         console.log(data)
-                        if (data.statut && data.statut === true) {
+                        if (data.statut === true) {
                             notify.success('Le compte a été bloqué')
                             setOpenModal(false)
                             setNavigate(true)
@@ -337,10 +546,10 @@ export function AdminActions() {
                 )
                 break
             case 'supprimer':
-                fetchJSON(`${serverPath}accountsActions?action=supprimer&id=${user._id}&admin=${admin._id}`).then(
+                fetchJSON(`${serverPath}accountsActions?action=supprimer&id=${params.id}`).then(
                     data => {
                         console.log(data)
-                        if (data.statut && data.statut === true) {
+                        if (data.statut === true) {
                             notify.success('Le compte a été supprimé')
                             setOpenModal(false)
                             setNavigate(true)
@@ -354,7 +563,26 @@ export function AdminActions() {
                         notify.failed('Une erreur est survenue')
                     }
                 )
-                break
+                break;
+            case 'débloquer' :
+                fetchJSON(`${serverPath}accountsActions?action=débloquer&id=${params.id}`).then(
+                    data => {
+                        console.log(data)
+                        if (data.statut === true) {
+                            notify.success('Le compte a été débloquer')
+                            setOpenModal(false)
+                            setNavigate(true)
+                        } else {
+                            notify.failed('Une erreur est survenue')
+                            setOpenModal(false)
+                        }
+                    }
+                ).catch(
+                    err => {
+                        notify.failed('Une erreur est survenue')
+                    }
+                )
+                break;
         }
     }   
 
@@ -399,7 +627,7 @@ export function AdminActions() {
             <form action="" style={{ width: '50%', margin: '0 auto' }} onSubmit={rechargement}>
                 <center>
                     <div className="input">
-                        <input type="text" name="value" id="value" style={thisInputStyle}  placeholder="Montant de la recharge"  />
+                        <input type="text" name="value" id="value" onChange={(e)=>{setValue(e.currentTarget.value)}} value={inputValue} style={thisInputStyle}  placeholder="Montant de la recharge"  />
                         <div className="i">
                             <i className="fa-regular fa-credit-card"></i>
                         </div>
@@ -415,8 +643,8 @@ export function AdminActions() {
             <h3 style={{ color: 'blue', marginTop: '2rem' }}>Supprimer ou bloquer le compte</h3>
             <div style={{ marginTop: '2rem', width: '50%', margin: '0 auto' }}>
                 <div className="flex">
-                    <button style={{ width: '40%', padding: '10px', background: 'orange' }} onClick={actionControler}>Bloquer</button>
-                    <button style={{ width: '40%', padding: '10px', background: 'red' }} onClick={actionControler}>Supprimer</button>
+                    <button style={{ width: '40%', padding: '10px', background: 'orange', cursor: 'pointer' }} onClick={actionControler}>{btn}</button>
+                    <button style={{ width: '40%', padding: '10px', background: 'red', cursor: 'pointer' }} onClick={actionControler}>Supprimer</button>
                 </div>
             </div>
 

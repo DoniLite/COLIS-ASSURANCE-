@@ -1,7 +1,7 @@
-import {  useState } from "react"
+import React, {  useEffect, useState } from "react"
 import colis from "../assets/img/COLIS.png"
 import Google from "../assets/img/Google.png"
-import { NavLink, useNavigate, useParams } from "react-router-dom"
+import { NavLink, useNavigate, useParams, redirect } from "react-router-dom"
 import { fetchJSON } from "../functions/API"
 import {  useDispatch } from 'react-redux'
 import { addDataToState, putConnected, setUserType, ToogleUpdate, updateBalance } from '../app/userSlice'
@@ -11,6 +11,9 @@ import axios from 'axios'
 import 'react-toastify/dist/ReactToastify.min.css';
 import { useCustomNavigation } from "../hooks/useCustomNavigation"
 import { notify } from "../hooks/useNofication"
+import { Home } from "../pages/Home"
+import { emailRegex, useRegex } from "../hooks/useRegex"
+import { sliceColi } from "../functions/sliceColi"
 
 export const inputStyle = {
     width: '90%',
@@ -32,7 +35,7 @@ export function Authentification() {
     const {user, type} = useData()
     const [isValid, setValid] = useState(true)
     const { state, navigateTo } = useCustomNavigation()
-
+input
     const color = isValid ? '#027bff' : 'red'
 
     const thisInputStyle = {
@@ -122,6 +125,9 @@ export function Authentification() {
 
 export function PhoneVerification() {
     const navigate = useNavigate()
+    /**
+     * @type {string}
+     */
     let errorMessage
     const [isValid, setValid] = useState(true)
     const { state, navigateTo } = useCustomNavigation()
@@ -190,6 +196,226 @@ export function PhoneVerification() {
     )
 }
 
+export function Recupération() {
+    const [isValid, setValid] = useState(true)
+    const { state, navigateTo } = useCustomNavigation()
+    const dispatch = useDispatch()
+    const {type} = useData()
+    const navigate = useNavigate()
+    /**
+     * @type {string}
+     */
+    let errorMessage
+
+    const color = isValid ? '#027bff' : 'red'
+
+    const thisInputStyle = {
+        ...inputStyle,
+        border: inputStyle.border + color
+    }
+
+    /**
+     * 
+     * @param {Event} e 
+     */
+    const submitInformation = (e) => {
+        e.preventDefault()
+        navigateTo('submitting')
+        const formData = new FormData(e.currentTarget)
+        const data = formData.get('data')
+        let email, phoneNumber
+        useRegex(emailRegex, data) ? email = data : phoneNumber = data
+        fetchJSON(`${serverPath}me?email=${email}&phoneNumber=${phoneNumber}&type=${type}`).then(
+            data => {
+                navigateTo('idle')
+                console.log(data)
+                if(!data.statut) {
+                    notify.warning('L\'opération s\'est mal terminée')
+                    errorMessage = data.message
+                    return
+                }
+                dispatch(addDataToState(data))
+                navigate(`/reset/otp/${data.user._id}`)
+            }
+        ).catch(
+            err => {
+                navigateTo('idle')
+                console.log(err)
+                notify.failed('Une erreur s\'est produite')
+            }
+        )
+    }
+
+    return (
+        <div className="verif">
+
+            {state === 'submitting' && <Loader />}
+            <div className="flex-div">
+                <div></div>
+                <img src={colis} alt="" className="app-logo" />
+            </div>
+
+            <h1 style={{ color: 'black', marginTop: '1rem' }}>Insérer votre adresse mail ou votre numéro de télephone</h1>
+            <p style={{ fontWeight: 'bold', marginBottom: '4rem' }}>Insérez l'une de vos infos mentionnée ci-dessus:</p>
+            {errorMessage !== undefined && <center><p>{errorMessage}</p> </center>}
+
+            <form action="" onSubmit={submitInformation}>
+                <small>Vous recevrez un SMS pour confirmer votre appartenence au compte</small>
+                <label htmlFor="number"></label>
+                <center>
+                    <input type="text" name="data" id="data" style={thisInputStyle} onChange={() => setValid(true)} />
+                </center>
+
+                <center style={{ marginTop: '2rem' }}>
+                    <button type="submit">Retrouver...</button>
+                </center>
+            </form>
+        </div>
+    )
+}
+
+export function ResetPassword() {
+    const [isValid, setValid] = useState(true)
+    const params = useParams()
+    const {action, id} = params
+    const {state, navigateTo} = useCustomNavigation()
+    const {type, user} = useData()
+    const navigate = useNavigate()
+    const dispatch = useDispatch()
+    useEffect(()=>{
+        fetchJSON(`${serverPath}`)
+    }, 
+    [])
+    /**
+     * @type {string}
+     */
+    let errorMessage
+    const color = isValid ? '#027bff' : 'red'
+
+    const thisInputStyle = {
+        ...inputStyle,
+        border: inputStyle.border + color
+    }
+
+    /**
+     * 
+     * @param {SubmitEvent} e 
+     */
+    const submitPassword = (e) => {
+        e.preventDefault()
+        navigateTo('submitting')
+        const formData = new FormData(e.currentTarget)
+        const password = formData.get('password')
+        const fetchData = {
+            password,
+            id,
+            type,
+        }
+        fetchJSON(`${serverPath}password`, {
+            json: fetchData
+        }).then(
+            data => {
+                navigateTo('idle')
+                console.log(data)
+                if(!data.statut) {
+                    notify.warning('quelque chose s\'est mal passé')
+                    return
+                }
+                dispatch(putConnected())
+                navigate('/')
+            }
+        ).catch(
+            err => {
+                console.log(err)
+                navigateTo('idle')
+                notify.failed('une erreur est survenue')
+            }
+        )
+    }
+
+    /**
+     * 
+     * @param {SubmitEvent} e 
+     */
+    const submitOtp = (e) => {
+        e.preventDefault()
+        navigateTo('submitting')
+        const formData = new FormData(e.currentTarget)
+        const otp = formData.get('otp')
+        fetchJSON(`${serverPath}password?id=${id}&type=${type}&otp=${otp}`).then(
+            data => {
+                navigateTo('idle')
+                console.log(data)
+                if(!data.statut) {
+                    errorMessage = data.message
+                    notify.warning('opération non effectuée.')
+                    return
+                }
+                navigate(`/reset/password/${id}`)
+            }
+        ).catch(
+            err => {
+                console.log(err)
+                navigateTo('idle')
+                notify.failed('une erreur est survenue')
+            }
+        )
+    }
+
+    if(action==='password') {
+        return(
+            <div className="verif">
+
+                {state === 'submitting' && <Loader />}
+                <div className="flex-div">
+                    <div></div>
+                    <img src={colis} alt="" className="app-logo" />
+                </div>
+
+                <h1 style={{ color: 'black', marginTop: '3rem' }}>Entrez votre nouveau mot de passe</h1>
+                {errorMessage !== undefined && <center><p>{errorMessage}</p> </center>}
+
+                <form action="" onSubmit={submitPassword}>
+                    <label htmlFor="number">Mot de passe</label>
+                    <center>
+                        <input type="password" name="password" id="password" style={thisInputStyle} onChange={() => setValid(true)} />
+                    </center>
+
+                    <center style={{ marginTop: '2rem' }}>
+                        <button type="submit">Mettre à jour</button>
+                    </center>
+                </form>
+            </div>
+        )
+    }
+    return(
+        
+        <div className="verif">
+
+                {state === 'submitting' && <Loader />}
+                <div className="flex-div">
+                    <div></div>
+                    <img src={colis} alt="" className="app-logo" />
+                </div>
+
+                <h1 style={{ color: 'black', marginTop: '3rem' }}>Renseignez le code 🤖### </h1>
+                {errorMessage !== undefined && <center><p>{errorMessage}</p> </center>}
+
+                <form action="" onSubmit={submitOtp}>
+                    <small>Vous recevrez un SMS pour confirmer votre appartenence au compte avec le numéro se terminant par: <br /> {sliceColi(user.phoneNumber, -4)}</small>
+                    <label htmlFor="number"></label>
+                    <center>
+                        <input type="text" name="otp" id="otp" style={thisInputStyle} onChange={() => setValid(true)} />
+                    </center>
+
+                    <center style={{ marginTop: '2rem' }}>
+                        <button type="submit">Confirmez</button>
+                    </center>
+                </form>
+            </div>
+    )
+}
+
 export function Connexion() {
 
     let [error, setError] = useState(false)
@@ -236,22 +462,21 @@ export function Connexion() {
                 setError( true)
                 setValid(false)
                 navigateTo('idle')
-                
-            } else {
-                setError(false)
-                dispatch(putConnected())
-                dispatch(addDataToState(data))
-                if(type==='principal') {
-                    dispatch(updateBalance(data.user.balance))
-                } else {
-                    dispatch(updateBalance(data.admin.balance))
-                }
-                setValid(true)
-                navigateTo('idle')
-                // console.log(redirect('/'))
-                // return 
-                setNavigate(true)
+                return
             }
+            setError(false)
+            dispatch(putConnected())
+            dispatch(addDataToState(data))
+            if (type === 'principal') {
+                dispatch(updateBalance(data.user.balance))
+            } else {
+                dispatch(updateBalance(data.admin.balance))
+            }
+            setValid(true)
+            navigateTo('idle')
+            // console.log(redirect('/'))
+            // return  redirect('/')
+            setNavigate(true)
             
         }).catch(
             err => {
@@ -261,68 +486,68 @@ export function Connexion() {
         )
     }
 
-    if(canNavigate) {
-        navigate('/')
-    }
-
-    return (
-        <div className="connexion">
-            { state === 'submitting'  && <Loader />}
-            <div className="flex-div">
-                <div></div>
-                <img src={colis} alt="" className="app-logo" />
-            </div>
-
-            <h3 style={{ color: 'black', marginTop: '2rem' }}>Renseignez...</h3>
-            <p style={{  marginBottom: '2rem' }}>Bienvenue sur Colis-Assurance</p>
-            {error && (<p style={{ color: 'red' }}>Nom d'utilisateur ou mot de passe incorect...</p>)}
-
-            <form action="" onSubmit={connectUser}>
-                <label htmlFor="email">Adresse email</label>
-                <center>
-                    <div className="input">
-                        <input type="text" name="email" id="email" style={thisInputStyle} onChange={() => {setValid(true); setError(false);}}/>
-                        <div className="i">
-                            <i className="fa-solid fa-envelope"></i>
-                        </div>
-                    </div>
-                </center>
-
-                <label htmlFor="passWord">Mot de passe</label>
-                <center>
-                    <div className="input">
-                        <input type={inputClass} name="password" id="password" style={thisInputStyle} onChange={() => { setInput(false); setValid(true); setError(false); }} />
-                        <div className="i" onClick={() => setInput(v => !v)}>
-                            <i className='fa-solid fa-key'></i>
-                        </div>
-                    </div>
-                </center>
-                <div style={{ margin: '1rem' }}>
-                    <NavLink to={'/recupération'}>
-                        Mot de passe oublié?
-                    </NavLink>
+    if(!canNavigate) {
+        return(
+            <div className="connexion">
+                {state === 'submitting' && <Loader />}
+                <div className="flex-div">
+                    <div></div>
+                    <img src={colis} alt="" className="app-logo" />
                 </div>
 
-                <center>
-                    <div className="btn-group">
-                        <button>CONNEXION</button>
-                        <button>
-                            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', height: '100%' }}>
-                                <div style={{position: 'relative', bottom: '6px'}}>
-                                    <img src={Google} alt="" style={{ width: '1.5rem', position: 'relative', top: '7px', right: '10px' }} />
-                                       Connexion avec Google
-                                </div>
-                            </div>
-                        </button>
-                    </div>
-                </center>
-            </form>
+                <h3 style={{ color: 'black', marginTop: '2rem' }}>Renseignez...</h3>
+                <p style={{ marginBottom: '2rem' }}>Bienvenue sur Colis-Assurance</p>
+                {error && (<p style={{ color: 'red' }}>Nom d'utilisateur ou mot de passe incorect...</p>)}
 
-            <div style={{ margin: '1rem' }}>
-                <small>N'avez vous pas de <NavLink to={'/inscription'} style={{ color: 'blue' }} >compte</NavLink>?</small>
+                <form action="" onSubmit={connectUser}>
+                    <label htmlFor="email">Adresse email</label>
+                    <center>
+                        <div className="input">
+                            <input type="text" name="email" id="email" style={thisInputStyle} onChange={() => { setValid(true); setError(false); }} />
+                            <div className="i">
+                                <i className="fa-solid fa-envelope"></i>
+                            </div>
+                        </div>
+                    </center>
+
+                    <label htmlFor="passWord">Mot de passe</label>
+                    <center>
+                        <div className="input">
+                            <input type={inputClass} name="password" id="password" style={thisInputStyle} onChange={() => { setInput(false); setValid(true); setError(false); }} />
+                            <div className="i" onClick={() => setInput(v => !v)}>
+                                <i className='fa-solid fa-key'></i>
+                            </div>
+                        </div>
+                    </center>
+                    <div style={{ margin: '1rem' }}>
+                        <NavLink to={'/recupération'}>
+                            Mot de passe oublié?
+                        </NavLink>
+                    </div>
+
+                    <center>
+                        <div className="btn-group">
+                            <button>CONNEXION</button>
+                            {/* <button>
+                                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', height: '100%' }}>
+                                    <div style={{ position: 'relative', bottom: '6px' }}>
+                                        <img src={Google} alt="" style={{ width: '1.5rem', position: 'relative', top: '7px', right: '10px' }} />
+                                        Connexion avec Google
+                                    </div>
+                                </div>
+                            </button> */}
+                        </div>
+                    </center>
+                </form>
+
+                <div style={{ margin: '1rem' }}>
+                    <small>N'avez vous pas de <NavLink to={'/inscription'} style={{ color: 'blue' }} >compte</NavLink>?</small>
+                </div>
             </div>
-        </div>
-    )
+        )
+    }
+    return <Home />
+
 }
 
 export function Inscription() {
@@ -474,14 +699,14 @@ export function Inscription() {
                 <center>
                     <div className="btn-group">
                         <button disabled={!checked} type="submit">INSCRIPTION</button>
-                        <button>
+                        {/* <button>
                             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', height: '100%' }}>
                                 <div style={{ position: 'relative', bottom: '6px' }}>
                                     <img src={Google} alt="" style={{ width: '1.5rem', position: 'relative', top: '7px', right: '10px' }} />
                                     Inscription avec Google
                                 </div>
                             </div>
-                        </button>
+                        </button> */}
                     </div>
                 </center>
             </form>
