@@ -2,6 +2,14 @@ import {toast} from 'react-toastify'
 
 /**
  * Object de notification prenant des paramètre selon la callback appellé 
+ * @type {{
+ * success: (message:string) => any,
+ * failed: (message:string) => any,
+ * warning: (message:string) => any,
+ * customSuccess : (message: {messageTitle: string}, duration: number) => Promise<any>,
+ * customFailed : (message: {messageTitle: string}, duration: number) => Promise<any>,
+ * customWarning : (message: {messageTitle: string}, duration: number) => Promise<any>,
+ * }}
  */
 export const notify = {
     success: (message) => toast.success(message),

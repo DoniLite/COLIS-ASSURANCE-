@@ -8,6 +8,7 @@ import { Loader, serverPath } from "../main"
 import { notify } from "../hooks/useNofication"
 import { useCustomNavigation } from "../hooks/useCustomNavigation"
 import { useState } from "react"
+import { Modal } from "flowbite-react"
 
 
 export function Choice() {
@@ -19,6 +20,7 @@ export function Choice() {
     const {state, navigateTo} = useCustomNavigation()
     const [link, setLink] = useState('')
     const [mode, setMode] = useState('Agence')
+    const [openModal, setOpenModal] = useState(false)
 
     /**
      * 
@@ -50,6 +52,7 @@ export function Choice() {
                 if(data.statut === true) {
                     notify.success('Votre requête a bien été envoyée')
                     // navigate(link)
+                    switchModeAndSetactions(mode)
                 } else {
                     notify.failed('échec de l\'opération veuillez retenter')
                 }
@@ -62,6 +65,25 @@ export function Choice() {
         )
         
     }
+
+    /**
+     * 
+     * @param {'Agence' | 'Appel' | 'WhatsApp'} mode 
+     */
+    const switchModeAndSetactions = (mode) => {
+        switch (mode) {
+            case 'Agence':
+                window.location = `https://www.google.com/maps/place/Audace+Consulting+International/@12.3083637,-1.5358662,17z/data=!3m1!4b1!4m6!3m5!1s0xe2e97bdfbb21c57:0x2a4ea4686f2ac28!8m2!3d12.3083585!4d-1.5332913!16s%2Fg%2F11s8hscww4?entry=ttu`
+                break;
+            case 'Appel':
+                setOpenModal(true)
+                break;
+            case 'WhatsApp':
+                window.location = `https://wa.me/22655270506`
+                break;
+        }
+    }
+
     console.log(params)
     return(
         <>
@@ -106,6 +128,24 @@ export function Choice() {
            <center>
                 <button className="go" onClick={initPayement}>Allez-y</button>
            </center>
+           <Modal show={openModal} onClose={() => setOpenModal(false)} style={{ zIndex: '9999' }}>
+            <div className="modal">
+                <div className="flex" >
+                    <div>
+                        <center>
+                            <p>Contacter nous par appel</p>
+                            <a href="tel:+22611111111">
+                                <i className="fa-solid fa-phone"></i>
+                                <span> </span>Lancer un appel
+                            </a>
+                        </center>
+                    </div>
+                    <div onClick={()=> setOpenModal(false)} >
+                        <i className="fa-regular fa-circle-xmark fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+           </Modal>
         </>
     )
 }

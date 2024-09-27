@@ -1,4 +1,4 @@
-import { Outlet, NavLink, useParams } from "react-router-dom";
+import { Outlet, NavLink, useParams, useNavigate } from "react-router-dom";
 import { DashBordNav, TableContainer, TableHeader } from "./TableauDeBord";
 import userPNG from "../assets/img/Ghost.jpeg"
 import { ColisContainer } from "../components/Colis";
@@ -19,6 +19,7 @@ export function AdminDetails() {
 
     const params = useParams()
     const {adminAccess} = useData()
+    const navigate = useNavigate()
     const [user, setuser] = useState({})
 
     useEffect(() => {
@@ -55,8 +56,7 @@ export function AdminDetails() {
     //     lastname: 'Ghost',
     // }
 
-    if (adminAccess) {
-        return (
+    return (
             <TableContainer>
                 <DashBordNav />
                 <div className="table-content3">
@@ -121,13 +121,7 @@ export function AdminDetails() {
                 </div>
             </TableContainer>
         )
-    }
- 
-    return(
-        < AdminConnexion/>
-    )
 
-    
 }
 
 
@@ -427,19 +421,19 @@ export function FlowBox({param}) {
                     <button style={{ width: '40%', padding: '10px', background: 'red' }} onClick={actionControler}>Supprimer</button>
                 </div>
                 <Modal show={openModal} onClose={() => setOpenModal(false)} style={{ zIndex: '9999' }}>
-                <div className="modal">
-                    <h3>{action} le Compte?</h3>
-                    <p>Voulez-vous vraiment {action} ce compte ? <br /> Si vous cliquez sur oui cette action ne pourra plus être irréversible</p>
-                    <div className="flex">
-                        <button variant="secondary" onClick={() => setOpenModal(false)}>
-                            Annuler
-                        </button>
-                        <button variant="primary" onClick={actionsHandler}>
-                            Oui
-                        </button>
+                    <div className="modal">
+                        <h3>{action} le Compte?</h3>
+                        <p>Voulez-vous vraiment {action} ce compte ? <br /> Si vous cliquez sur oui cette action ne pourra plus être irréversible</p>
+                        <div className="flex">
+                            <button variant="secondary" onClick={() => setOpenModal(false)}>
+                                Annuler
+                            </button>
+                            <button variant="primary" onClick={actionsHandler}>
+                                Oui
+                            </button>
+                        </div>
                     </div>
-                </div>
-            </Modal>
+                </Modal>
             </>
         )
     }

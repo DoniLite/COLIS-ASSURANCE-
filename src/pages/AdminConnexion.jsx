@@ -7,12 +7,14 @@ import { serverPath } from "../main";
 import { notify } from "../hooks/useNofication";
 import { useDispatch } from "react-redux";
 import { putList } from "../app/coliSlice";
+import { useData } from "../hooks/useData";
 
 
 export function AdminConnexion() {
-    const [canNav, setNav] = useState(false)
+
     const navigate = useNavigate()
     const dispatch = useDispatch()
+    const {adminAccess} = useData()
     /**
      * 
      * @param {Event} e 
@@ -27,6 +29,7 @@ export function AdminConnexion() {
             login,
             password
         }
+        
         fetchJSON(`${serverPath}api/admin`, {
             json: fetchData
         }).then(
@@ -36,7 +39,8 @@ export function AdminConnexion() {
                     notify.success('Bienvenu à vous cher administrateur')
                     dispatch(putAdminConnected())
                     dispatch(putList(data.users))
-                    navigate('/colis-assurance/page/admin/hrm')
+                    // navigate('/colis-assurance/page/admin/hrm')
+                    console.log(adminAccess)
                     return
                 }
                 notify.warning('connexion invalide! ressayez')

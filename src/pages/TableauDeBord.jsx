@@ -1,8 +1,8 @@
-import { NavLink, useNavigate, useParams, } from "react-router-dom";
+import { defer, NavLink, useNavigate, useParams, } from "react-router-dom";
 import logo from '../assets/img/COLIS.png'
 import { sliceColi } from "../functions/sliceColi";
 import { serverPath } from "../main";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { fetchJSON } from "../functions/API";
 import { notify } from "../hooks/useNofication";
 import { useData } from "../hooks/useData";
@@ -21,6 +21,7 @@ export function TableauDeBord() {
     const [adminBalance, setAdminBalance]  = useState()
     const [courses, setCourses] = useState()
     const {adminAccess} = useData()
+    const navigate = useNavigate()
 
     useEffect(() => {
         fetchJSON(`${serverPath}allUserAdmin`).then(
@@ -49,8 +50,7 @@ export function TableauDeBord() {
         )
     }, [])
 
-    if (adminAccess) {
-        return (
+   return (
             <TableContainer>
 
                 <DashBordNav />
@@ -130,7 +130,7 @@ export function TableauDeBord() {
                                 <h4>Statut</h4>
                                 <h4>Action</h4>
                             </div>
-                            {recharges.map(recharge => <TableDataContent user={recharge} key={recharge._id} />)}
+                            {recharges.slice(0, 10).map(recharge => <TableDataContent user={recharge} key={recharge._id} />)}
                         </div>
 
                         <div className="recent-accounts">
@@ -138,20 +138,14 @@ export function TableauDeBord() {
                             <p>Récents</p>
 
                             <div className="recent-users-grid">
-                                {allUsers.map(user => <RecentUserElement user={user} key={user._id} />)}
+                                {allUsers.slice(0, 10).map(user => <RecentUserElement user={user} key={user._id} />)}
                             </div>
                         </div>
                     </div>
                 </div>
             </TableContainer>
         )
-    }
 
-    return(
-        < AdminConnexion/>
-    )
-
-    
 }
 
 
@@ -213,7 +207,6 @@ export function DashBordNav() {
 export function TableContainer({children}) {
     const dispatch = useDispatch()
     const {allUsers, adminAccess} = useData()
-    const navigate = useNavigate()
     useEffect(()=>{
         fetchJSON(`${serverPath}api/allUsers`).then(
             data => {
@@ -222,13 +215,14 @@ export function TableContainer({children}) {
             }
         )
     },[])
-    console.log(allUsers)
-    if(adminAccess) {
-        return(
+    console.log(allUsers, adminAccess)
+    return(
         <div className="table-container">{children}</div>
-        )
-    }
-    return navigate('log/admin/colis-assurance/')
+    )
+    // if(adminAccess) {
+        
+    // }
+    // return navigate('log/admin/colis-assurance/')
 }
 
 export function TableHeader({page, position}) {
@@ -249,6 +243,7 @@ export function TableHeader({page, position}) {
         </div>
     )
 }
+ 
 
 function TableDataContent({user}) {
     return(
@@ -297,6 +292,8 @@ export function AllRecharges() {
     const [recharges, setRecharges] = useState([])
     const params = useParams()
     const {id} = params
+    const {adminAccess} = useData()
+    const navigate = useNavigate()
 
     useEffect(() => {
         fetchJSON(`${serverPath}recharges?id=${id}`).then(
