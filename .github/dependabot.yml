@@ -1,0 +1,6 @@
+version: 2
+updates:
+  - package-ecosystem: "npm" # Le gestionnaire de packages (npm, pip, cargo, etc.)
+    directory: "/"           # Répertoire où se trouve le fichier package.json
+    schedule:
+      interval: "weekly"
